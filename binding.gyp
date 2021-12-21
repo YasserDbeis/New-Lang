@@ -2,7 +2,7 @@
     "targets": [
         {
             "target_name": "calculate",
-            "sources": ["calculate.cc"]
+            "sources": ["./src/lang/calculate.cpp"]
         }
     ]
 }

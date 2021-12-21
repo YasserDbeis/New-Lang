@@ -4,8 +4,6 @@
     "ecmaVersion": 8,
     "requireConfigFile": false
   },
-  "extends": ["airbnb"],
-  "plugins": ["prettier"],
   "env": {
     "browser": true,
     "node": true
@@ -13,7 +11,6 @@
   "rules": {
     "no-console": "off",
     "comma-dangle": "off",
-    "react/jsx-filename-extension": "off",
-    "prettier/prettier": "error"
+    "react/jsx-filename-extension": "off"  
   }
 }

@@ -135,8 +135,8 @@
     <None Include="..\binding.gyp"/>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\calculate.cc">
-      <ObjectFileName>$(IntDir)\calculate.obj</ObjectFileName>
+    <ClCompile Include="..\src\lang\calculate.cpp">
+      <ObjectFileName>$(IntDir)\src\lang\calculate.obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="C:\Users\User\AppData\Roaming\npm\node_modules\node-gyp\src\win_delay_load_hook.cc"/>
   </ItemGroup>
