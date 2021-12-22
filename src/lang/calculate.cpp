@@ -14,6 +14,8 @@ namespace calculate
     {
         int x = 55;
 
+        int 33d4sf > df = x;
+
         args.GetReturnValue().Set(args[0]);
     }
 

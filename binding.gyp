@@ -1,8 +1,8 @@
 {
     "targets": [
         {
-            "target_name": "calculate",
-            "sources": ["./src/lang/calculate.cpp"]
+            "target_name": "main",
+            "sources": ["./src/lang/main.cpp", "./src/lang/lexer.cpp"]
         }
     ]
 }

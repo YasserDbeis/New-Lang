@@ -1,6 +1,6 @@
 const express = require('express');
 const os = require('os');
-const calculate = require('../../build/Release/calculate');
+const tester = require('../../build/Release/main');
 
 const app = express();
 
@@ -11,5 +11,5 @@ app.get('/api/getUsername', (req, res) =>
 
 app.listen(process.env.PORT || 8080, () => {
   console.log(`Listening on port ${process.env.PORT || 8080}!`);
-  console.log(calculate.calc('HELLO WORLD!'));
+  console.log(tester.testLang('HELLO WORLD!'));
 });
