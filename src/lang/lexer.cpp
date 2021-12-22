@@ -61,9 +61,13 @@ void Lexer::lexical_analysis(std::string input)
     Helper function - Consumes whitespace
     Iterates the input_index to a valid start of a lexeme
 */
-void Lexer::skip_whitespace()
+void Lexer::skip_whitespace(std::string input)
 {
-
+    while (token_index < input.length() && 
+    (input[token_index] == ' ' || input[token_index] == '\t' || input[token_index] == '\n'))
+    {
+        token_index++;
+    }
 }
 
 

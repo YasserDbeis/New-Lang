@@ -26,7 +26,7 @@ private:
     int line_number;                            /* Keep track of current line number for describing the token */
 
     void lexical_analysis(std::string input);   /* Helper function - performs lexical analysis for the constructor */
-    void skip_whitespace();                     /* Moves the token_index to the next valid start of a lexeme. Skipping whitespace */
+    void skip_whitespace(std::string input);    /* Moves the token_index to the next valid start of a lexeme. Skipping whitespace */
 
 public:
     Lexer(std::string input);                   /* Constructs lexer class. Reads input argument and does lexical analysis */
