@@ -18,8 +18,9 @@ class Lexer
 private:
     std::vector<std::string> terminals          /* Vector containing language key words */
     {";", "->", ",", "=", "bool", "int", "dec", "str", "true", "false", "+", "-", "*", "/", ">", "<" 
-    ">=", "<=", "is", "and", "or", "not", "!", "{", "{", "(", ")", "if", "elsif", "else", "func"};         
-    
+    ">=", "<=", "is", "and", "or", "not", "!", "{", "{", "(", ")", "if", "elsif", "else", "func"};  
+
+    std::vector<std::string> token_type_names;  /* Names of the token types (Accessed by the enum type index) */       
     std::vector<Token> tokens;                  /* Vector containing the tokens of the input received in constructor */
     int token_index;                            /* Parsing purposes: Keeps track of what token is currently being parsed */
     int input_index;

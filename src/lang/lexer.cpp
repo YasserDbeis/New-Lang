@@ -16,8 +16,8 @@
     Constructor
     Input - input : string -> the code to be tokenized, parsed, and compiled
 
-    Initializes the line_number, token_index, and input_index, then performs lexical analysis
-    using a helper function
+    Initializes the line_number, token_index, input_index, and token type vector, 
+    then performs lexical analysis using a helper function
 */
 Lexer::Lexer(std::string input)
 {
@@ -30,6 +30,28 @@ Lexer::Lexer(std::string input)
     line_number = 1;    /* Line number starts at 1 */
     token_index = 0;    /* Parse from the first stored token! */
     input_index = 0;    /* Start the input reading at index 0 */
+
+    /* Set up the token type vector according to the Enum defined in token.h */
+    token_type_names.push_back("SEMICOLON");
+    token_type_names.push_back("RIGHTARROW");
+    token_type_names.push_back("COMMA");
+    token_type_names.push_back("EQUAL");
+    token_type_names.push_back("BOOL");
+    token_type_names.push_back("INT");
+    token_type_names.push_back("DEC");
+    token_type_names.push_back("STR");
+    token_type_names.push_back("TRUE");
+    token_type_names.push_back("FALSE");
+    token_type_names.push_back("OPERATOR");
+    token_type_names.push_back("LBRACE");
+    token_type_names.push_back("RBRACE");
+    token_type_names.push_back("LPAREN");
+    token_type_names.push_back("RPAREN");
+    token_type_names.push_back("IF");
+    token_type_names.push_back("ELSIF");
+    token_type_names.push_back("ELSE");
+    token_type_names.push_back("FUNC");
+    token_type_names.push_back("ID");
 
     lexical_analysis(input);
 }
@@ -80,7 +102,10 @@ std::string Lexer::print_tokens()
 
     for (int i = 0; i < tokens.size(); i++)
     {
-        str += tokens.at(i).lexeme;
+        Token tok = tokens.at(i);
+        str += "{Type: " + token_type_names.at(tok.type) 
+        + ", Lexeme: " + tok.lexeme 
+        + ", line number: " + std::to_string(tok.line_number) + "}" + "\n";
     }
 
     return str;
