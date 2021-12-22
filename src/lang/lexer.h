@@ -11,30 +11,75 @@
 
 #include <string>
 #include <vector>
+#include <unordered_set>
+#include <unordered_map>
 #include "token.h"
 
 class Lexer
 {
 private:
-    std::vector<std::string> terminals          /* Vector containing language key words */
-    {";", "->", ",", "=", "bool", "int", "dec", "str", "true", "false", "+", "-", "*", "/", ">", "<" 
-    ">=", "<=", "is", "and", "or", "not", "!", "{", "{", "(", ")", "if", "elsif", "else", "func"};  
+    std::unordered_set<std::string> terminals /* Set containing language key words */
+        {";", "->", ",", "=", "bool", "int", "dec", "str", "true", "false", "+", "-", "*", "/", ">", "<",
+         ">=", "<=", "is", "and", "or", "not", "!", "{", "{", "(", ")", "if", "elsif", "else", "func"};
 
-    std::vector<std::string> token_type_names;  /* Names of the token types (Accessed by the enum type index) */       
-    std::vector<Token> tokens;                  /* Vector containing the tokens of the input received in constructor */
-    int token_index;                            /* Parsing purposes: Keeps track of what token is currently being parsed */
+    std::unordered_map<std::string, TokenType> terminal_to_token_type =
+        {
+            {";", SEMICOLON},
+            {"->", RIGHTARROW},
+            {",", COMMA},
+            {"=", EQUAL},
+            {"bool", BOOL},
+            {"int", INT},
+            {"dec", DEC},
+            {"str", STR},
+            {"true", TRUE},
+            {"false", FALSE},
+            {"+", OPERATOR},
+            {"-", OPERATOR},
+            {"*", OPERATOR},
+            {"/", OPERATOR},
+            {">", OPERATOR},
+            {"<", OPERATOR},
+            {">=", OPERATOR},
+            {"<=", OPERATOR},
+            {"is", OPERATOR},
+            {"and", OPERATOR},
+            {"or", OPERATOR},
+            {"not", OPERATOR},
+            {"!", OPERATOR},
+            {"{", LBRACE},
+            {"}", RBRACE},
+            {"(", LPAREN},
+            {")", RPAREN},
+            {"if", IF},
+            {"elsif", ELSIF},
+            {"else", ELSE},
+            {"func", FUNC}};
+
+    std::unordered_set<char> terminating_symbols{';', '(', '{', '-', ',', '=', '>', '<', '!', ')', '}', '+', '-', '/', '*'};
+
+    /* Set up the token type vector according to the Enum defined in token.h */
+    std::vector<std::string> token_type_names{"SEMICOLON", "RIGHTARROW", "COMMA", "EQUAL", "BOOL", "INT", "DEC", "STR", "TRUE", "FALSE", "OPERATOR",
+                                              "LBRACE", "RBRACE", "LPAREN", "RPAREN", "IF", "ELSIF", "ELSE", "FUNC", "ID", "END_OF_FILE"};
+
+    std::vector<Token> tokens; /* Vector containing the tokens of the input received in constructor */
+    int token_index;           /* Parsing purposes: Keeps track of what token is currently being parsed */
     int input_index;
-    int line_number;                            /* Keep track of current line number for describing the token */
+    int line_number; /* Keep track of current line number for describing the token */
 
-    void lexical_analysis(std::string input);   /* Helper function - performs lexical analysis for the constructor */
-    void skip_whitespace(std::string input);    /* Moves the token_index to the next valid start of a lexeme. Skipping whitespace */
+    void lexical_analysis(std::string input); /* Helper function - performs lexical analysis for the constructor */
+    void skip_whitespace(std::string input);  /* Moves the token_index to the next valid start of a lexeme. Skipping whitespace */
+    void consume_comment(std::string);        /* Moves the input_index to the index of the next line */
+    void consume_number(std::string);         /* Consumes a number, moves input index onwards, and stores token of the num */
+    void consume_string(std::string);         /* Consumes a string terminal, and consquently updates input_index */
+    bool is_white_space(char);
 
 public:
-    Lexer(std::string input);                   /* Constructs lexer class. Reads input argument and does lexical analysis */
-    ~Lexer();                                   /* Destructor */
+    Lexer(std::string input); /* Constructs lexer class. Reads input argument and does lexical analysis */
+    ~Lexer();                 /* Destructor */
 
-    std::string print_tokens();                 /* Testing purposes: Returns a string representing tokens in input */
+    std::string print_tokens(); /* Testing purposes: Returns a string representing tokens in input */
 
-    Token get_token();                          /* Parsing purposes: Consumes and returns the next token in the tokens vector */
-    Token peek(int offset);                     /* Parsing purposes: Returns the token at the given offset in the tokens vector */
+    Token get_token();      /* Parsing purposes: Consumes and returns the next token in the tokens vector */
+    Token peek(int offset); /* Parsing purposes: Returns the token at the given offset in the tokens vector */
 };

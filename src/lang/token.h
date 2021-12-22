@@ -30,13 +30,14 @@ enum TokenType
     ELSIF,
     ELSE,
     FUNC,
-    ID
+    ID,
+    END_OF_FILE
 };
 
 typedef struct Token
 {
-    std::string lexeme;         /* Value of token, stored as a string */
-    TokenType type;             /* The type of token */
-    int line_number;            /* Line number it was found */
+    std::string lexeme; /* Value of token, stored as a string */
+    TokenType type;     /* The type of token */
+    int line_number;    /* Line number it was found */
 
 } Token;
