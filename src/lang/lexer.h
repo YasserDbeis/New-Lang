@@ -19,8 +19,8 @@ class Lexer
 {
 private:
     std::unordered_set<std::string> terminals /* Set containing language key words */
-        {";", "->", ",", "=", "bool", "int", "dec", "str", "true", "false", "+", "-", "*", "/", ">", "<",
-         ">=", "<=", "is", "and", "or", "not", "!", "{", "{", "(", ")", "if", "elsif", "else", "func"};
+        {";", "->", ",", "=", "bool", "int", "dec", "str", "void", "true", "false", "+", "-", "*", "/", ">", "<",
+         ">=", "<=", "is", "and", "or", "not", "!", "{", "{", "(", ")", "while", "if", "elsif", "else", "func", "return"};
 
     std::unordered_map<std::string, TokenType> terminal_to_token_type =
         {
@@ -32,6 +32,7 @@ private:
             {"int", INT},
             {"dec", DEC},
             {"str", STR},
+            {"void", VOID},
             {"true", TRUE},
             {"false", FALSE},
             {"+", OPERATOR},
@@ -51,16 +52,19 @@ private:
             {"}", RBRACE},
             {"(", LPAREN},
             {")", RPAREN},
+            {"while", WHILE},
             {"if", IF},
             {"elsif", ELSIF},
             {"else", ELSE},
-            {"func", FUNC}};
+            {"func", FUNC},
+            {"return", RETURN}};
 
     std::unordered_set<char> terminating_symbols{';', '(', '{', '-', ',', '=', '>', '<', '!', ')', '}', '+', '-', '/', '*'};
 
     /* Set up the token type vector according to the Enum defined in token.h */
-    std::vector<std::string> token_type_names{"SEMICOLON", "RIGHTARROW", "COMMA", "EQUAL", "BOOL", "INT", "DEC", "STR", "TRUE", "FALSE", "OPERATOR",
-                                              "LBRACE", "RBRACE", "LPAREN", "RPAREN", "IF", "ELSIF", "ELSE", "FUNC", "ID", "END_OF_FILE"};
+    std::vector<std::string> token_type_names{"SEMICOLON", "RIGHTARROW", "COMMA", "EQUAL", "BOOL", "INT", "DEC", "STR", "VOID", "TRUE", "FALSE", "INT_NUM",
+                                              "DEC_NUM", "STRING", "OPERATOR", "LBRACE", "RBRACE", "LPAREN", "RPAREN", "WHILE", "IF", "ELSIF", "ELSE",
+                                              "FUNC", "RETURN", "ID", "END_OF_FILE"};
 
     std::vector<Token> tokens; /* Vector containing the tokens of the input received in constructor */
     int token_index;           /* Parsing purposes: Keeps track of what token is currently being parsed */
@@ -68,10 +72,11 @@ private:
     int line_number; /* Keep track of current line number for describing the token */
 
     void lexical_analysis(std::string input); /* Helper function - performs lexical analysis for the constructor */
-    void skip_whitespace(std::string input);  /* Moves the token_index to the next valid start of a lexeme. Skipping whitespace */
-    void consume_comment(std::string);        /* Moves the input_index to the index of the next line */
-    void consume_number(std::string);         /* Consumes a number, moves input index onwards, and stores token of the num */
-    void consume_string(std::string);         /* Consumes a string terminal, and consquently updates input_index */
+    void add_token(std::string lexeme, TokenType type);
+    void skip_whitespace(std::string input); /* Moves the token_index to the next valid start of a lexeme. Skipping whitespace */
+    void consume_comment(std::string);       /* Moves the input_index to the index of the next line */
+    void consume_number(std::string);        /* Consumes a number, moves input index onwards, and stores token of the num */
+    void consume_string(std::string);        /* Consumes a string terminal, and consquently updates input_index */
     bool is_white_space(char);
 
 public:

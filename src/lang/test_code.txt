@@ -1,0 +1,20 @@
+
+
+func main  () -> void {
+
+    x = y - 5;
+
+    if(2 + 23 <= 43.231 and z != 5 or !isOkay) {        ~ Hello world!
+        func_call(yo, foo, bar);
+    }
+
+    bool b;
+    int h;
+    dec z;
+    str k = "hello, briggs!";
+
+    return x;
+}
+
+int x = 4.21;
+

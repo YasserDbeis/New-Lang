@@ -33,6 +33,8 @@ Lexer::Lexer(std::string input)
     token_index = 0; /* Parse from the first stored token! */
     input_index = 0; /* Start the input reading at index 0 */
 
+    skip_whitespace(input); /* skip initial white space before beginning lexical analysis */
+
     lexical_analysis(input);
 }
 
@@ -86,24 +88,25 @@ void Lexer::lexical_analysis(std::string input)
                     if (next_symbol == '>')
                     {
                         input_index += 2;
-                        token.lexeme = "->";
-                        token.type = RIGHTARROW;
-                        tokens.push_back(token);
+
+                        add_token("->", RIGHTARROW);
+                        break;
                     }
-                    else
-                    {
-                        printf("Invalid - usage");
-                        exit(EXIT_FAILURE);
-                    }
+                    /* CODE REDACTED -> It could still be a subtract symbol in the else case */
+                    // else
+                    // {
+                    //     printf("Invalid - usage");
+                    //     exit(EXIT_FAILURE);
+                    // }
                 }
                 case '<':
                 {
                     if (next_symbol == '=')
                     {
                         input_index += 2;
-                        token.lexeme = "<=";
-                        token.type = OPERATOR;
-                        tokens.push_back(token);
+
+                        add_token("<=", OPERATOR);
+
                         break;
                     }
                 }
@@ -112,9 +115,9 @@ void Lexer::lexical_analysis(std::string input)
                     if (next_symbol == '=')
                     {
                         input_index += 2;
-                        token.lexeme = ">=";
-                        token.type = OPERATOR;
-                        tokens.push_back(token);
+
+                        add_token(">=", OPERATOR);
+
                         break;
                     }
                 }
@@ -123,18 +126,21 @@ void Lexer::lexical_analysis(std::string input)
                     if (next_symbol == '=')
                     {
                         input_index += 2;
-                        token.lexeme = "!=";
-                        token.type = OPERATOR;
-                        tokens.push_back(token);
+
+                        add_token("!=", OPERATOR);
+
                         break;
                     }
                 }
                 default:
                 {
                     /* Consume the special case keyword symbol */
-                    token.lexeme = curr_symbol;
-                    token.type = terminal_to_token_type[std::string(1, *(terminating_symbols.find(curr_symbol)))];
-                    tokens.push_back(token);
+
+                    std::string lexeme = std::string(1, curr_symbol);
+                    TokenType type = terminal_to_token_type[std::string(1, *(terminating_symbols.find(curr_symbol)))];
+
+                    add_token(lexeme, type);
+
                     input_index++;
                 }
                 }
@@ -142,6 +148,7 @@ void Lexer::lexical_analysis(std::string input)
 
             if (base_index != input_index)
             {
+                skip_whitespace(input);
                 base_index = input_index;
                 continue;
             }
@@ -173,6 +180,8 @@ void Lexer::lexical_analysis(std::string input)
         }
         else if (terminating_symbols.find(curr_symbol) != terminating_symbols.end() || is_white_space(curr_symbol))
         {
+            token.line_number = line_number;
+
             tokens.push_back(token);
 
             if (is_white_space(curr_symbol))
@@ -198,8 +207,23 @@ void Lexer::lexical_analysis(std::string input)
 }
 
 /*
+    Helper function - Cooks and pushes tokens to class-scoped storage vector
+    Utilizes lexeme, token type, and line number to constructs a
+    new token and adds it to the token storage vector.
+*/
+void Lexer::add_token(std::string lexeme, TokenType type)
+{
+    Token token;
+    token.lexeme = lexeme;
+    token.type = type;
+    token.line_number = line_number; /* line_number is kept track as an instance var */
+
+    tokens.push_back(token);
+}
+
+/*
     Helper function - Consumes whitespace
-    Iterates the input_index to a valid start of a lexeme
+    Iterates the input_index to a non-empty start of a lexeme
 */
 void Lexer::skip_whitespace(std::string input)
 {
@@ -209,6 +233,104 @@ void Lexer::skip_whitespace(std::string input)
             line_number++;
 
         input_index++;
+    }
+}
+
+/*
+    Helper function: Consumes comments
+
+    Triggered by the sighting of a '~' char,
+    this function consumes the rest of a line so
+    as to treat it like a comment.
+*/
+void Lexer::consume_comment(std::string input)
+{
+    input_index++;
+    while (input_index < input.length() && input[input_index] != '\n')
+    {
+        input_index++;
+    }
+
+    skip_whitespace(input);
+}
+
+/*
+    Helper function: Consumes and adds INT_NUM or DEC_NUM token
+
+    Initiation by a sighting of a digit, this function
+    consumes the rest of a number-based token
+    then adds the token to the token storage vector.
+    Also validates the number formatting (max one decimal pt.)
+*/
+void Lexer::consume_number(std::string input)
+{
+    Token token;
+
+    int base_index = input_index;
+
+    bool dec_used = false;
+
+    std::string num = "";
+
+    while (input_index < input.length())
+    {
+
+        if (dec_used == false && input[input_index] == '.')
+        {
+            dec_used = true;
+            num += input[input_index];
+        }
+        else if (isdigit(input[input_index]))
+        {
+            num += input[input_index];
+        }
+        else if (dec_used && input[input_index] == '.')
+        {
+            printf("MULTIPLE DECIMAL POINTS ERROR");
+            exit(EXIT_FAILURE);
+        }
+        else
+        {
+            TokenType type = dec_used ? DEC_NUM : INT_NUM;
+
+            add_token(num, type);
+
+            break;
+        }
+
+        input_index++;
+    }
+}
+
+/*
+    Helper function: Consumes and adds STRING token
+
+    Triggered by a sighting of an opening quote, this function
+    consumes the rest of the STRING token within quotation marks
+    then adds the token to the token storage vector.
+*/
+void Lexer::consume_string(std::string input)
+{
+    input_index++; /* skip opening quotation mark */
+
+    std::string str = ""; /* build lexeme of STRING token in var called str */
+
+    /* iterate and build STRING lexeme until closing quotation is hit */
+    while (input_index < input.length() && input[input_index] != '\"')
+    {
+        str += input[input_index];
+        input_index++;
+    }
+
+    if (input[input_index] == '\"') /* if iteration ended with end quotation, add token and move to next input char */
+    {
+        add_token(str, STRING);
+        input_index++;
+    }
+    else /* if end of file is hit before string closes, exit program */
+    {
+        printf("NO MATCH FOR STRING OPEN QUOTE");
+        exit(EXIT_FAILURE);
     }
 }
 
@@ -263,6 +385,5 @@ Token Lexer::peek(int offset)
 
 bool Lexer::is_white_space(char curr_symbol)
 {
-
     return curr_symbol == ' ' || curr_symbol == '\t' || curr_symbol == '\n';
 }
