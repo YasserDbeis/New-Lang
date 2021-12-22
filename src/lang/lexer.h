@@ -16,19 +16,24 @@
 class Lexer
 {
 private:
-    std::vector<std::string> terminals;
-    std::vector<Token> tokens;
-    int token_index;
-    int line_number;
+    std::vector<std::string> terminals          /* Vector containing language key words */
+    {";", "->", ",", "=", "bool", "int", "dec", "str", "true", "false", "+", "-", "*", "/", ">", "<" 
+    ">=", "<=", "is", "and", "or", "not", "!", "{", "{", "(", ")", "if", "elsif", "else", "func"};         
+    
+    std::vector<Token> tokens;                  /* Vector containing the tokens of the input received in constructor */
+    int token_index;                            /* Parsing purposes: Keeps track of what token is currently being parsed */
+    int input_index;
+    int line_number;                            /* Keep track of current line number for describing the token */
 
-    void lexical_analysis(std::string input);
-    void skip_space();
+    void lexical_analysis(std::string input);   /* Helper function - performs lexical analysis for the constructor */
+    void skip_whitespace();                     /* Moves the token_index to the next valid start of a lexeme. Skipping whitespace */
 
 public:
-    Lexer(std::string input);
-    ~Lexer();
+    Lexer(std::string input);                   /* Constructs lexer class. Reads input argument and does lexical analysis */
+    ~Lexer();                                   /* Destructor */
 
-    std::string print_tokens();
-    Token get_token();
-    Token peek(int offset);
+    std::string print_tokens();                 /* Testing purposes: Returns a string representing tokens in input */
+
+    Token get_token();                          /* Parsing purposes: Consumes and returns the next token in the tokens vector */
+    Token peek(int offset);                     /* Parsing purposes: Returns the token at the given offset in the tokens vector */
 };
