@@ -68,7 +68,7 @@ void Lexer::lexical_analysis(std::string input)
             {
                 consume_comment(input);
             }
-            else if (isdigit(curr_symbol) && curr_symbol != '0')
+            else if (isdigit(curr_symbol))
             {
                 consume_number(input);
             }
@@ -92,12 +92,6 @@ void Lexer::lexical_analysis(std::string input)
                         add_token("->", RIGHTARROW);
                         break;
                     }
-                    /* CODE REDACTED -> It could still be a subtract symbol in the else case */
-                    // else
-                    // {
-                    //     printf("Invalid - usage");
-                    //     exit(EXIT_FAILURE);
-                    // }
                 }
                 case '<':
                 {
@@ -193,17 +187,12 @@ void Lexer::lexical_analysis(std::string input)
         }
         else
         {
-            printf("INVALID TOKEN ERROR");
+            printf("INVALID TOKEN ERROR: %d, %d", input_index, line_number);
             exit(EXIT_FAILURE);
         }
-
-        /*
-            Keywords -> hashset
-            string, ID, integers, decimal values, comments
-            string -> "
-            integers, decimal values -> have to start with a 1-9
-        */
     }
+
+    add_token("END_OF_FILE", END_OF_FILE);
 }
 
 /*
@@ -245,7 +234,7 @@ void Lexer::skip_whitespace(std::string input)
 */
 void Lexer::consume_comment(std::string input)
 {
-    input_index++;
+    input_index++; /* skip ~ that triggers comment */
     while (input_index < input.length() && input[input_index] != '\n')
     {
         input_index++;
@@ -264,11 +253,10 @@ void Lexer::consume_comment(std::string input)
 */
 void Lexer::consume_number(std::string input)
 {
-    Token token;
-
-    int base_index = input_index;
-
     bool dec_used = false;
+    bool token_added = false;
+
+    bool zeroStart = input[input_index] == '0';
 
     std::string num = "";
 
@@ -293,12 +281,28 @@ void Lexer::consume_number(std::string input)
         {
             TokenType type = dec_used ? DEC_NUM : INT_NUM;
 
+            if (type == INT_NUM && zeroStart && num.length() > 1)
+            {
+                printf("INVALID START TO INTEGER");
+                exit(EXIT_FAILURE);
+            }
+
             add_token(num, type);
+
+            token_added = true;
 
             break;
         }
 
         input_index++;
+    }
+
+    /* if number extends to end of input, add it to token list */
+    if (input_index == input.length() && !token_added)
+    {
+        TokenType type = dec_used ? DEC_NUM : INT_NUM;
+
+        add_token(num, type);
     }
 }
 
@@ -316,7 +320,7 @@ void Lexer::consume_string(std::string input)
     std::string str = ""; /* build lexeme of STRING token in var called str */
 
     /* iterate and build STRING lexeme until closing quotation is hit */
-    while (input_index < input.length() && input[input_index] != '\"')
+    while (input_index < input.length() && input[input_index] != '\"' && input[input_index] != '\n')
     {
         str += input[input_index];
         input_index++;
@@ -329,7 +333,7 @@ void Lexer::consume_string(std::string input)
     }
     else /* if end of file is hit before string closes, exit program */
     {
-        printf("NO MATCH FOR STRING OPEN QUOTE");
+        printf("NO MATCH FOR STRING OPEN QUOTE OR NEW LINE BREAKS STRING");
         exit(EXIT_FAILURE);
     }
 }
@@ -344,7 +348,7 @@ std::string Lexer::print_tokens()
     for (int i = 0; i < tokens.size(); i++)
     {
         Token tok = tokens.at(i);
-        str += "{Type: " + token_type_names.at(tok.type) + ", Lexeme: " + tok.lexeme + ", line number: " + std::to_string(tok.line_number) + "}" + "\n";
+        str += token_type_names.at(tok.type) + ", " + tok.lexeme + ", " + std::to_string(tok.line_number) + "\n";
     }
 
     return str;

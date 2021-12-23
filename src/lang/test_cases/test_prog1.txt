@@ -1,0 +1,27 @@
+~ Fizz buzz program!
+
+func main() 
+{
+    int z = input("Enter a number: ");
+    str res = fizz_buzz(15);
+    
+    return;
+}
+
+~ Fizz buzz work
+func fizz_buzz(int x) -> void 
+{
+    str result = "";   ~ To store the fizz buzz!
+
+    if(x / 15 is 0) {
+        result = "fizzbuzz";
+    }
+    elsif (x / 5 is 0    ) {
+        result = "fizz";
+    }
+    else {
+        ~result = "buzz";
+    }
+
+    return result;
+}

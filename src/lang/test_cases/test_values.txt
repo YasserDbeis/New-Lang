@@ -1,0 +1,24 @@
+"hello"
+
+
+"he  llo"
+
+123
+123.
+123.123
+
+true
+false
+
+foo
+ifs
+elseif
+whilee
+funcy
+fun
+
+123abc
+_abc
+abc_abc
+abc123abc
+abc123

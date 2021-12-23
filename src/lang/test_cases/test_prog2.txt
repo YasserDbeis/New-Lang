@@ -1,0 +1,9 @@
+func main() 
+{
+    test(0.2, add(1, 2), "hello", 1.32);
+}
+
+func test(dec x, int y, str greeting, dec num) -> void
+{
+    ~ TODO 
+}

@@ -12,11 +12,20 @@
 
 int main()
 {
-    std::ifstream t("test_code.txt");
-    std::stringstream buffer;
-    buffer << t.rdbuf();
+    // std::ifstream t("test_code.txt");
+    // std::stringstream buffer;
+    // buffer << t.rdbuf();
+    std::string input;
+    std::string curr_line;
+    while (std::getline(std::cin, curr_line))
+    {
+        input += curr_line + '\n';
+    }
 
-    Lexer lex(buffer.str());
+    // std::cout << "INPUT" << std::endl;
+    // std::cout << input << std::endl;
+
+    Lexer lex(input);
     std::string res = lex.print_tokens();
     std::cout << res << std::endl;
 }
