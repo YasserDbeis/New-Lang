@@ -1,5 +1,5 @@
 STRING, hello, 1
-STRING, hello, 4
+STRING, he  llo, 4
 INT_NUM, 123, 6
 DEC_NUM, 123., 7
 DEC_NUM, 123.123, 8
@@ -18,3 +18,4 @@ ID, abc_abc, 22
 ID, abc123abc, 23
 ID, abc123, 24
 END_OF_FILE, END_OF_FILE, 25
+
