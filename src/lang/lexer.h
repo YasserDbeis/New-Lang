@@ -13,7 +13,7 @@
 #include <vector>
 #include <unordered_set>
 #include <unordered_map>
-#include "token.h"
+#include "error_handler.h"
 
 class Lexer
 {
@@ -24,47 +24,71 @@ private:
 
     std::unordered_map<std::string, TokenType> terminal_to_token_type =
         {
-            {";", SEMICOLON},
-            {"->", RIGHTARROW},
-            {",", COMMA},
-            {"=", EQUAL},
-            {"bool", BOOL},
-            {"int", INT},
-            {"dec", DEC},
-            {"str", STR},
-            {"void", VOID},
-            {"true", TRUE},
-            {"false", FALSE},
-            {"+", OPERATOR},
-            {"-", OPERATOR},
-            {"*", OPERATOR},
-            {"/", OPERATOR},
-            {">", OPERATOR},
-            {"<", OPERATOR},
-            {">=", OPERATOR},
-            {"<=", OPERATOR},
-            {"is", OPERATOR},
-            {"and", OPERATOR},
-            {"or", OPERATOR},
-            {"not", OPERATOR},
-            {"!", OPERATOR},
-            {"{", LBRACE},
-            {"}", RBRACE},
-            {"(", LPAREN},
-            {")", RPAREN},
-            {"while", WHILE},
-            {"if", IF},
-            {"elsif", ELSIF},
-            {"else", ELSE},
-            {"func", FUNC},
-            {"return", RETURN}};
+            {";", TokenType::SEMICOLON},
+            {"->", TokenType::RIGHTARROW},
+            {",", TokenType::COMMA},
+            {"=", TokenType::EQUAL},
+            {"bool", TokenType::BOOL},
+            {"int", TokenType::INT},
+            {"dec", TokenType::DEC},
+            {"str", TokenType::STR},
+            {"void", TokenType::VOID},
+            {"true", TokenType::TRUE},
+            {"false", TokenType::FALSE},
+            {"+", TokenType::OPERATOR},
+            {"-", TokenType::OPERATOR},
+            {"*", TokenType::OPERATOR},
+            {"/", TokenType::OPERATOR},
+            {">", TokenType::OPERATOR},
+            {"<", TokenType::OPERATOR},
+            {">=", TokenType::OPERATOR},
+            {"<=", TokenType::OPERATOR},
+            {"is", TokenType::OPERATOR},
+            {"and", TokenType::OPERATOR},
+            {"or", TokenType::OPERATOR},
+            {"not", TokenType::OPERATOR},
+            {"!", TokenType::OPERATOR},
+            {"{", TokenType::LBRACE},
+            {"}", TokenType::RBRACE},
+            {"(", TokenType::LPAREN},
+            {")", TokenType::RPAREN},
+            {"while", TokenType::WHILE},
+            {"if", TokenType::IF},
+            {"elsif", TokenType::ELSIF},
+            {"else", TokenType::ELSE},
+            {"func", TokenType::FUNC},
+            {"return", TokenType::RETURN}};
 
     std::unordered_set<char> terminating_symbols{';', '(', '{', '-', ',', '=', '>', '<', '!', ')', '}', '+', '-', '/', '*'};
 
-    /* Set up the token type vector according to the Enum defined in token.h */
-    std::vector<std::string> token_type_names{"SEMICOLON", "RIGHTARROW", "COMMA", "EQUAL", "BOOL", "INT", "DEC", "STR", "VOID", "TRUE", "FALSE", "INT_NUM",
-                                              "DEC_NUM", "STRING", "OPERATOR", "LBRACE", "RBRACE", "LPAREN", "RPAREN", "WHILE", "IF", "ELSIF", "ELSE",
-                                              "FUNC", "RETURN", "ID", "END_OF_FILE"};
+    /* Set up the token type map according to the Enum defined in token.h */
+    std::unordered_map<TokenType, std::string> token_type_names{{{TokenType::SEMICOLON, "SEMICOLON"},
+                                                                 {TokenType::RIGHTARROW, "RIGHTARROW"},
+                                                                 {TokenType::COMMA, "COMMA"},
+                                                                 {TokenType::EQUAL, "EQUAL"},
+                                                                 {TokenType::BOOL, "BOOL"},
+                                                                 {TokenType::INT, "INT"},
+                                                                 {TokenType::DEC, "DEC"},
+                                                                 {TokenType::STR, "STR"},
+                                                                 {TokenType::VOID, "VOID"},
+                                                                 {TokenType::TRUE, "TRUE"},
+                                                                 {TokenType::FALSE, "FALSE"},
+                                                                 {TokenType::INT_NUM, "INT_NUM"},
+                                                                 {TokenType::DEC_NUM, "DEC_NUM"},
+                                                                 {TokenType::STRING, "STRING"},
+                                                                 {TokenType::OPERATOR, "OPERATOR"},
+                                                                 {TokenType::LBRACE, "LBRACE"},
+                                                                 {TokenType::RBRACE, "RBRACE"},
+                                                                 {TokenType::LPAREN, "LPAREN"},
+                                                                 {TokenType::RPAREN, "RPAREN"},
+                                                                 {TokenType::WHILE, "WHILE"},
+                                                                 {TokenType::IF, "IF"},
+                                                                 {TokenType::ELSIF, "ELSIF"},
+                                                                 {TokenType::ELSE, "ELSE"},
+                                                                 {TokenType::FUNC, "FUNC"},
+                                                                 {TokenType::RETURN, "RETURN"},
+                                                                 {TokenType::ID, "ID"},
+                                                                 {TokenType::END_OF_FILE, "END_OF_FILE"}}};
 
     std::vector<Token> tokens; /* Vector containing the tokens of the input received in constructor */
     int token_index;           /* Parsing purposes: Keeps track of what token is currently being parsed */

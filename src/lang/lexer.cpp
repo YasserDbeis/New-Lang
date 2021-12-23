@@ -89,7 +89,7 @@ void Lexer::lexical_analysis(std::string input)
                     {
                         input_index += 2;
 
-                        add_token("->", RIGHTARROW);
+                        add_token("->", TokenType::RIGHTARROW);
                         break;
                     }
                 }
@@ -99,7 +99,7 @@ void Lexer::lexical_analysis(std::string input)
                     {
                         input_index += 2;
 
-                        add_token("<=", OPERATOR);
+                        add_token("<=", TokenType::OPERATOR);
 
                         break;
                     }
@@ -110,7 +110,7 @@ void Lexer::lexical_analysis(std::string input)
                     {
                         input_index += 2;
 
-                        add_token(">=", OPERATOR);
+                        add_token(">=", TokenType::OPERATOR);
 
                         break;
                     }
@@ -121,7 +121,7 @@ void Lexer::lexical_analysis(std::string input)
                     {
                         input_index += 2;
 
-                        add_token("!=", OPERATOR);
+                        add_token("!=", TokenType::OPERATOR);
 
                         break;
                     }
@@ -167,7 +167,7 @@ void Lexer::lexical_analysis(std::string input)
             }
             else
             {
-                token.type = ID;
+                token.type = TokenType::ID;
             }
 
             input_index++;
@@ -192,7 +192,7 @@ void Lexer::lexical_analysis(std::string input)
         }
     }
 
-    add_token("END_OF_FILE", END_OF_FILE);
+    add_token("END_OF_FILE", TokenType::END_OF_FILE);
 }
 
 /*
@@ -279,9 +279,9 @@ void Lexer::consume_number(std::string input)
         }
         else
         {
-            TokenType type = dec_used ? DEC_NUM : INT_NUM;
+            TokenType type = dec_used ? TokenType::DEC_NUM : TokenType::INT_NUM;
 
-            if (type == INT_NUM && zeroStart && num.length() > 1)
+            if (type == TokenType::INT_NUM && zeroStart && num.length() > 1)
             {
                 printf("INVALID START TO INTEGER");
                 exit(EXIT_FAILURE);
@@ -300,7 +300,7 @@ void Lexer::consume_number(std::string input)
     /* if number extends to end of input, add it to token list */
     if (input_index == input.length() && !token_added)
     {
-        TokenType type = dec_used ? DEC_NUM : INT_NUM;
+        TokenType type = dec_used ? TokenType::DEC_NUM : TokenType::INT_NUM;
 
         add_token(num, type);
     }
@@ -328,7 +328,7 @@ void Lexer::consume_string(std::string input)
 
     if (input[input_index] == '\"') /* if iteration ended with end quotation, add token and move to next input char */
     {
-        add_token(str, STRING);
+        add_token(str, TokenType::STRING);
         input_index++;
     }
     else /* if end of file is hit before string closes, exit program */
@@ -348,7 +348,7 @@ std::string Lexer::print_tokens()
     for (int i = 0; i < tokens.size(); i++)
     {
         Token tok = tokens.at(i);
-        str += token_type_names.at(tok.type) + ", " + tok.lexeme + ", " + std::to_string(tok.line_number) + "\n";
+        str += token_type_names[tok.type] + ", " + tok.lexeme + ", " + std::to_string(tok.line_number) + "\n";
     }
 
     return str;
@@ -377,7 +377,7 @@ Token Lexer::peek(int offset)
     if (token_index + offset >= tokens.size())
     {
         Token tok;
-        tok.type = END_OF_FILE;
+        tok.type = TokenType::END_OF_FILE;
         tok.lexeme = "";
         tok.line_number = line_number;
         return tok;

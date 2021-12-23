@@ -9,7 +9,7 @@
 
 #include <string>
 
-enum TokenType
+enum class TokenType
 {
     SEMICOLON,
     RIGHTARROW,

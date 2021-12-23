@@ -6,12 +6,12 @@ if [ ! -d "./test_cases" ]; then
 fi
 
 if [ ! -e "./a.out" ]; then
-    echo "Error: a.exe not found!"
+    echo "Error: a.out not found!"
     exit 1
 fi
 
 if [ ! -x "./a.out" ]; then
-    echo "Error: a.exe not executable!"
+    echo "Error: a.out not executable!"
     exit 1
 fi
 

@@ -2,13 +2,16 @@ CC=g++
 OUT=a.out 
 CFLAGS= -g -c -Wall -std=c++11
 
-$(OUT) : lexer.o test.o
+$(OUT) : lexer.o test.o error_handler.o
 	$(CC) -o $@ $^
 
 lexer.o : lexer.cpp
 	$(CC) $(CFLAGS) $^
 
 test.o : test.cpp
+	$(CC) $(CFLAGS) $^
+
+error_handler.o: error_handler.cpp	
 	$(CC) $(CFLAGS) $^
 
 .PHONY: clean
