@@ -93,7 +93,7 @@ private:
     std::vector<Token> tokens; /* Vector containing the tokens of the input received in constructor */
     int token_index;           /* Parsing purposes: Keeps track of what token is currently being parsed */
     int input_index;
-    int line_number; /* Keep track of current line number for describing the token */
+    int line_number = 1; /* Keep track of current line number for describing the token */
 
     void lexical_analysis(std::string input); /* Helper function - performs lexical analysis for the constructor */
     void add_token(std::string lexeme, TokenType type);

@@ -14,7 +14,6 @@
 #include <vector>
 #include <unordered_map>
 #include "token.h"
-#include "error.h"
 
 enum class ErrorPhase
 {
@@ -30,16 +29,36 @@ enum class ErrorType
 };
 enum ErrorCode
 {
-
+    MISSING_MAIN,
+    INVALID_TOKEN,
+    INVALID_NUM,
+    INVALID_STRING
 };
 
 class ErrorHandler
 {
+
 private:
+    typedef struct Error
+    {
+        ErrorType type;
+        ErrorPhase phase;
+        std::string context;
+        int line_number;
+        std::string message;
+    } Error;
+
+    static std::string print(Error);
+    static std::string type_to_str(ErrorType);
+    static std::string phase_to_str(ErrorPhase);
+    static std::string code_to_msg(ErrorCode);
+    static void exit_handler();
     static void syntax_error();
     static void runtime_error();
     static void runtime_exception();
 
 public:
-    static void error(ErrorPhase, ErrorType, Token);
+    static void error(ErrorPhase, ErrorType, std::string, int, ErrorCode);
+
+    static std::string error_code_vec[];
 };

@@ -26,7 +26,7 @@ Lexer::Lexer(std::string input)
     /* Ensure input is valid and reasonable */
     if (input.empty())
     {
-        exit(EXIT_FAILURE); // TODO : custom exit function with appropriate logging for error logs
+        ErrorHandler::error(ErrorPhase::LEXICAL_ANALYSIS, ErrorType::SYNTAX_ERROR, "Input is empty", 1, MISSING_MAIN);
     }
 
     line_number = 1; /* Line number starts at 1 */
@@ -187,8 +187,7 @@ void Lexer::lexical_analysis(std::string input)
         }
         else
         {
-            printf("INVALID TOKEN ERROR: %d, %d", input_index, line_number);
-            exit(EXIT_FAILURE);
+            ErrorHandler::error(ErrorPhase::LEXICAL_ANALYSIS, ErrorType::SYNTAX_ERROR, "At token: " + token.lexeme, line_number, INVALID_TOKEN);
         }
     }
 
@@ -274,8 +273,7 @@ void Lexer::consume_number(std::string input)
         }
         else if (dec_used && input[input_index] == '.')
         {
-            printf("MULTIPLE DECIMAL POINTS ERROR");
-            exit(EXIT_FAILURE);
+            ErrorHandler::error(ErrorPhase::LEXICAL_ANALYSIS, ErrorType::SYNTAX_ERROR, "Multiple decimal points near " + num + input[input_index], line_number, INVALID_NUM);
         }
         else
         {
@@ -283,8 +281,7 @@ void Lexer::consume_number(std::string input)
 
             if (type == TokenType::INT_NUM && zeroStart && num.length() > 1)
             {
-                printf("INVALID START TO INTEGER");
-                exit(EXIT_FAILURE);
+                ErrorHandler::error(ErrorPhase::LEXICAL_ANALYSIS, ErrorType::SYNTAX_ERROR, "Integers may not start with a 0", line_number, INVALID_NUM);
             }
 
             add_token(num, type);
@@ -333,8 +330,7 @@ void Lexer::consume_string(std::string input)
     }
     else /* if end of file is hit before string closes, exit program */
     {
-        printf("NO MATCH FOR STRING OPEN QUOTE OR NEW LINE BREAKS STRING");
-        exit(EXIT_FAILURE);
+        ErrorHandler::error(ErrorPhase::LEXICAL_ANALYSIS, ErrorType::SYNTAX_ERROR, "Missing ending quote", line_number, INVALID_STRING);
     }
 }
 
