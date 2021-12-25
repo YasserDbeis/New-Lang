@@ -73,12 +73,12 @@ for test_file in $(find ./test_cases -type f -name "*.txt" | sort); do
 	    fi
     fi
     echo "========================================================"
-    #rm -f ${output_file}
-    #rm -f ${diff_file}
+    rm -f ${output_file}
+    rm -f ${diff_file}
 done
 
 echo
 echo "Passed $count tests out of $all"
 echo
 
-#rm -rf ./output
+rm -rf ./output

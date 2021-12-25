@@ -11,7 +11,7 @@ class Parser
 {
 
 private:
-    Lexer *lexer;
+    Lexer lexer;
 
     Parser(std::string program);
     ~Parser();
@@ -41,7 +41,7 @@ private:
     void parse_arg();
     void parse_type();
 
-    void expect(TokenType);
+    Token expect(TokenType);
 
 public:
     void parse_program();
