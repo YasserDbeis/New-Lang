@@ -109,6 +109,6 @@ public:
 
     std::string print_tokens(); /* Testing purposes: Returns a string representing tokens in input */
 
-    Token get_token();      /* Parsing purposes: Consumes and returns the next token in the tokens vector */
-    Token peek(int offset); /* Parsing purposes: Returns the token at the given offset in the tokens vector */
+    Token get_token();          /* Parsing purposes: Consumes and returns the next token in the tokens vector */
+    Token peek(int offset = 0); /* Parsing purposes: Returns the token at the given offset in the tokens vector */
 };
