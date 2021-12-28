@@ -1,0 +1,1 @@
+cmd_Release/main.node := c++ -bundle -undefined dynamic_lookup -Wl,-no_pie -Wl,-search_paths_first -mmacosx-version-min=10.10 -arch x86_64 -L./Release -stdlib=libc++  -o Release/main.node Release/obj.target/main/src/lang/main.o Release/obj.target/main/src/lang/lexer.o 

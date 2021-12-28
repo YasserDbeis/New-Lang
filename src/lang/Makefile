@@ -1,6 +1,6 @@
 CC=g++
 OUT=a.out 
-CFLAGS= -g -c -Wall -std=c++11
+CFLAGS= -g -c -Wall -std=c++17
 
 $(OUT) : lexer.o test.o error_handler.o
 	$(CC) -o $@ $^

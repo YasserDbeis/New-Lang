@@ -11,5 +11,5 @@ app.get('/api/getUsername', (req, res) =>
 
 app.listen(process.env.PORT || 8080, () => {
   console.log(`Listening on port ${process.env.PORT || 8080}!`);
-  console.log(tester.testLang('HELLO WORLD!'));
+  // console.log(tester.testLang('HELLO WORLD!'));
 });
