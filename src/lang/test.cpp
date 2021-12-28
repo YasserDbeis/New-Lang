@@ -5,16 +5,26 @@
     Description: Defines entry point for local testing of the lexer, parser, and compiler.
 */
 
-#include "lexer.h"
+#include "parser.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
 
-int main()
+enum TEST_CHOICE
 {
-    // std::ifstream t("test_code.txt");
-    // std::stringstream buffer;
-    // buffer << t.rdbuf();
+    LEXER,
+    PARSER,
+    COMPILER
+};
+
+int main(int argc, char* argv[])
+{
+    if (argc < 2)
+    {
+        std::cout << "Invalid number of arguments to the program";
+        exit(EXIT_FAILURE);
+    }
+
     std::string input;
     std::string curr_line;
     while (std::getline(std::cin, curr_line))
@@ -22,10 +32,34 @@ int main()
         input += curr_line + '\n';
     }
 
-    // std::cout << "INPUT" << std::endl;
-    // std::cout << input << std::endl;
-
-    Lexer lex(input);
-    std::string res = lex.print_tokens();
-    std::cout << res << std::endl;
+    int test_suite_choice = std::atoi(argv[1]);
+    
+    switch (test_suite_choice)
+    {
+        case LEXER:
+        {
+            Lexer lex(input);
+            std::string res = lex.print_tokens();
+            std::cout << res << std::endl; 
+            break;
+        }
+        case PARSER:
+        {
+            Parser parser(input);
+            parser.parse_program();
+            break;
+        }
+        case COMPILER:
+        {
+            // TODO
+            break;
+        }
+        default:
+        {
+            std::cout << "Invalid argument (valid: 0-2)" << std::endl;
+            exit(EXIT_FAILURE);
+        }
+    }
+    return EXIT_SUCCESS;
 }
+

@@ -71,6 +71,54 @@ std::string ErrorHandler::code_to_msg(ErrorCode code)
     {
         return "Invalid string";
     }
+    case INVALID_DEF:
+    {
+        return "Invalid definition";
+    }
+    case INVALID_VAR_DEF:
+    {
+        return "Invalid variable definition";
+    }
+    case INVALID_PARAM:
+    {
+        return "Invalid function parameter(s)";
+    }
+    case INVALID_RET_TYPE:
+    {
+        return "Invalid return type";
+    }
+    case INVALID_STMT_LIST:
+    {
+        return "Invalid statement list";
+    }
+    case INVALID_STMT:
+    {
+        return "Invalid statement";
+    }
+    case INVALID_ALT_COND:
+    {
+        return "Invalid alternative if condition";
+    }
+    case INVALID_CTRL_FLOW:
+    {
+        return "Invalid control flow";
+    }
+    case INVALID_EXPR:
+    {
+        return "Invalid expression";
+    }
+    case INVALID_TERM:
+    {
+        return "Invalid term";
+    }
+    case INVALID_ARG_LIST:
+    {
+        return "Invalid argument list";
+    }
+    case INVALID_TYPE:
+    {
+        return "Invalid type";
+    }
     default:
     {
         return "General Error";

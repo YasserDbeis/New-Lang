@@ -61,6 +61,19 @@ private:
 
     std::unordered_set<char> terminating_symbols{';', '(', '{', '-', ',', '=', '>', '<', '!', ')', '}', '+', '-', '/', '*'};
 
+
+    std::vector<Token> tokens; /* Vector containing the tokens of the input received in constructor */
+    int token_index;           /* Parsing purposes: Keeps track of what token is currently being parsed */
+    int input_index;
+    int line_number = 1; /* Keep track of current line number for describing the token */
+
+    void lexical_analysis(std::string input); /* Helper function - performs lexical analysis for the constructor */
+    void add_token(std::string lexeme, TokenType type);
+    void skip_whitespace(std::string input); /* Moves the token_index to the next valid start of a lexeme. Skipping whitespace */
+    void consume_comment(std::string);       /* Moves the input_index to the index of the next line */
+    void consume_number(std::string);        /* Consumes a number, moves input index onwards, and stores token of the num */
+    void consume_string(std::string);        /* Consumes a string terminal, and consquently updates input_index */
+    bool is_white_space(char);
     /* Set up the token type map according to the Enum defined in token.h */
     std::unordered_map<TokenType, std::string> token_type_names{{{TokenType::SEMICOLON, "SEMICOLON"},
                                                                  {TokenType::RIGHTARROW, "RIGHTARROW"},
@@ -90,19 +103,6 @@ private:
                                                                  {TokenType::ID, "ID"},
                                                                  {TokenType::END_OF_FILE, "END_OF_FILE"}}};
 
-    std::vector<Token> tokens; /* Vector containing the tokens of the input received in constructor */
-    int token_index;           /* Parsing purposes: Keeps track of what token is currently being parsed */
-    int input_index;
-    int line_number = 1; /* Keep track of current line number for describing the token */
-
-    void lexical_analysis(std::string input); /* Helper function - performs lexical analysis for the constructor */
-    void add_token(std::string lexeme, TokenType type);
-    void skip_whitespace(std::string input); /* Moves the token_index to the next valid start of a lexeme. Skipping whitespace */
-    void consume_comment(std::string);       /* Moves the input_index to the index of the next line */
-    void consume_number(std::string);        /* Consumes a number, moves input index onwards, and stores token of the num */
-    void consume_string(std::string);        /* Consumes a string terminal, and consquently updates input_index */
-    bool is_white_space(char);
-
 public:
     Lexer(std::string input); /* Constructs lexer class. Reads input argument and does lexical analysis */
     ~Lexer();                 /* Destructor */
@@ -111,4 +111,6 @@ public:
 
     Token get_token();          /* Parsing purposes: Consumes and returns the next token in the tokens vector */
     Token peek(int offset = 0); /* Parsing purposes: Returns the token at the given offset in the tokens vector */
+
+    std::string get_token_name(TokenType); /* Gets the stringified name of a token type */
 };

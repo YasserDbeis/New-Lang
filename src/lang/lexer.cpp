@@ -387,3 +387,8 @@ bool Lexer::is_white_space(char curr_symbol)
 {
     return curr_symbol == ' ' || curr_symbol == '\t' || curr_symbol == '\n';
 }
+
+std::string Lexer::get_token_name(TokenType type) 
+{
+    return token_type_names[type];
+}

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ ! -d "./test_cases" ]; then
+if [ ! -d "./test_cases/lexer_test_cases" ]; then
     echo "Error: tests directory not found!"
     exit 1
 fi
@@ -20,13 +20,13 @@ let all=0
 
 mkdir -p ./output
 
-for test_file in $(find ./test_cases -type f -name "*.txt" | sort); do
+for test_file in $(find ./test_cases/lexer_test_cases -type f -name "*.txt" | sort); do
     all=$((all+1))
     name=`basename ${test_file} .txt`
     expected_file=${test_file}.expected
     output_file=./output/${name}.output
     diff_file=./output/${name}.diff
-    ./a.out < ${test_file} > ${output_file}
+    ./a.out 0 < ${test_file} > ${output_file}
 
 
     folder_name="$(cut -d'/' -f3 <<<"${test_file}")"

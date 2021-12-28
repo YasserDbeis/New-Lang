@@ -1,0 +1,107 @@
+~ var_def definition
+int x = 5;
+int x = add(2, 3);
+int x = 5 + 5 * 3;
+dec x = 5.2 * 3.2;
+dec x = div(3, 4);
+str x = "Hello";
+str x = get_name();
+bool x = true;
+bool x = false;
+bool x = true is true;
+bool x = is_divisible(3, 5);
+void x = 5;
+
+
+~ var_decl definition
+int x;
+bool x;
+str x;
+void x;
+dec x;
+
+~ func_def definition
+func todo(int foo, str bar, void baz) {     ~ param list
+    int x = 5;
+    x = 3;
+    
+    while (x > 0)
+    {
+        print(x);
+        x = x - 1;
+    }
+
+    if (x is 0)
+    {
+        print(x);
+    }
+    
+    if (x is 0)
+    {
+        print(x);
+    } 
+    elsif (x > 0)
+    {
+        ~ some comment
+    }
+    else 
+    {
+        ~ some other comment
+    }
+
+    if (x is 0)
+    {
+        print(x);
+    }
+    elsif (x > 0)
+    {
+        print("negative");
+    }
+    
+    call_some_func();
+    call_some_func(with_args);
+
+    int x = call_some_func();
+
+    return;
+}
+
+func main(bool bat, str cat) -> int     ~ return type
+{
+
+    some_func_call(another_func_call());
+
+    if(2 + 2 < 5) {
+        x = 4;
+    }
+    
+    if(some_bool_func()) {
+        
+    } elsif(((2 + 2) / 4 + 4) is 5) {
+        ~ TODO
+    } elsif() {
+        print("Hello!");
+    }
+
+    if(5 < 10) {
+
+    } elsif(money_runs_the_world) {
+
+    }
+
+    if(5 < 10) {
+
+    } elsif(money_runs_the_world) {
+        
+    } else {
+
+    }
+
+    if(some_bool) {
+        
+    } else {
+        todo();
+    }
+    
+    return todo(((2 + 2 / 4)), "hello", some_id)
+}
