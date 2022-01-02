@@ -17,7 +17,7 @@ enum TEST_CHOICE
     COMPILER
 };
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     if (argc < 2)
     {
@@ -32,34 +32,45 @@ int main(int argc, char* argv[])
         input += curr_line + '\n';
     }
 
-    int test_suite_choice = std::atoi(argv[1]);
+    /* 
+    // For reading in through file
+    std::ifstream t("./test_cases/parser_test_cases/valid_test_cases/test_valid_program.txt");
+    std::stringstream buffer;
+    buffer << t.rdbuf();
     
+    input = (buffer.str());
+    */
+
+    // Print the input
+    // std::cout << "INPUT: " << input << std::endl;
+
+    int test_suite_choice = std::atoi(argv[1]);
+
     switch (test_suite_choice)
     {
-        case LEXER:
-        {
-            Lexer lex(input);
-            std::string res = lex.print_tokens();
-            std::cout << res << std::endl; 
-            break;
-        }
-        case PARSER:
-        {
-            Parser parser(input);
-            parser.parse_program();
-            break;
-        }
-        case COMPILER:
-        {
-            // TODO
-            break;
-        }
-        default:
-        {
-            std::cout << "Invalid argument (valid: 0-2)" << std::endl;
-            exit(EXIT_FAILURE);
-        }
+    case LEXER:
+    {
+        Lexer lex(input);
+        std::string res = lex.print_tokens();
+        std::cout << res << std::endl;
+        break;
+    }
+    case PARSER:
+    {
+        Parser parser(input);
+        parser.parse_program();
+        break;
+    }
+    case COMPILER:
+    {
+        // TODO
+        break;
+    }
+    default:
+    {
+        std::cout << "Invalid argument (valid: 0-2)" << std::endl;
+        exit(EXIT_FAILURE);
+    }
     }
     return EXIT_SUCCESS;
 }
-

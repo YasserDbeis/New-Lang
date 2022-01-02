@@ -57,8 +57,8 @@ void Parser::parse_def_list()
     else if (tok.type == TokenType::END_OF_FILE)
     {
         return;
-    } 
-    else 
+    }
+    else
     {
         ErrorHandler::error(ErrorPhase::PARSING, ErrorType::SYNTAX_ERROR, "At token " + tok.lexeme, tok.line_number, INVALID_DEF);
     }
@@ -85,8 +85,8 @@ void Parser::parse_def()
         else if (tok_2.type == TokenType::EQUAL)
         {
             parse_var_def();
-        } 
-        else 
+        }
+        else
         {
             ErrorHandler::error(ErrorPhase::PARSING, ErrorType::SYNTAX_ERROR, "At token " + tok_2.lexeme, tok_2.line_number, INVALID_VAR_DEF);
         }
@@ -125,13 +125,13 @@ void Parser::parse_func_def()
     expect(TokenType::FUNC);
     expect(TokenType::ID);
     expect(TokenType::LPAREN);
-    
+
     Token tok = lexer.peek();
     if (tok.type == TokenType::INT || tok.type == TokenType::DEC || tok.type == TokenType::STR || tok.type == TokenType::BOOL || tok.type == TokenType::VOID)
     {
         parse_param_list();
-    } 
-    else if(tok.type != TokenType::RPAREN) 
+    }
+    else if (tok.type != TokenType::RPAREN)
     {
         ErrorHandler::error(ErrorPhase::PARSING, ErrorType::SYNTAX_ERROR, "At token " + tok.lexeme, tok.line_number, INVALID_PARAM);
     }
@@ -152,11 +152,11 @@ void Parser::parse_ret_type()
         expect(TokenType::RIGHTARROW);
         parse_type();
     }
-    else if (tok.type == TokenType::LBRACE)     // follow ret_type is body which always has LBRACE start
+    else if (tok.type == TokenType::LBRACE) // follow ret_type is body which always has LBRACE start
     {
         return;
     }
-    else 
+    else
     {
         ErrorHandler::error(ErrorPhase::PARSING, ErrorType::SYNTAX_ERROR, "At token " + tok.lexeme, tok.line_number, INVALID_RET_TYPE);
     }
@@ -168,18 +168,18 @@ void Parser::parse_ret_type()
 void Parser::parse_param_list()
 {
     parse_param();
-    
+
     Token tok = lexer.peek();
     if (tok.type == TokenType::COMMA)
     {
         expect(TokenType::COMMA);
         parse_param_list();
     }
-    else if(tok.type == TokenType::RPAREN)
+    else if (tok.type == TokenType::RPAREN)
     {
         return;
     }
-    else 
+    else
     {
         ErrorHandler::error(ErrorPhase::PARSING, ErrorType::SYNTAX_ERROR, "At token " + tok.lexeme, tok.line_number, INVALID_PARAM);
     }
@@ -197,21 +197,20 @@ void Parser::parse_param()
 /*
     body -> LBRACE stmt_list RBRACE | LBRACE RBRACE
 */
-void Parser::parse_body() 
+void Parser::parse_body()
 {
     expect(TokenType::LBRACE);
     Token tok = lexer.peek();
-    
-    if (tok.type == TokenType::INT ||    // var declaration or definition
+
+    if (tok.type == TokenType::INT || // var declaration or definition
         tok.type == TokenType::DEC ||
-        tok.type == TokenType::STR || 
-        tok.type == TokenType::BOOL || 
+        tok.type == TokenType::STR ||
+        tok.type == TokenType::BOOL ||
         tok.type == TokenType::VOID ||
         tok.type == TokenType::ID ||
         tok.type == TokenType::IF ||
         tok.type == TokenType::WHILE ||
-        tok.type == TokenType::RETURN
-    )
+        tok.type == TokenType::RETURN)
     {
         parse_stmt_list();
     }
@@ -222,16 +221,16 @@ void Parser::parse_body()
 /*
     stmt_list -> stmt stmt_list | stmt
 */
-void Parser::parse_stmt_list() 
+void Parser::parse_stmt_list()
 {
     parse_stmt();
 
     Token tok = lexer.peek();
 
-    if(tok.type == TokenType::INT || 
-        tok.type == TokenType::DEC || 
-        tok.type == TokenType::STR || 
-        tok.type == TokenType::BOOL || 
+    if (tok.type == TokenType::INT ||
+        tok.type == TokenType::DEC ||
+        tok.type == TokenType::STR ||
+        tok.type == TokenType::BOOL ||
         tok.type == TokenType::VOID ||
         tok.type == TokenType::ID ||
         tok.type == TokenType::WHILE ||
@@ -244,7 +243,7 @@ void Parser::parse_stmt_list()
     {
         return;
     }
-    else 
+    else
     {
         ErrorHandler::error(ErrorPhase::PARSING, ErrorType::SYNTAX_ERROR, "At token " + tok.lexeme, tok.line_number, INVALID_STMT_LIST);
     }
@@ -258,7 +257,7 @@ void Parser::parse_stmt()
     Token tok_0 = lexer.peek();
     Token tok_1 = lexer.peek(1);
     Token tok_2 = lexer.peek(2);
-    
+
     if (tok_0.type == TokenType::WHILE)
     {
         parse_while_stmt();
@@ -271,7 +270,7 @@ void Parser::parse_stmt()
     {
         parse_return_stmt();
     }
-    else if (tok_0.type == TokenType::ID)       // assign_stmt or func_call
+    else if (tok_0.type == TokenType::ID) // assign_stmt or func_call
     {
         if (tok_1.type == TokenType::EQUAL)
         {
@@ -282,16 +281,16 @@ void Parser::parse_stmt()
             parse_func_call();
             expect(TokenType::SEMICOLON);
         }
-        else 
+        else
         {
             ErrorHandler::error(ErrorPhase::PARSING, ErrorType::SYNTAX_ERROR, "At token " + tok_1.lexeme, tok_1.line_number, INVALID_STMT);
         }
     }
-    else if (tok_0.type == TokenType::INT ||    // var declaration or definition
-            tok_0.type == TokenType::DEC ||
-            tok_0.type == TokenType::STR || 
-            tok_0.type == TokenType::BOOL || 
-            tok_0.type == TokenType::VOID)
+    else if (tok_0.type == TokenType::INT || // var declaration or definition
+             tok_0.type == TokenType::DEC ||
+             tok_0.type == TokenType::STR ||
+             tok_0.type == TokenType::BOOL ||
+             tok_0.type == TokenType::VOID)
     {
         if (tok_2.type == TokenType::SEMICOLON)
         {
@@ -301,7 +300,7 @@ void Parser::parse_stmt()
         {
             parse_var_def();
         }
-        else 
+        else
         {
             ErrorHandler::error(ErrorPhase::PARSING, ErrorType::SYNTAX_ERROR, "At token " + tok_2.lexeme, tok_2.line_number, INVALID_STMT);
         }
@@ -315,7 +314,7 @@ void Parser::parse_stmt()
 /*
     assign_stmt -> ID EQUAL expr SEMICOLON
 */
-void Parser::parse_assign_stmt() 
+void Parser::parse_assign_stmt()
 {
     expect(TokenType::ID);
     expect(TokenType::EQUAL);
@@ -326,7 +325,7 @@ void Parser::parse_assign_stmt()
 /*
     while_stmt -> WHILE LPAREN expr RPAREN body
 */
-void Parser::parse_while_stmt() 
+void Parser::parse_while_stmt()
 {
     expect(TokenType::WHILE);
     expect(TokenType::LPAREN);
@@ -345,12 +344,12 @@ void Parser::parse_return_stmt()
     Token tok = lexer.peek();
 
     if (tok.type == TokenType::LPAREN ||
-    tok.type == TokenType::ID ||
-    tok.type == TokenType::INT_NUM ||
-    tok.type == TokenType::DEC_NUM ||
-    tok.type == TokenType::STRING ||
-    tok.type == TokenType::TRUE ||
-    tok.type == TokenType::FALSE)
+        tok.type == TokenType::ID ||
+        tok.type == TokenType::INT_NUM ||
+        tok.type == TokenType::DEC_NUM ||
+        tok.type == TokenType::STRING ||
+        tok.type == TokenType::TRUE ||
+        tok.type == TokenType::FALSE)
     {
         parse_expr();
     }
@@ -363,14 +362,14 @@ void Parser::parse_return_stmt()
 void Parser::parse_if_stmt()
 {
     parse_if_blk();
-    
+
     Token tok_0 = lexer.peek();
-    
-    if(tok_0.type == TokenType::ELSE)
+
+    if (tok_0.type == TokenType::ELSE)
     {
         parse_else_blk();
     }
-    else if(tok_0.type == TokenType::ELSIF)
+    else if (tok_0.type == TokenType::ELSIF)
     {
         parse_elsif_blks();
 
@@ -379,40 +378,38 @@ void Parser::parse_if_stmt()
         {
             parse_else_blk();
         }
-        else if (tok_1.type == TokenType::INT ||    // var declaration or definition
-                tok_1.type == TokenType::DEC ||
-                tok_1.type == TokenType::STR || 
-                tok_1.type == TokenType::BOOL || 
-                tok_1.type == TokenType::VOID ||
-                tok_1.type == TokenType::ID ||
-                tok_1.type == TokenType::IF ||
-                tok_1.type == TokenType::WHILE ||
-                tok_1.type == TokenType::RBRACE ||
-                tok_1.type == TokenType::RETURN
-        )
+        else if (tok_1.type == TokenType::INT || // var declaration or definition
+                 tok_1.type == TokenType::DEC ||
+                 tok_1.type == TokenType::STR ||
+                 tok_1.type == TokenType::BOOL ||
+                 tok_1.type == TokenType::VOID ||
+                 tok_1.type == TokenType::ID ||
+                 tok_1.type == TokenType::IF ||
+                 tok_1.type == TokenType::WHILE ||
+                 tok_1.type == TokenType::RBRACE ||
+                 tok_1.type == TokenType::RETURN)
         {
             return;
         }
-        else 
+        else
         {
             ErrorHandler::error(ErrorPhase::PARSING, ErrorType::SYNTAX_ERROR, "At token " + tok_1.lexeme, tok_1.line_number, INVALID_ALT_COND);
         }
     }
-    else if (tok_0.type == TokenType::INT ||    // var declaration or definition
-                tok_0.type == TokenType::DEC ||
-                tok_0.type == TokenType::STR || 
-                tok_0.type == TokenType::BOOL || 
-                tok_0.type == TokenType::VOID ||
-                tok_0.type == TokenType::ID ||
-                tok_0.type == TokenType::IF ||
-                tok_0.type == TokenType::WHILE ||
-                tok_0.type == TokenType::RBRACE ||
-                tok_0.type == TokenType::RETURN
-    )
+    else if (tok_0.type == TokenType::INT || // var declaration or definition
+             tok_0.type == TokenType::DEC ||
+             tok_0.type == TokenType::STR ||
+             tok_0.type == TokenType::BOOL ||
+             tok_0.type == TokenType::VOID ||
+             tok_0.type == TokenType::ID ||
+             tok_0.type == TokenType::IF ||
+             tok_0.type == TokenType::WHILE ||
+             tok_0.type == TokenType::RBRACE ||
+             tok_0.type == TokenType::RETURN)
     {
         return;
     }
-    else 
+    else
     {
         ErrorHandler::error(ErrorPhase::PARSING, ErrorType::SYNTAX_ERROR, "At token " + tok_0.lexeme, tok_0.line_number, INVALID_CTRL_FLOW);
     }
@@ -427,9 +424,8 @@ void Parser::parse_if_blk()
     expect(TokenType::LPAREN);
     parse_expr();
     expect(TokenType::RPAREN);
-    parse_body();    
+    parse_body();
 }
-
 
 /* 
     elsif_blks -> elsif_blk elseif_blks | elsif_blk
@@ -437,30 +433,29 @@ void Parser::parse_if_blk()
 void Parser::parse_elsif_blks()
 {
     parse_elsif_blk();
-    
+
     Token tok = lexer.peek();
     if (tok.type == TokenType::ELSIF)
     {
         parse_elsif_blks();
     }
-    else if (tok.type == TokenType::INT ||    // any statement
-                tok.type == TokenType::DEC ||
-                tok.type == TokenType::STR || 
-                tok.type == TokenType::BOOL || 
-                tok.type == TokenType::VOID ||
-                tok.type == TokenType::ID ||
-                tok.type == TokenType::IF ||
-                tok.type == TokenType::WHILE ||
-                tok.type == TokenType::RBRACE ||
-                tok.type == TokenType::RETURN ||
-                tok.type == TokenType::ELSE
-        )
+    else if (tok.type == TokenType::INT || // any statement
+             tok.type == TokenType::DEC ||
+             tok.type == TokenType::STR ||
+             tok.type == TokenType::BOOL ||
+             tok.type == TokenType::VOID ||
+             tok.type == TokenType::ID ||
+             tok.type == TokenType::IF ||
+             tok.type == TokenType::WHILE ||
+             tok.type == TokenType::RBRACE ||
+             tok.type == TokenType::RETURN ||
+             tok.type == TokenType::ELSE)
     {
         return;
     }
-    else 
+    else
     {
-        ErrorHandler::error(ErrorPhase::PARSING, ErrorType::SYNTAX_ERROR, "At token " + tok.lexeme, tok.line_number, INVALID_CTRL_FLOW);        
+        ErrorHandler::error(ErrorPhase::PARSING, ErrorType::SYNTAX_ERROR, "At token " + tok.lexeme, tok.line_number, INVALID_CTRL_FLOW);
     }
 }
 
@@ -473,7 +468,7 @@ void Parser::parse_elsif_blk()
     expect(TokenType::LPAREN);
     parse_expr();
     expect(TokenType::RPAREN);
-    parse_body();  
+    parse_body();
 }
 
 /*
@@ -482,82 +477,125 @@ void Parser::parse_elsif_blk()
 void Parser::parse_else_blk()
 {
     expect(TokenType::ELSE);
-    parse_body();  
+    parse_body();
 }
 
 /*
-    expr -> term | term OPERATOR expr | LPAREN expr RPAREN
+    expr -> OPERATOR term | term
 */
 void Parser::parse_expr()
 {
-    Token tok_0 = lexer.peek();
+    Token tok = lexer.peek();
 
-    if(tok_0.type == TokenType::ID || 
+    if (tok.type == TokenType::OPERATOR_PLUS ||
+        tok.type == TokenType::OPERATOR_MINUS ||
+        tok.type == TokenType::OPERATOR_MULT ||
+        tok.type == TokenType::OPERATOR_DIV ||
+        tok.type == TokenType::OPERATOR_GT ||
+        tok.type == TokenType::OPERATOR_LT ||
+        tok.type == TokenType::OPERATOR_GEQ ||
+        tok.type == TokenType::OPERATOR_LEQ ||
+        tok.type == TokenType::OPERATOR_IS ||
+        tok.type == TokenType::OPERATOR_AND ||
+        tok.type == TokenType::OPERATOR_OR ||
+        tok.type == TokenType::OPERATOR_NOT ||
+        tok.type == TokenType::OPERATOR_XCL ||
+        tok.type == TokenType::OPERATOR_NEQ)
+    {
+        parse_operator();
+    }
+
+    if (tok.type == TokenType::ID ||
+        tok.type == TokenType::INT_NUM ||
+        tok.type == TokenType::DEC_NUM ||
+        tok.type == TokenType::STRING ||
+        tok.type == TokenType::TRUE ||
+        tok.type == TokenType::FALSE ||
+        tok.type == TokenType::LPAREN)
+    {
+        parse_term();
+    }
+    else
+    {
+        ErrorHandler::error(ErrorPhase::PARSING, ErrorType::SYNTAX_ERROR, "At token " + tok.lexeme, tok.line_number, INVALID_TERM);
+    }
+}
+
+/* 
+    term -> factor | factor OPERATOR factor
+*/
+void Parser::parse_term()
+{
+    parse_factor();
+
+    Token tok = lexer.peek();
+
+    if (tok.type == TokenType::OPERATOR_PLUS ||
+        tok.type == TokenType::OPERATOR_MINUS ||
+        tok.type == TokenType::OPERATOR_MULT ||
+        tok.type == TokenType::OPERATOR_DIV ||
+        tok.type == TokenType::OPERATOR_GT ||
+        tok.type == TokenType::OPERATOR_LT ||
+        tok.type == TokenType::OPERATOR_GEQ ||
+        tok.type == TokenType::OPERATOR_LEQ ||
+        tok.type == TokenType::OPERATOR_IS ||
+        tok.type == TokenType::OPERATOR_AND ||
+        tok.type == TokenType::OPERATOR_OR ||
+        tok.type == TokenType::OPERATOR_NOT ||
+        tok.type == TokenType::OPERATOR_XCL ||
+        tok.type == TokenType::OPERATOR_NEQ)
+    {
+        parse_operator();
+        // consume the factor
+    }
+    else if (tok.type == TokenType::SEMICOLON ||
+             tok.type == TokenType::RPAREN ||
+             tok.type == TokenType::COMMA)
+    {
+        return;
+    }
+    else
+    {
+        ErrorHandler::error(ErrorPhase::PARSING, ErrorType::SYNTAX_ERROR, "At token " + tok.lexeme, tok.line_number, INVALID_TERM);
+    }
+}
+
+/*
+    factor -> ID | INT_NUM | DEC_NUM | STRING | TRUE | FALSE | func_call | LPAREN expr RPAREN
+*/
+void Parser::parse_factor()
+{
+    Token tok_0 = lexer.peek();
+    Token tok_1 = lexer.peek(1);
+
+    std::string type_0 = lexer.get_token_name(tok_0.type);
+    std::string type_1 = lexer.get_token_name(tok_1.type);
+
+    if (tok_0.type == TokenType::ID ||
         tok_0.type == TokenType::INT_NUM ||
         tok_0.type == TokenType::DEC_NUM ||
         tok_0.type == TokenType::STRING ||
         tok_0.type == TokenType::TRUE ||
         tok_0.type == TokenType::FALSE)
     {
-        parse_term();
-        
-        Token tok_1 = lexer.peek();
-
-        if (tok_1.type == TokenType::OPERATOR)
+        if (tok_1.type == TokenType::LPAREN)
         {
-            expect(TokenType::OPERATOR);
-            parse_expr();
-        } 
-        else if (tok_1.type == TokenType::RPAREN || tok_1.type == TokenType::SEMICOLON || tok_1.type == TokenType::COMMA)
-        {
-            return;
+            parse_func_call();
         }
-        else 
+        else
         {
-            ErrorHandler::error(ErrorPhase::PARSING, ErrorType::SYNTAX_ERROR, "At token " + tok_1.lexeme, tok_1.line_number, INVALID_EXPR);        
+            expect(tok_0.type);
         }
     }
-    else if(tok_0.type == TokenType::LPAREN)
+    else if (tok_0.type == TokenType::LPAREN)
     {
         expect(TokenType::LPAREN);
         parse_expr();
         expect(TokenType::RPAREN);
     }
-    else {
-        ErrorHandler::error(ErrorPhase::PARSING, ErrorType::SYNTAX_ERROR, "At token " + tok_0.lexeme, tok_0.line_number, INVALID_EXPR);        
-    }
-}
-
-/* 
-    term -> ID | INT_NUM | DEC_NUM | STRING | TRUE | FALSE | func_call
-*/
-void Parser::parse_term()
-{
-    Token tok_0 = lexer.peek();
-    Token tok_1 = lexer.peek(1);
-
-    if (tok_0.type == TokenType::ID) 
+    else
     {
-        if(tok_1.type == TokenType::RPAREN || tok_1.type == TokenType::SEMICOLON || tok_1.type == TokenType::COMMA || tok_1.type == TokenType::OPERATOR)
-        {
-            expect(TokenType::ID);
-        }
-        else if(tok_1.type == TokenType::LPAREN)
-        {
-            parse_func_call();
-        }
-        else 
-        {
-            ErrorHandler::error(ErrorPhase::PARSING, ErrorType::SYNTAX_ERROR, "At token " + tok_1.lexeme, tok_1.line_number, INVALID_TERM);        
-        }
-    }
-    else if (tok_0.type == TokenType::INT_NUM || tok_0.type == TokenType::DEC_NUM || tok_0.type == TokenType::STRING || tok_0.type == TokenType::TRUE || tok_0.type == TokenType::FALSE)
-    {
-        expect(tok_0.type);
-    }
-    else 
-    {
-        ErrorHandler::error(ErrorPhase::PARSING, ErrorType::SYNTAX_ERROR, "At token " + tok_0.lexeme, tok_0.line_number, INVALID_TERM);        
+        ErrorHandler::error(ErrorPhase::PARSING, ErrorType::SYNTAX_ERROR, "At token " + tok_0.lexeme, tok_0.line_number, INVALID_FACTOR);
     }
 }
 
@@ -572,12 +610,12 @@ void Parser::parse_func_call()
 
     Token tok = lexer.peek();
     if (tok.type == TokenType::ID ||
-    tok.type == TokenType::LPAREN ||
-    tok.type == TokenType::INT_NUM ||
-    tok.type == TokenType::DEC_NUM ||
-    tok.type == TokenType::STRING ||
-    tok.type == TokenType::TRUE ||
-    tok.type == TokenType::FALSE)
+        tok.type == TokenType::LPAREN ||
+        tok.type == TokenType::INT_NUM ||
+        tok.type == TokenType::DEC_NUM ||
+        tok.type == TokenType::STRING ||
+        tok.type == TokenType::TRUE ||
+        tok.type == TokenType::FALSE)
     {
         parse_arg_list();
     }
@@ -587,12 +625,12 @@ void Parser::parse_func_call()
 /*
     arg_list -> arg COMMA arg_list | arg
 */
-void Parser::parse_arg_list() 
+void Parser::parse_arg_list()
 {
     parse_expr();
 
     Token tok = lexer.peek();
-    if (tok.type == TokenType::COMMA) 
+    if (tok.type == TokenType::COMMA)
     {
         expect(TokenType::COMMA);
         parse_arg_list();
@@ -601,9 +639,9 @@ void Parser::parse_arg_list()
     {
         return;
     }
-    else 
+    else
     {
-        ErrorHandler::error(ErrorPhase::PARSING, ErrorType::SYNTAX_ERROR, "At token " + tok.lexeme, tok.line_number, INVALID_ARG_LIST);        
+        ErrorHandler::error(ErrorPhase::PARSING, ErrorType::SYNTAX_ERROR, "At token " + tok.lexeme, tok.line_number, INVALID_ARG_LIST);
     }
 }
 
@@ -614,12 +652,55 @@ void Parser::parse_type()
 {
     Token tok = lexer.peek();
 
-    if(tok.type == TokenType::INT || tok.type == TokenType::DEC || tok.type == TokenType::BOOL || tok.type == TokenType::VOID || tok.type == TokenType::STR) 
+    if (tok.type == TokenType::INT || tok.type == TokenType::DEC || tok.type == TokenType::BOOL || tok.type == TokenType::VOID || tok.type == TokenType::STR)
     {
         expect(tok.type);
     }
-    else 
+    else
     {
-        ErrorHandler::error(ErrorPhase::PARSING, ErrorType::SYNTAX_ERROR, "At token " + tok.lexeme, tok.line_number, INVALID_TYPE);        
+        ErrorHandler::error(ErrorPhase::PARSING, ErrorType::SYNTAX_ERROR, "At token " + tok.lexeme, tok.line_number, INVALID_TYPE);
+    }
+}
+
+/*
+    operator -> OPERATOR_PLUS |
+                OPERATOR_MINUS |
+                OPERATOR_MULT |
+                OPERATOR_DIV |
+                OPERATOR_GT |
+                OPERATOR_LT |
+                OPERATOR_GEQ |
+                OPERATOR_LEQ |
+                OPERATOR_IS |
+                OPERATOR_AND |
+                OPERATOR_OR |
+                OPERATOR_NOT |
+                OPERATOR_XCL |
+                OPERATOR_NEQ |
+*/
+void Parser::parse_operator()
+{
+    Token tok = lexer.peek();
+
+    if (tok.type == TokenType::OPERATOR_PLUS ||
+        tok.type == TokenType::OPERATOR_MINUS ||
+        tok.type == TokenType::OPERATOR_MULT ||
+        tok.type == TokenType::OPERATOR_DIV ||
+        tok.type == TokenType::OPERATOR_GT ||
+        tok.type == TokenType::OPERATOR_LT ||
+        tok.type == TokenType::OPERATOR_GEQ ||
+        tok.type == TokenType::OPERATOR_LEQ ||
+        tok.type == TokenType::OPERATOR_IS ||
+        tok.type == TokenType::OPERATOR_AND ||
+        tok.type == TokenType::OPERATOR_OR ||
+        tok.type == TokenType::OPERATOR_NOT ||
+        tok.type == TokenType::OPERATOR_XCL ||
+        tok.type == TokenType::OPERATOR_NEQ)
+    {
+        expect(tok.type);
+    }
+    else
+    {
+        ErrorHandler::error(ErrorPhase::PARSING, ErrorType::SYNTAX_ERROR, "At token " + tok.lexeme, tok.line_number, INVALID_OPERATOR);
     }
 }

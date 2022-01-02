@@ -5,3 +5,4 @@ dist
 yarn.lock
 src/lang/build/
 src/lang/a.out
+src/lang/.vscode

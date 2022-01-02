@@ -99,7 +99,7 @@ void Lexer::lexical_analysis(std::string input)
                     {
                         input_index += 2;
 
-                        add_token("<=", TokenType::OPERATOR);
+                        add_token("<=", TokenType::OPERATOR_LEQ);
 
                         break;
                     }
@@ -110,7 +110,7 @@ void Lexer::lexical_analysis(std::string input)
                     {
                         input_index += 2;
 
-                        add_token(">=", TokenType::OPERATOR);
+                        add_token(">=", TokenType::OPERATOR_GEQ);
 
                         break;
                     }
@@ -121,7 +121,7 @@ void Lexer::lexical_analysis(std::string input)
                     {
                         input_index += 2;
 
-                        add_token("!=", TokenType::OPERATOR);
+                        add_token("!=", TokenType::OPERATOR_NEQ);
 
                         break;
                     }
@@ -388,7 +388,7 @@ bool Lexer::is_white_space(char curr_symbol)
     return curr_symbol == ' ' || curr_symbol == '\t' || curr_symbol == '\n';
 }
 
-std::string Lexer::get_token_name(TokenType type) 
+std::string Lexer::get_token_name(TokenType type)
 {
     return token_type_names[type];
 }

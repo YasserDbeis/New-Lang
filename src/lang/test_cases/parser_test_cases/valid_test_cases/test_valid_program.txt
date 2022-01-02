@@ -79,7 +79,7 @@ func main(bool bat, str cat) -> int     ~ return type
         
     } elsif(((2 + 2) / 4 + 4) is 5) {
         ~ TODO
-    } elsif() {
+    } elsif(some_cond) {
         print("Hello!");
     }
 
@@ -103,5 +103,5 @@ func main(bool bat, str cat) -> int     ~ return type
         todo();
     }
     
-    return todo(((2 + 2 / 4)), "hello", some_id)
+    return todo(((2 + 2 / 4)), "hello", some_id);
 }

@@ -34,10 +34,12 @@ private:
     void parse_else_blk();
     void parse_expr();
     void parse_term();
+    void parse_factor();
     void parse_func_call();
     void parse_arg_list();
     void parse_arg();
     void parse_type();
+    void parse_operator();
 
     Token expect(TokenType);
 

@@ -43,8 +43,10 @@ enum ErrorCode
     INVALID_CTRL_FLOW,
     INVALID_EXPR,
     INVALID_TERM,
+    INVALID_FACTOR,
     INVALID_ARG_LIST,
-    INVALID_TYPE
+    INVALID_TYPE,
+    INVALID_OPERATOR
 };
 
 class ErrorHandler

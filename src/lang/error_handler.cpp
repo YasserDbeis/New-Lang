@@ -111,6 +111,10 @@ std::string ErrorHandler::code_to_msg(ErrorCode code)
     {
         return "Invalid term";
     }
+    case INVALID_FACTOR:
+    {
+        return "Invalid factor";
+    }
     case INVALID_ARG_LIST:
     {
         return "Invalid argument list";
@@ -118,6 +122,10 @@ std::string ErrorHandler::code_to_msg(ErrorCode code)
     case INVALID_TYPE:
     {
         return "Invalid type";
+    }
+    case INVALID_OPERATOR:
+    {
+        return "Invalid operator";
     }
     default:
     {
