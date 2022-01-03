@@ -12,7 +12,6 @@ bool x = true is true;
 bool x = is_divisible(3, 5);
 void x = 5;
 
-
 ~ var_decl definition
 int x;
 bool x;
@@ -24,6 +23,17 @@ dec x;
 func todo(int foo, str bar, void baz) {     ~ param list
     int x = 5;
     x = 3;
+    x = 5 + 3 * 2 / 3 + add(1, 2);
+    x = (((((((((((((((woah)))))))))))))));
+    x = 3 < 4 < 5 < 8 < 10;
+    x = +2 + 3;
+    x = -1;
+    x = (5 + 3) * 2 + (9 / 3 / 2 + 3) * 4 / ((2 + 3 + (((1 + 3)))));
+    if (func_call(1, ((1 + 2 * (3))), (4 + 3 * 2)))
+    {}
+    
+    int x = 2 + -3 + +4 + -2 + !5;
+    int x = !4.23 - +34 or -5;
     
     while (x > 0)
     {
@@ -31,7 +41,12 @@ func todo(int foo, str bar, void baz) {     ~ param list
         x = x - 1;
     }
 
-    if (x is 0)
+    while(((func_call("test_str", 1, (1 + 2 / 3) + 4 / 5, 123.123))) and !done) 
+    {
+        i = i + 1;
+    }
+
+    if (y ())
     {
         print(x);
     }

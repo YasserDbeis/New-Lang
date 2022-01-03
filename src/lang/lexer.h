@@ -126,4 +126,28 @@ public:
     Token peek(int offset = 0); /* Parsing purposes: Returns the token at the given offset in the tokens vector */
 
     std::string get_token_name(TokenType); /* Gets the stringified name of a token type */
+
+    std::unordered_set<TokenType> operators /* Set containing language key words */
+        {
+            TokenType::OPERATOR_PLUS,
+            TokenType::OPERATOR_MINUS,
+            TokenType::OPERATOR_MULT,
+            TokenType::OPERATOR_DIV,
+            TokenType::OPERATOR_GT,
+            TokenType::OPERATOR_LT,
+            TokenType::OPERATOR_GEQ,
+            TokenType::OPERATOR_LEQ,
+            TokenType::OPERATOR_IS,
+            TokenType::OPERATOR_AND,
+            TokenType::OPERATOR_OR,
+            TokenType::OPERATOR_NOT,
+            TokenType::OPERATOR_XCL,
+            TokenType::OPERATOR_NEQ,
+        };
+
+    std::unordered_set<TokenType> leading_operators{
+        TokenType::OPERATOR_PLUS,
+        TokenType::OPERATOR_MINUS,
+        TokenType::OPERATOR_XCL,
+        TokenType::OPERATOR_NOT};
 };

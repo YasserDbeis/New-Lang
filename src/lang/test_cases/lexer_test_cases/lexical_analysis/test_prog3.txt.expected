@@ -11,7 +11,7 @@ SEMICOLON, ;, 3
 WHILE, while, 4
 LPAREN, (, 4
 ID, i, 4
-OPERATOR, <, 4
+OPERATOR_LT, <, 4
 INT_NUM, 25, 4
 RPAREN, ), 4
 LBRACE, {, 4

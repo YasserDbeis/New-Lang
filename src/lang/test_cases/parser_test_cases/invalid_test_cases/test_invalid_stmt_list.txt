@@ -1,0 +1,5 @@
+func foo() -> int {
+    int x = 5;
+
+    not x;
+}

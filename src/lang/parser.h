@@ -40,6 +40,7 @@ private:
     void parse_arg();
     void parse_type();
     void parse_operator();
+    void parse_leading_op();
 
     Token expect(TokenType);
 

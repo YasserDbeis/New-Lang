@@ -1,0 +1,5 @@
+func foo()
+{
+    int x = 5;
+    x is 3;
+}

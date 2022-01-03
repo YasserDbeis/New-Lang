@@ -23,8 +23,8 @@ Token Parser::expect(TokenType expected_type)
 
     if (tok.type != expected_type)
     {
-        std::cout << "EXPECTED: " << lexer.get_token_name(expected_type) << std::endl;
-        std::cout << "RECEIVED: " << lexer.get_token_name(tok.type) << std::endl;
+        // std::cout << "EXPECTED: " << lexer.get_token_name(expected_type) << std::endl;
+        // std::cout << "RECEIVED: " << lexer.get_token_name(tok.type) << std::endl;
         std::string lexeme = tok.lexeme;
         int line_number = tok.line_number;
         ErrorHandler::error(ErrorPhase::PARSING, ErrorType::SYNTAX_ERROR, "At token " + lexeme, line_number, INVALID_TOKEN);
@@ -391,10 +391,6 @@ void Parser::parse_if_stmt()
         {
             return;
         }
-        else
-        {
-            ErrorHandler::error(ErrorPhase::PARSING, ErrorType::SYNTAX_ERROR, "At token " + tok_1.lexeme, tok_1.line_number, INVALID_ALT_COND);
-        }
     }
     else if (tok_0.type == TokenType::INT || // var declaration or definition
              tok_0.type == TokenType::DEC ||
@@ -487,37 +483,21 @@ void Parser::parse_expr()
 {
     Token tok = lexer.peek();
 
-    if (tok.type == TokenType::OPERATOR_PLUS ||
-        tok.type == TokenType::OPERATOR_MINUS ||
-        tok.type == TokenType::OPERATOR_MULT ||
-        tok.type == TokenType::OPERATOR_DIV ||
-        tok.type == TokenType::OPERATOR_GT ||
-        tok.type == TokenType::OPERATOR_LT ||
-        tok.type == TokenType::OPERATOR_GEQ ||
-        tok.type == TokenType::OPERATOR_LEQ ||
-        tok.type == TokenType::OPERATOR_IS ||
-        tok.type == TokenType::OPERATOR_AND ||
-        tok.type == TokenType::OPERATOR_OR ||
-        tok.type == TokenType::OPERATOR_NOT ||
-        tok.type == TokenType::OPERATOR_XCL ||
-        tok.type == TokenType::OPERATOR_NEQ)
+    if (lexer.leading_operators.count(tok.type))
     {
         parse_operator();
     }
-
-    if (tok.type == TokenType::ID ||
-        tok.type == TokenType::INT_NUM ||
-        tok.type == TokenType::DEC_NUM ||
-        tok.type == TokenType::STRING ||
-        tok.type == TokenType::TRUE ||
-        tok.type == TokenType::FALSE ||
-        tok.type == TokenType::LPAREN)
+    else if (lexer.operators.count(tok.type))
     {
-        parse_term();
+        ErrorHandler::error(ErrorPhase::PARSING, ErrorType::SYNTAX_ERROR, "At token " + tok.lexeme, tok.line_number, INVALID_OPERATOR);
     }
-    else
+
+    parse_term();
+
+    while (lexer.operators.count(lexer.peek().type))
     {
-        ErrorHandler::error(ErrorPhase::PARSING, ErrorType::SYNTAX_ERROR, "At token " + tok.lexeme, tok.line_number, INVALID_TERM);
+        parse_operator();
+        parse_term();
     }
 }
 
@@ -528,45 +508,23 @@ void Parser::parse_term()
 {
     parse_factor();
 
-    Token tok = lexer.peek();
-
-    if (tok.type == TokenType::OPERATOR_PLUS ||
-        tok.type == TokenType::OPERATOR_MINUS ||
-        tok.type == TokenType::OPERATOR_MULT ||
-        tok.type == TokenType::OPERATOR_DIV ||
-        tok.type == TokenType::OPERATOR_GT ||
-        tok.type == TokenType::OPERATOR_LT ||
-        tok.type == TokenType::OPERATOR_GEQ ||
-        tok.type == TokenType::OPERATOR_LEQ ||
-        tok.type == TokenType::OPERATOR_IS ||
-        tok.type == TokenType::OPERATOR_AND ||
-        tok.type == TokenType::OPERATOR_OR ||
-        tok.type == TokenType::OPERATOR_NOT ||
-        tok.type == TokenType::OPERATOR_XCL ||
-        tok.type == TokenType::OPERATOR_NEQ)
+    while (lexer.operators.count(lexer.peek().type))
     {
         parse_operator();
-        // consume the factor
-    }
-    else if (tok.type == TokenType::SEMICOLON ||
-             tok.type == TokenType::RPAREN ||
-             tok.type == TokenType::COMMA)
-    {
-        return;
-    }
-    else
-    {
-        ErrorHandler::error(ErrorPhase::PARSING, ErrorType::SYNTAX_ERROR, "At token " + tok.lexeme, tok.line_number, INVALID_TERM);
+        parse_factor();
     }
 }
 
 /*
-    factor -> ID | INT_NUM | DEC_NUM | STRING | TRUE | FALSE | func_call | LPAREN expr RPAREN
+    factor -> ID | INT_NUM | DEC_NUM | STRING | func_call | TRUE | FALSE | LPAREN expr RPAREN
+    factor -> leading_op ID | leading_op func_call | leading_op TRUE | leading_op FALSE | leading_op LPAREN expr RPAREN
+    factor -> leading_op INT_NUM | leading_op DEC_NUM
 */
 void Parser::parse_factor()
 {
     Token tok_0 = lexer.peek();
     Token tok_1 = lexer.peek(1);
+    Token tok_2 = lexer.peek(2);
 
     std::string type_0 = lexer.get_token_name(tok_0.type);
     std::string type_1 = lexer.get_token_name(tok_1.type);
@@ -592,6 +550,37 @@ void Parser::parse_factor()
         expect(TokenType::LPAREN);
         parse_expr();
         expect(TokenType::RPAREN);
+    }
+    else if (lexer.leading_operators.count(tok_0.type))
+    {
+        parse_leading_op();
+
+        if (tok_1.type == TokenType::ID ||
+            tok_1.type == TokenType::TRUE ||
+            tok_1.type == TokenType::FALSE ||
+            tok_1.type == TokenType::INT_NUM ||
+            tok_1.type == TokenType::DEC_NUM ||
+            tok_1.type == TokenType::LPAREN)
+        {
+            if (tok_1.type == TokenType::ID && tok_2.type == TokenType::LPAREN)
+            {
+                parse_func_call();
+            }
+            else if (tok_1.type == TokenType::LPAREN)
+            {
+                expect(TokenType::LPAREN);
+                parse_expr();
+                expect(TokenType::RPAREN);
+            }
+            else
+            {
+                expect(tok_1.type);
+            }
+        }
+        else
+        {
+            ErrorHandler::error(ErrorPhase::PARSING, ErrorType::SYNTAX_ERROR, "At token " + tok_1.lexeme, tok_1.line_number, INVALID_FACTOR);
+        }
     }
     else
     {
@@ -682,20 +671,27 @@ void Parser::parse_operator()
 {
     Token tok = lexer.peek();
 
-    if (tok.type == TokenType::OPERATOR_PLUS ||
-        tok.type == TokenType::OPERATOR_MINUS ||
-        tok.type == TokenType::OPERATOR_MULT ||
-        tok.type == TokenType::OPERATOR_DIV ||
-        tok.type == TokenType::OPERATOR_GT ||
-        tok.type == TokenType::OPERATOR_LT ||
-        tok.type == TokenType::OPERATOR_GEQ ||
-        tok.type == TokenType::OPERATOR_LEQ ||
-        tok.type == TokenType::OPERATOR_IS ||
-        tok.type == TokenType::OPERATOR_AND ||
-        tok.type == TokenType::OPERATOR_OR ||
-        tok.type == TokenType::OPERATOR_NOT ||
-        tok.type == TokenType::OPERATOR_XCL ||
-        tok.type == TokenType::OPERATOR_NEQ)
+    if (lexer.operators.count(tok.type))
+    {
+        expect(tok.type);
+    }
+    else
+    {
+        ErrorHandler::error(ErrorPhase::PARSING, ErrorType::SYNTAX_ERROR, "At token " + tok.lexeme, tok.line_number, INVALID_OPERATOR);
+    }
+}
+
+/*
+    operator -> OPERATOR_PLUS |
+                OPERATOR_MINUS |
+                OPERATOR_NOT |
+                OPERATOR_XCL
+*/
+void Parser::parse_leading_op()
+{
+    Token tok = lexer.peek();
+
+    if (lexer.leading_operators.count(tok.type))
     {
         expect(tok.type);
     }

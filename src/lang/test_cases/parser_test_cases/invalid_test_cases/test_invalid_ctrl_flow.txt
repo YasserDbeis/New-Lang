@@ -1,0 +1,8 @@
+func foo()
+{
+    if (x is 3)
+    {}
+    elsif (x is 5)
+    {}
+    not 3;
+}
