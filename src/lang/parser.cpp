@@ -50,7 +50,7 @@ void Parser::parse_def_list()
     parse_def();
 
     Token tok = lexer.peek();
-    if (tok.type == TokenType::INT || tok.type == TokenType::DEC || tok.type == TokenType::STR || tok.type == TokenType::BOOL || tok.type == TokenType::VOID || tok.type == TokenType::FUNC)
+    if (types.count(tok.type) || tok.type == TokenType::FUNC)
     {
         parse_def_list();
     }
@@ -76,7 +76,7 @@ void Parser::parse_def()
     {
         parse_func_def();
     }
-    else if (tok_0.type == TokenType::INT || tok_0.type == TokenType::DEC || tok_0.type == TokenType::STR || tok_0.type == TokenType::BOOL || tok_0.type == TokenType::VOID)
+    else if (types.count(tok_0.type))
     {
         if (tok_2.type == TokenType::SEMICOLON)
         {
@@ -127,7 +127,7 @@ void Parser::parse_func_def()
     expect(TokenType::LPAREN);
 
     Token tok = lexer.peek();
-    if (tok.type == TokenType::INT || tok.type == TokenType::DEC || tok.type == TokenType::STR || tok.type == TokenType::BOOL || tok.type == TokenType::VOID)
+    if (types.count(tok.type))
     {
         parse_param_list();
     }
@@ -202,15 +202,7 @@ void Parser::parse_body()
     expect(TokenType::LBRACE);
     Token tok = lexer.peek();
 
-    if (tok.type == TokenType::INT || // var declaration or definition
-        tok.type == TokenType::DEC ||
-        tok.type == TokenType::STR ||
-        tok.type == TokenType::BOOL ||
-        tok.type == TokenType::VOID ||
-        tok.type == TokenType::ID ||
-        tok.type == TokenType::IF ||
-        tok.type == TokenType::WHILE ||
-        tok.type == TokenType::RETURN)
+    if (first_of_stmt.count(tok.type)) // var declaration or definition
     {
         parse_stmt_list();
     }
@@ -227,15 +219,7 @@ void Parser::parse_stmt_list()
 
     Token tok = lexer.peek();
 
-    if (tok.type == TokenType::INT ||
-        tok.type == TokenType::DEC ||
-        tok.type == TokenType::STR ||
-        tok.type == TokenType::BOOL ||
-        tok.type == TokenType::VOID ||
-        tok.type == TokenType::ID ||
-        tok.type == TokenType::WHILE ||
-        tok.type == TokenType::IF ||
-        tok.type == TokenType::RETURN)
+    if (first_of_stmt.count(tok.type))
     {
         parse_stmt_list();
     }
@@ -286,11 +270,7 @@ void Parser::parse_stmt()
             ErrorHandler::error(ErrorPhase::PARSING, ErrorType::SYNTAX_ERROR, "At token " + tok_1.lexeme, tok_1.line_number, INVALID_STMT);
         }
     }
-    else if (tok_0.type == TokenType::INT || // var declaration or definition
-             tok_0.type == TokenType::DEC ||
-             tok_0.type == TokenType::STR ||
-             tok_0.type == TokenType::BOOL ||
-             tok_0.type == TokenType::VOID)
+    else if (types.count(tok_0.type))
     {
         if (tok_2.type == TokenType::SEMICOLON)
         {
@@ -343,13 +323,7 @@ void Parser::parse_return_stmt()
 
     Token tok = lexer.peek();
 
-    if (tok.type == TokenType::LPAREN ||
-        tok.type == TokenType::ID ||
-        tok.type == TokenType::INT_NUM ||
-        tok.type == TokenType::DEC_NUM ||
-        tok.type == TokenType::STRING ||
-        tok.type == TokenType::TRUE ||
-        tok.type == TokenType::FALSE)
+    if (first_of_expr.count(tok.type))
     {
         parse_expr();
     }
@@ -378,30 +352,12 @@ void Parser::parse_if_stmt()
         {
             parse_else_blk();
         }
-        else if (tok_1.type == TokenType::INT || // var declaration or definition
-                 tok_1.type == TokenType::DEC ||
-                 tok_1.type == TokenType::STR ||
-                 tok_1.type == TokenType::BOOL ||
-                 tok_1.type == TokenType::VOID ||
-                 tok_1.type == TokenType::ID ||
-                 tok_1.type == TokenType::IF ||
-                 tok_1.type == TokenType::WHILE ||
-                 tok_1.type == TokenType::RBRACE ||
-                 tok_1.type == TokenType::RETURN)
+        else if (first_of_stmt.count(tok_0.type) || tok_0.type == TokenType::RBRACE) // var declaration or definition
         {
             return;
         }
     }
-    else if (tok_0.type == TokenType::INT || // var declaration or definition
-             tok_0.type == TokenType::DEC ||
-             tok_0.type == TokenType::STR ||
-             tok_0.type == TokenType::BOOL ||
-             tok_0.type == TokenType::VOID ||
-             tok_0.type == TokenType::ID ||
-             tok_0.type == TokenType::IF ||
-             tok_0.type == TokenType::WHILE ||
-             tok_0.type == TokenType::RBRACE ||
-             tok_0.type == TokenType::RETURN)
+    else if (first_of_stmt.count(tok_0.type) || tok_0.type == TokenType::RBRACE) // var declaration or definition
     {
         return;
     }
@@ -435,16 +391,8 @@ void Parser::parse_elsif_blks()
     {
         parse_elsif_blks();
     }
-    else if (tok.type == TokenType::INT || // any statement
-             tok.type == TokenType::DEC ||
-             tok.type == TokenType::STR ||
-             tok.type == TokenType::BOOL ||
-             tok.type == TokenType::VOID ||
-             tok.type == TokenType::ID ||
-             tok.type == TokenType::IF ||
-             tok.type == TokenType::WHILE ||
+    else if (first_of_stmt.count(tok.type) || // any statement + end of body + else
              tok.type == TokenType::RBRACE ||
-             tok.type == TokenType::RETURN ||
              tok.type == TokenType::ELSE)
     {
         return;
@@ -483,18 +431,18 @@ void Parser::parse_expr()
 {
     Token tok = lexer.peek();
 
-    if (lexer.leading_operators.count(tok.type))
+    if (leading_operators.count(tok.type))
     {
         parse_operator();
     }
-    else if (lexer.operators.count(tok.type))
+    else if (operators.count(tok.type))
     {
         ErrorHandler::error(ErrorPhase::PARSING, ErrorType::SYNTAX_ERROR, "At token " + tok.lexeme, tok.line_number, INVALID_OPERATOR);
     }
 
     parse_term();
 
-    while (lexer.operators.count(lexer.peek().type))
+    while (operators.count(lexer.peek().type))
     {
         parse_operator();
         parse_term();
@@ -508,7 +456,7 @@ void Parser::parse_term()
 {
     parse_factor();
 
-    while (lexer.operators.count(lexer.peek().type))
+    while (operators.count(lexer.peek().type))
     {
         parse_operator();
         parse_factor();
@@ -529,12 +477,7 @@ void Parser::parse_factor()
     std::string type_0 = lexer.get_token_name(tok_0.type);
     std::string type_1 = lexer.get_token_name(tok_1.type);
 
-    if (tok_0.type == TokenType::ID ||
-        tok_0.type == TokenType::INT_NUM ||
-        tok_0.type == TokenType::DEC_NUM ||
-        tok_0.type == TokenType::STRING ||
-        tok_0.type == TokenType::TRUE ||
-        tok_0.type == TokenType::FALSE)
+    if (first_of_expr.count(tok_0.type) && tok_0.type != TokenType::LPAREN)
     {
         if (tok_1.type == TokenType::LPAREN)
         {
@@ -551,16 +494,11 @@ void Parser::parse_factor()
         parse_expr();
         expect(TokenType::RPAREN);
     }
-    else if (lexer.leading_operators.count(tok_0.type))
+    else if (leading_operators.count(tok_0.type))
     {
         parse_leading_op();
 
-        if (tok_1.type == TokenType::ID ||
-            tok_1.type == TokenType::TRUE ||
-            tok_1.type == TokenType::FALSE ||
-            tok_1.type == TokenType::INT_NUM ||
-            tok_1.type == TokenType::DEC_NUM ||
-            tok_1.type == TokenType::LPAREN)
+        if (first_of_expr.count(tok_1.type) && tok_1.type != TokenType::STRING)
         {
             if (tok_1.type == TokenType::ID && tok_2.type == TokenType::LPAREN)
             {
@@ -598,13 +536,7 @@ void Parser::parse_func_call()
     expect(TokenType::LPAREN);
 
     Token tok = lexer.peek();
-    if (tok.type == TokenType::ID ||
-        tok.type == TokenType::LPAREN ||
-        tok.type == TokenType::INT_NUM ||
-        tok.type == TokenType::DEC_NUM ||
-        tok.type == TokenType::STRING ||
-        tok.type == TokenType::TRUE ||
-        tok.type == TokenType::FALSE)
+    if (first_of_expr.count(tok.type))
     {
         parse_arg_list();
     }
@@ -612,7 +544,7 @@ void Parser::parse_func_call()
 }
 
 /*
-    arg_list -> arg COMMA arg_list | arg
+    arg_list -> expr COMMA arg_list | expr
 */
 void Parser::parse_arg_list()
 {
@@ -641,7 +573,7 @@ void Parser::parse_type()
 {
     Token tok = lexer.peek();
 
-    if (tok.type == TokenType::INT || tok.type == TokenType::DEC || tok.type == TokenType::BOOL || tok.type == TokenType::VOID || tok.type == TokenType::STR)
+    if (types.count(tok.type))
     {
         expect(tok.type);
     }
@@ -671,7 +603,7 @@ void Parser::parse_operator()
 {
     Token tok = lexer.peek();
 
-    if (lexer.operators.count(tok.type))
+    if (operators.count(tok.type))
     {
         expect(tok.type);
     }
@@ -691,7 +623,7 @@ void Parser::parse_leading_op()
 {
     Token tok = lexer.peek();
 
-    if (lexer.leading_operators.count(tok.type))
+    if (leading_operators.count(tok.type))
     {
         expect(tok.type);
     }

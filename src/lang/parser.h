@@ -6,6 +6,7 @@
 */
 
 #include "lexer.h"
+#include <unordered_set>
 
 class Parser
 {
@@ -43,6 +44,57 @@ private:
     void parse_leading_op();
 
     Token expect(TokenType);
+
+    std::unordered_set<TokenType> operators /* Set containing language key words */
+        {
+            TokenType::OPERATOR_PLUS,
+            TokenType::OPERATOR_MINUS,
+            TokenType::OPERATOR_MULT,
+            TokenType::OPERATOR_DIV,
+            TokenType::OPERATOR_GT,
+            TokenType::OPERATOR_LT,
+            TokenType::OPERATOR_GEQ,
+            TokenType::OPERATOR_LEQ,
+            TokenType::OPERATOR_IS,
+            TokenType::OPERATOR_AND,
+            TokenType::OPERATOR_OR,
+            TokenType::OPERATOR_NOT,
+            TokenType::OPERATOR_XCL,
+            TokenType::OPERATOR_NEQ,
+        };
+
+    std::unordered_set<TokenType> leading_operators{
+        TokenType::OPERATOR_PLUS,
+        TokenType::OPERATOR_MINUS,
+        TokenType::OPERATOR_XCL,
+        TokenType::OPERATOR_NOT};
+
+    std::unordered_set<TokenType> types{
+        TokenType::INT,
+        TokenType::DEC,
+        TokenType::STR,
+        TokenType::BOOL,
+        TokenType::VOID};
+
+    std::unordered_set<TokenType> first_of_stmt{
+        TokenType::INT,
+        TokenType::DEC,
+        TokenType::STR,
+        TokenType::BOOL,
+        TokenType::VOID,
+        TokenType::ID,
+        TokenType::IF,
+        TokenType::WHILE,
+        TokenType::RETURN};
+
+    std::unordered_set<TokenType> first_of_expr{
+        TokenType::ID,
+        TokenType::LPAREN,
+        TokenType::INT_NUM,
+        TokenType::DEC_NUM,
+        TokenType::STRING,
+        TokenType::TRUE,
+        TokenType::FALSE};
 
 public:
     void parse_program();
