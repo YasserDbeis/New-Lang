@@ -13,6 +13,7 @@ include_directories(${PROJECT_SOURCE_DIR})
 set(CMAKE_CXX_STANDARD 17)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -g -c")
+set(CMAKE_BUILD_TYPE Debug)
 
 # Executable storage location (In the current directory)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR})
