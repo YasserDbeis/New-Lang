@@ -13,5 +13,8 @@ public:
     std::vector<Expression> args;
     Value value;
 
+    void execute() override;
+    Value evaluate();
+
 private:
 };

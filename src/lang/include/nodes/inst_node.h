@@ -10,6 +10,6 @@ class InstNode
 public:
     InstNode *next = nullptr;
 
-    void execute();
-    InstNode *get_next();
+    virtual void execute();
+    virtual InstNode *get_next();
 };

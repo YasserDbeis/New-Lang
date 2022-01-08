@@ -14,7 +14,8 @@ class ExprNode
 {
 public:
     ExprType type;
-    Value evaluate();
+
+    ExprNode(ExprType type);
 
 private:
 };

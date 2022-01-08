@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.10)
 project(New_Lang VERSION 1.0.0)
 
 # Group together the source files
-file(GLOB SOURCE src/lexer.cpp src/parser.cpp src/error_handler.cpp src/test.cpp)
+file(GLOB SOURCE src/lexer.cpp src/parser.cpp src/error_handler.cpp src/test.cpp src/nodes/*.cpp)
 
 # Specify where the header files are (In the current directory)
 include_directories(${PROJECT_SOURCE_DIR})

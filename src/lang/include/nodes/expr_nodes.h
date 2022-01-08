@@ -11,6 +11,8 @@ public:
     int global_count;
     Value value;
     bool is_constant;
+
+    Value evaluate();
 };
 
 class ParenNode : public ExprNode
