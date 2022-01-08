@@ -6,7 +6,7 @@
     getToken and peek to perform recursive descent parsing.
 */
 
-#include "include/parser.h"
+#include "../include/parser.h"
 #include <iostream>
 
 Parser::Parser(std::string program) : lexer(program)
