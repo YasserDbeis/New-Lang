@@ -9,12 +9,12 @@
 class FuncCallNode : public InstNode, public ExprNode
 {
 public:
-    std::string id;
-    std::vector<Expression> args;
-    Value value;
+    Value return_value;
 
     void execute() override;
     Value evaluate();
 
 private:
+    std::string id;
+    std::vector<Expression> args;
 };

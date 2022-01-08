@@ -4,35 +4,69 @@
 JmpNode implementation
 --------------------------------------------- */
 
+JmpNode::JmpNode()
+{
+}
+
+JmpNode::JmpNode(InstNode *target)
+{
+    this->target = target;
+}
+
 // Why not just return next? No need for override
 
 /* --------------------------------------------
 CjmpNode implementation
 --------------------------------------------- */
+
+CjmpNode::CjmpNode()
+{
+}
+
+CjmpNode::CjmpNode(Expression expr)
+{
+    this->expr = expr;
+}
+
 void CjmpNode::execute()
 {
-    expr.evaluate();
+    //expr.evaluate();
 }
 
 InstNode *CjmpNode::get_next()
 {
-    if (expr.value.value.type == TokenType::TRUE)
+    if (expr.value.token.type == TokenType::TRUE)
     {
         return next;
     }
-    else if (expr.value.value.type == TokenType::FALSE)
+    else if (expr.value.token.type == TokenType::FALSE)
     {
         return target;
     }
     else
     {
         // Error
+        return nullptr;
     }
 }
 
 /* --------------------------------------------
 StoreNode implementation
 --------------------------------------------- */
+
+StoreNode::StoreNode()
+{
+}
+
+StoreNode::StoreNode(Type type, std::string name, Expression expr, int global_count, bool is_param)
+{
+    this->type = type;
+    this->name = name;
+    this->expr = expr;
+    this->global_count = global_count;
+    this->is_param = is_param;
+}
+
 void StoreNode::execute()
 {
     /*
@@ -65,12 +99,39 @@ void StoreNode::execute()
 /* --------------------------------------------
 ReturnNode implementation
 --------------------------------------------- */
+
+ReturnNode::ReturnNode()
+{
+}
+
+ReturnNode::ReturnNode(Expression expr)
+{
+    this->expr = expr;
+}
+
 void ReturnNode::execute()
 {
-    expr.evaluate();
+    //expr.evaluate();
     /*
         stack_trace.peek().scope_tree.return_value = expr.value;
 
         // Note, we can put a node value at return_value if we reach nullptr when executing function (not global ll)
     */
+}
+
+/* --------------------------------------------
+ScopeNode implementation
+--------------------------------------------- */
+
+ScopeNode::ScopeNode()
+{
+}
+
+ScopeNode::ScopeNode(bool is_new_scope)
+{
+    this->is_new_scope = is_new_scope;
+}
+
+void ScopeNode::execute()
+{
 }

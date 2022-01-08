@@ -16,10 +16,11 @@ class Value
 {
 public:
     Type type;
-    Token value;
+    Token token;
+    Value();
+    Value(Type type, Token value);
 
-    Value(Type _type, Token _value);
+    void validate(Type expected_type); // throws error
 
 private:
-    void validate(); // throws error
 };

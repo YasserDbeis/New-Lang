@@ -15,7 +15,5 @@ class ExprNode
 public:
     ExprType type;
 
-    ExprNode(ExprType type);
-
 private:
 };
