@@ -1,7 +1,7 @@
 #include "node.h"
 
 #include <iostream>
-#include "lexer.h"
+#include "../include/lexer.h"
 
 namespace test
 {

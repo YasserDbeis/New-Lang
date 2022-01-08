@@ -13,10 +13,21 @@
 #include <vector>
 #include <unordered_set>
 #include <unordered_map>
-#include "error_handler.h"
+#include "include/error_handler.h"
 
 class Lexer
 {
+public:
+    Lexer(std::string input); /* Constructs lexer class. Reads input argument and does lexical analysis */
+    ~Lexer();                 /* Destructor */
+
+    std::string print_tokens(); /* Testing purposes: Returns a string representing tokens in input */
+
+    Token get_token();          /* Parsing purposes: Consumes and returns the next token in the tokens vector */
+    Token peek(int offset = 0); /* Parsing purposes: Returns the token at the given offset in the tokens vector */
+
+    std::string get_token_name(TokenType); /* Gets the stringified name of a token type */
+
 private:
     std::unordered_set<std::string> terminals /* Set containing language key words */
         {";", "->", ",", "=", "bool", "int", "dec", "str", "void", "true", "false", "+", "-", "*", "/", ">", "<",
@@ -115,15 +126,4 @@ private:
                                                                  {TokenType::RETURN, "RETURN"},
                                                                  {TokenType::ID, "ID"},
                                                                  {TokenType::END_OF_FILE, "END_OF_FILE"}}};
-
-public:
-    Lexer(std::string input); /* Constructs lexer class. Reads input argument and does lexical analysis */
-    ~Lexer();                 /* Destructor */
-
-    std::string print_tokens(); /* Testing purposes: Returns a string representing tokens in input */
-
-    Token get_token();          /* Parsing purposes: Consumes and returns the next token in the tokens vector */
-    Token peek(int offset = 0); /* Parsing purposes: Returns the token at the given offset in the tokens vector */
-
-    std::string get_token_name(TokenType); /* Gets the stringified name of a token type */
 };

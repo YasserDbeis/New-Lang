@@ -13,7 +13,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include "token.h"
+#include "include/token.h"
 
 enum class ErrorPhase
 {
@@ -51,6 +51,10 @@ enum ErrorCode
 
 class ErrorHandler
 {
+public:
+    static void error(ErrorPhase, ErrorType, std::string, int, ErrorCode);
+
+    static std::string error_code_vec[];
 
 private:
     typedef struct Error
@@ -70,9 +74,4 @@ private:
     static void syntax_error();
     static void runtime_error();
     static void runtime_exception();
-
-public:
-    static void error(ErrorPhase, ErrorType, std::string, int, ErrorCode);
-
-    static std::string error_code_vec[];
 };

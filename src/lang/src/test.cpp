@@ -5,7 +5,7 @@
     Description: Defines entry point for local testing of the lexer, parser, and compiler.
 */
 
-#include "parser.h"
+#include "../include/parser.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -32,12 +32,12 @@ int main(int argc, char *argv[])
         input += curr_line + '\n';
     }
 
-    /* 
+    /*
     // For reading in through file
     std::ifstream t("./test_cases/parser_test_cases/valid_test_cases/test_valid_program.txt");
     std::stringstream buffer;
     buffer << t.rdbuf();
-    
+
     input = (buffer.str());
     */
 

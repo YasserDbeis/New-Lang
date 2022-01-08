@@ -8,7 +8,7 @@
                 language to access acquired tokens from the input.
 */
 
-#include "lexer.h"
+#include "../include/lexer.h"
 #include <stdlib.h>
 #include <ctype.h>
 #include <iostream>

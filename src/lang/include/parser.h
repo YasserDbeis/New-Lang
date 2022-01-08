@@ -11,6 +11,11 @@
 class Parser
 {
 
+public:
+    void parse_program();
+    Parser(std::string program);
+    ~Parser();
+
 private:
     Lexer lexer;
 
@@ -95,9 +100,4 @@ private:
         TokenType::STRING,
         TokenType::TRUE,
         TokenType::FALSE};
-
-public:
-    void parse_program();
-    Parser(std::string program);
-    ~Parser();
 };

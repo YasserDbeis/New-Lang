@@ -5,16 +5,7 @@
     Description: Implements the functionality of the static error methods of the Error Handler class
 */
 
-/*/////////////////////////////////////////////////
-TYPE OF ERROR
-PHASE OF ERROR
-LINE NUMBER
-SPECIFICS
-ADVICE/HINTS ?!
-*/
-///////////////////////////////////////////////
-
-#include "error_handler.h"
+#include "../include/error_handler.h"
 #include <iostream>
 
 void ErrorHandler::error(ErrorPhase err_phase, ErrorType err_type, std::string context, int line_number, ErrorCode err_code)

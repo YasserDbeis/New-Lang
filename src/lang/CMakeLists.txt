@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.10)
 project(New_Lang VERSION 1.0.0)
 
 # Group together the source files
-file(GLOB SOURCE lexer.cpp parser.cpp error_handler.cpp test.cpp)
+file(GLOB SOURCE src/lexer.cpp src/parser.cpp src/error_handler.cpp src/test.cpp)
 
 # Specify where the header files are (In the current directory)
 include_directories(${PROJECT_SOURCE_DIR})
@@ -12,7 +12,8 @@ include_directories(${PROJECT_SOURCE_DIR})
 # specify the C++ standard
 set(CMAKE_CXX_STANDARD 17)
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -g -c")
+# Set compiler flags
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -g -c")  # Perhaps doesn't work?
 set(CMAKE_BUILD_TYPE Debug)
 
 # Executable storage location (In the current directory)

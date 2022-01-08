@@ -6,7 +6,7 @@
     getToken and peek to perform recursive descent parsing.
 */
 
-#include "parser.h"
+#include "include/parser.h"
 #include <iostream>
 
 Parser::Parser(std::string program) : lexer(program)
@@ -379,7 +379,7 @@ void Parser::parse_if_blk()
     parse_body();
 }
 
-/* 
+/*
     elsif_blks -> elsif_blk elseif_blks | elsif_blk
 */
 void Parser::parse_elsif_blks()
@@ -449,7 +449,7 @@ void Parser::parse_expr()
     }
 }
 
-/* 
+/*
     term -> factor | factor OPERATOR factor
 */
 void Parser::parse_term()
@@ -527,8 +527,8 @@ void Parser::parse_factor()
 }
 
 /*
-    func_call -> ID LPAREN arg_list RPAREN 
-    func_call -> ID LPAREN RPAREN 
+    func_call -> ID LPAREN arg_list RPAREN
+    func_call -> ID LPAREN RPAREN
 */
 void Parser::parse_func_call()
 {
