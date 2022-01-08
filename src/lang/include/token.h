@@ -7,6 +7,8 @@
                  The types of tokens are enumerated.
 */
 
+#pragma once
+
 #include <string>
 
 enum class TokenType

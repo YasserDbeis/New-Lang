@@ -6,6 +6,7 @@
 
 class Expression
 {
+public:
     Value value;
     std::vector<ExprNode> term_list;
 
