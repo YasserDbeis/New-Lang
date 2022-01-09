@@ -23,7 +23,6 @@ FuncCallNode::FuncCallNode(ExprType type, std::string id, std::vector<Expression
 /* Override */
 void FuncCallNode::execute()
 {
-
     /*
         create new stack frame
 

@@ -46,10 +46,13 @@ private:
 class ReturnNode : public InstNode
 {
 public:
+    bool expr_exists = true;
+
     ReturnNode();
-    ReturnNode(Expression expr);
 
     void execute() override;
+    void set_no_expr();
+    void set_expr(Expression expr);
 
 private:
     Expression expr;

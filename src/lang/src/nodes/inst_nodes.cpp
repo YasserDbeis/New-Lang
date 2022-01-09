@@ -104,9 +104,14 @@ ReturnNode::ReturnNode()
 {
 }
 
-ReturnNode::ReturnNode(Expression expr)
+void ReturnNode::set_no_expr()
 {
-    this->expr = expr;
+    expr_exists = false;
+}
+
+void ReturnNode::set_expr(Expression given_expr)
+{
+    expr = given_expr;
 }
 
 void ReturnNode::execute()

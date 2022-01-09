@@ -7,8 +7,10 @@
 
 #pragma once
 
-#include "lexer.h"
+#include "../include/lexer.h"
+#include "../include/nodes/nodes.h"
 #include <unordered_set>
+#include <list>
 
 class Parser
 {
