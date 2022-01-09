@@ -27,7 +27,7 @@ private:
         Type return_type;
     } FuncDef;
 
-    static std::unordered_map<std::string, FuncDef> table;
+    inline static std::unordered_map<std::string, FuncDef> table;
     static void assert_func_exists(std::string id);
     static void assert_func_not_exists(std::string id);
 };

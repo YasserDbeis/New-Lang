@@ -84,11 +84,12 @@ void Parser::parse_def()
     {
         if (tok_2.type == TokenType::SEMICOLON)
         {
-            parse_var_decl();
+            parse_var_decl(true);
         }
         else if (tok_2.type == TokenType::EQUAL)
         {
-            parse_var_def();
+            global_count++;
+            parse_var_def(true);
         }
         else
         {
@@ -104,7 +105,7 @@ void Parser::parse_def()
 /*
     var_dec -> type ID SEMICOLON
 */
-void Parser::parse_var_decl()
+void Parser::parse_var_decl(bool is_global)
 {
     parse_type();
     expect(TokenType::ID);
@@ -114,7 +115,7 @@ void Parser::parse_var_decl()
 /*
     var_def -> type assign_stmt
 */
-void Parser::parse_var_def()
+void Parser::parse_var_def(bool is_global)
 {
     parse_type();
     parse_assign_stmt();
@@ -127,38 +128,45 @@ void Parser::parse_var_def()
 void Parser::parse_func_def()
 {
     expect(TokenType::FUNC);
-    expect(TokenType::ID);
+    std::string id = expect(TokenType::ID).lexeme;
     expect(TokenType::LPAREN);
 
     Token tok = lexer.peek();
+    std::vector<std::pair<Type, std::string>> params;
     if (types.count(tok.type))
     {
-        parse_param_list();
+        parse_param_list(params);
     }
     else if (tok.type != TokenType::RPAREN)
     {
         ErrorHandler::error(ErrorPhase::PARSING, ErrorType::SYNTAX_ERROR, "At token " + tok.lexeme, tok.line_number, INVALID_PARAM);
     }
     expect(TokenType::RPAREN);
-    parse_ret_type();
+    Type return_type = parse_ret_type();
     parse_body();
+
+    // Add to table, clear
+    FuncDefTable::add_entry(id, global_count, params, return_type, func_instructions);
+    // func_instructions.clear();
 }
 
 /*
     ret_type -> RIGHTARROW type | epsilon
 */
-void Parser::parse_ret_type()
+Type Parser::parse_ret_type()
 {
     Token tok = lexer.peek();
 
     if (tok.type == TokenType::RIGHTARROW)
     {
         expect(TokenType::RIGHTARROW);
-        parse_type();
+        Type type = parse_type();
+
+        return type;
     }
     else if (tok.type == TokenType::LBRACE) // follow ret_type is body which always has LBRACE start
     {
-        return;
+        return Type::Void;
     }
     else
     {
@@ -169,15 +177,16 @@ void Parser::parse_ret_type()
 /*
     param_list -> param COMMA param_list | param
 */
-void Parser::parse_param_list()
+void Parser::parse_param_list(std::vector<std::pair<Type, std::string>> &param_list)
 {
-    parse_param();
+    std::pair<Type, std::string> param = parse_param();
+    param_list.push_back(param);
 
     Token tok = lexer.peek();
     if (tok.type == TokenType::COMMA)
     {
         expect(TokenType::COMMA);
-        parse_param_list();
+        parse_param_list(param_list);
     }
     else if (tok.type == TokenType::RPAREN)
     {
@@ -192,10 +201,12 @@ void Parser::parse_param_list()
 /*
     param -> type ID
 */
-void Parser::parse_param()
+std::pair<Type, std::string> Parser::parse_param()
 {
-    parse_type();
-    expect(TokenType::ID);
+    Type type = parse_type();
+    std::string name = expect(TokenType::ID).lexeme;
+
+    return std::make_pair(type, name);
 }
 
 /*
@@ -321,7 +332,7 @@ void Parser::parse_while_stmt()
 /*
     return_stmt -> RETURN expr SEMICOLON | RETURN SEMICOLON
 */
-void Parser::parse_return_stmt(std::list<InstNode> instructions)
+void Parser::parse_return_stmt()
 {
     expect(TokenType::RETURN);
 
@@ -331,7 +342,7 @@ void Parser::parse_return_stmt(std::list<InstNode> instructions)
     if (first_of_expr.count(tok.type))
     {
         std::vector<ExprNode> ret_expr;
-        parse_expr(ret_expr);
+        parse_expr();
 
         Expression expr(ret_expr);
         return_node.set_expr(expr);
@@ -340,8 +351,13 @@ void Parser::parse_return_stmt(std::list<InstNode> instructions)
     {
         return_node.set_no_expr();
     }
+    std::cout << "The return node should have been constructed!" << std::endl;
 
-    instructions.push_back(return_node);
+#if TESTING
+    return_node.id = "RETURN NODE";
+#endif
+
+    func_instructions.push_back(return_node);
 
     expect(TokenType::SEMICOLON);
 }
@@ -585,13 +601,14 @@ void Parser::parse_arg_list()
 /*
     type -> INT | DEC | STR | BOOL | VOID
 */
-void Parser::parse_type()
+Type Parser::parse_type()
 {
     Token tok = lexer.peek();
 
     if (types.count(tok.type))
     {
-        expect(tok.type);
+        TokenType tt = expect(tok.type).type;
+        return token_to_type[tt];
     }
     else
     {
@@ -648,3 +665,17 @@ void Parser::parse_leading_op()
         ErrorHandler::error(ErrorPhase::PARSING, ErrorType::SYNTAX_ERROR, "At token " + tok.lexeme, tok.line_number, INVALID_OPERATOR);
     }
 }
+
+#if TESTING
+void Parser::print_func_instructions()
+{
+    if (func_instructions.empty())
+    {
+        std::cout << "Empty!" << std::endl;
+    }
+    for (auto node : func_instructions)
+    {
+        std::cout << "NODE ID: " << std::endl;
+    }
+}
+#endif

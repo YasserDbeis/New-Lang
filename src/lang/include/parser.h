@@ -6,9 +6,11 @@
 */
 
 #pragma once
+#define TESTING 1
 
 #include "../include/lexer.h"
 #include "../include/nodes/nodes.h"
+#include "../include/func_def_table.h"
 #include <unordered_set>
 #include <list>
 
@@ -22,17 +24,21 @@ public:
     Parser(std::string program);
     ~Parser();
 
+#if TESTING
+    void print_func_instructions();
+#endif
+
 private:
     Lexer lexer;
 
     void parse_def_list();
     void parse_def();
-    void parse_var_decl();
-    void parse_var_def();
+    void parse_var_decl(bool is_global = false);
+    void parse_var_def(bool is_global = false);
     void parse_func_def();
-    void parse_ret_type();
-    void parse_param_list();
-    void parse_param();
+    Type parse_ret_type();
+    void parse_param_list(std::vector<std::pair<Type, std::string>> &param_list);
+    std::pair<Type, std::string> parse_param();
     void parse_body();
     void parse_stmt_list();
     void parse_stmt();
@@ -50,9 +56,14 @@ private:
     void parse_func_call();
     void parse_arg_list();
     void parse_arg();
-    void parse_type();
+    Type parse_type();
     void parse_operator();
     void parse_leading_op();
+
+    std::list<InstNode> func_instructions;
+    std::list<InstNode> global_instructions;
+
+    int global_count = 0;
 
     Token expect(TokenType);
 
@@ -106,4 +117,12 @@ private:
         TokenType::STRING,
         TokenType::TRUE,
         TokenType::FALSE};
+
+    std::unordered_map<TokenType, Type> token_to_type =
+        {
+            {TokenType::BOOL, Type::Bool},
+            {TokenType::STR, Type::String},
+            {TokenType::DEC, Type::Dec},
+            {TokenType::INT, Type::Int},
+            {TokenType::VOID, Type::Void}};
 };

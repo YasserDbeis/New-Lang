@@ -63,7 +63,9 @@ int main(int argc, char *argv[])
     }
     case COMPILER:
     {
-        // TODO
+        Parser parser(input);
+        parser.parse_program();
+        parser.print_func_instructions();
         break;
     }
     default:
