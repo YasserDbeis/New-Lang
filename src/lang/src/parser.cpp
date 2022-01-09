@@ -351,7 +351,6 @@ void Parser::parse_return_stmt()
     {
         return_node.set_no_expr();
     }
-    std::cout << "The return node should have been constructed!" << std::endl;
 
 #if TESTING
     return_node.id = "RETURN NODE";
@@ -675,7 +674,7 @@ void Parser::print_func_instructions()
     }
     for (auto node : func_instructions)
     {
-        std::cout << "NODE ID: " << std::endl;
+        std::cout << "NODE ID: " << node.id << std::endl;
     }
 }
 #endif
