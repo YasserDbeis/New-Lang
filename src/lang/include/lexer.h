@@ -18,6 +18,7 @@
 class Lexer
 {
 public:
+    Lexer();
     Lexer(std::string input); /* Constructs lexer class. Reads input argument and does lexical analysis */
     ~Lexer();                 /* Destructor */
 

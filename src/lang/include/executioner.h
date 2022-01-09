@@ -5,10 +5,12 @@
 */
 
 #pragma once
+
+#include "nodes/inst_node.h"
+#include "compiler.h"
 #include <string>
 #include <queue>
 #include <stack>
-#include "compiler.h"
 
 class Executioner
 {
@@ -18,4 +20,7 @@ public:
 
 private:
     Compiler compiler;
+
+    void execute_program();
+    void execute_inst_list(std::list<InstNode> inst_list);
 };

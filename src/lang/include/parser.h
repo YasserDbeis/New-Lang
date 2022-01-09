@@ -15,6 +15,8 @@ class Parser
 
 public:
     void parse_program();
+
+    Parser();
     Parser(std::string program);
     ~Parser();
 

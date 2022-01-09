@@ -14,6 +14,10 @@ public:
     void execute() override;
     Value evaluate();
 
+    FuncCallNode();
+    FuncCallNode(std::string id, std::vector<Expression> args);
+    FuncCallNode(ExprType type, std::string id, std::vector<Expression> args);
+
 private:
     std::string id;
     std::vector<Expression> args;

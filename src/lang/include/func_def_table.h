@@ -20,7 +20,7 @@ private:
     {
         std::list<InstNode> instruction_list;
         int max_global_count;
-        std::vector<Type, std::string> params;
+        std::vector<std::pair<Type, std::string>> params;
         Type return_type;
     } FuncDef;
 

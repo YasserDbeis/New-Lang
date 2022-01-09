@@ -14,6 +14,10 @@
 #include <iostream>
 #include <stdio.h>
 
+Lexer::Lexer()
+{
+}
+
 /*
     Constructor
     Input - input : string -> the code to be tokenized, parsed, and compiled

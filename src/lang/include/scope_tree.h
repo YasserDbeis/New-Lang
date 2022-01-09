@@ -22,8 +22,6 @@ public:
     std::pair<Value, bool> get_var(std::string name);
 
 private:
-    int last_entry;
-
     void push(std::unordered_map<std::string, Value>);
     void pop();
     bool in_curr_scope(std::string name);

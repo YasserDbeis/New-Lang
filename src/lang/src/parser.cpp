@@ -9,6 +9,10 @@
 #include "../include/parser.h"
 #include <iostream>
 
+Parser::Parser() : lexer()
+{
+}
+
 Parser::Parser(std::string program) : lexer(program)
 {
 }
