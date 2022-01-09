@@ -5,6 +5,8 @@
     Description: Header file for the parser object.
 */
 
+#pragma once
+
 #include "lexer.h"
 #include <unordered_set>
 
