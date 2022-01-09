@@ -19,7 +19,8 @@ enum class ErrorPhase
 {
     LEXICAL_ANALYSIS,
     PARSING,
-    COMPILATION
+    COMPILATION,
+    EXECUTION
 };
 enum class ErrorType
 {
@@ -46,7 +47,9 @@ enum ErrorCode
     INVALID_FACTOR,
     INVALID_ARG_LIST,
     INVALID_TYPE,
-    INVALID_OPERATOR
+    INVALID_OPERATOR,
+    FUNC_NOT_DEF,
+    FUNC_ALREADY_DEF
 };
 
 class ErrorHandler

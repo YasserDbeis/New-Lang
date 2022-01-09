@@ -9,6 +9,10 @@
 #include "../include/parser.h"
 #include <iostream>
 
+Parser::Parser() : lexer()
+{
+}
+
 Parser::Parser(std::string program) : lexer(program)
 {
 }
@@ -317,16 +321,28 @@ void Parser::parse_while_stmt()
 /*
     return_stmt -> RETURN expr SEMICOLON | RETURN SEMICOLON
 */
-void Parser::parse_return_stmt()
+void Parser::parse_return_stmt(std::list<InstNode> instructions)
 {
     expect(TokenType::RETURN);
 
     Token tok = lexer.peek();
 
+    ReturnNode return_node;
     if (first_of_expr.count(tok.type))
     {
-        parse_expr();
+        std::vector<ExprNode> ret_expr;
+        parse_expr(ret_expr);
+
+        Expression expr(ret_expr);
+        return_node.set_expr(expr);
     }
+    else
+    {
+        return_node.set_no_expr();
+    }
+
+    instructions.push_back(return_node);
+
     expect(TokenType::SEMICOLON);
 }
 

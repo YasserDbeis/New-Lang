@@ -5,14 +5,20 @@
     Description: Header file for the parser object.
 */
 
-#include "lexer.h"
+#pragma once
+
+#include "../include/lexer.h"
+#include "../include/nodes/nodes.h"
 #include <unordered_set>
+#include <list>
 
 class Parser
 {
 
 public:
     void parse_program();
+
+    Parser();
     Parser(std::string program);
     ~Parser();
 

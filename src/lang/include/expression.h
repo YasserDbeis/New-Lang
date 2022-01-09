@@ -10,6 +10,7 @@ public:
     Value value;
     std::vector<ExprNode> term_list;
 
+    Expression();
     Expression(std::vector<ExprNode> terms);
     Expression(Value value);
     void evaluate();

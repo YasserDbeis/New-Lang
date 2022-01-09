@@ -118,6 +118,14 @@ std::string ErrorHandler::code_to_msg(ErrorCode code)
     {
         return "Invalid operator";
     }
+    case FUNC_NOT_DEF:
+    {
+        return "Function not defined";
+    }
+    case FUNC_ALREADY_DEF:
+    {
+        return "Function already defined";
+    }
     default:
     {
         return "General Error";
