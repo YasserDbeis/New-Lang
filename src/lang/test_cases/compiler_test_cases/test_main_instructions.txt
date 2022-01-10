@@ -1,0 +1,22 @@
+func main(int x, int y)
+{
+    int x = 5;
+
+    while (x is 5)
+    {
+        test_call(x);
+    }
+    
+    int x = 5;
+    int x = call();
+
+    if(x is 10){
+        foo();        
+    } elsif(v < 3) {
+        x = x + 1;
+    } elsif(y > 2) {
+        bar();
+    }
+
+    return x;
+}

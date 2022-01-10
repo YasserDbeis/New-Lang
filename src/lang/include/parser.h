@@ -59,7 +59,7 @@ private:
     void parse_arg_list(std::vector<Expression> &expression_list);
     Type parse_type();
     void parse_operator(std::vector<ExprNode> &expr_list);
-    void parse_leading_op(std::vector<ExprNode> &expr_list);
+    Token parse_leading_op(std::vector<ExprNode> &expr_list);
 
     std::vector<InstNode> func_instructions;
     std::vector<InstNode> global_instructions;
@@ -122,8 +122,37 @@ private:
     std::unordered_map<TokenType, Type> token_to_type =
         {
             {TokenType::BOOL, Type::Bool},
+            {TokenType::TRUE, Type::Bool},
+            {TokenType::FALSE, Type::Bool},
             {TokenType::STR, Type::String},
+            {TokenType::STRING, Type::String},
             {TokenType::DEC, Type::Dec},
+            {TokenType::DEC_NUM, Type::Dec},
             {TokenType::INT, Type::Int},
+            {TokenType::INT_NUM, Type::Int},
             {TokenType::VOID, Type::Void}};
+
+    /*
+            enum class OperatorType
+{
+
+};
+*/
+
+    std::unordered_map<TokenType, OperatorType> operator_token_to_type =
+        {
+            {TokenType::OPERATOR_PLUS, OperatorType::PLUS},
+            {TokenType::OPERATOR_MINUS, OperatorType::MINUS},
+            {TokenType::OPERATOR_MULT, OperatorType::MULT},
+            {TokenType::OPERATOR_DIV, OperatorType::DIV},
+            {TokenType::OPERATOR_GT, OperatorType::GT},
+            {TokenType::OPERATOR_LT, OperatorType::LT},
+            {TokenType::OPERATOR_GEQ, OperatorType::GEQ},
+            {TokenType::OPERATOR_LEQ, OperatorType::LEQ},
+            {TokenType::OPERATOR_IS, OperatorType::IS},
+            {TokenType::OPERATOR_AND, OperatorType::AND},
+            {TokenType::OPERATOR_OR, OperatorType::OR},
+            {TokenType::OPERATOR_NOT, OperatorType::NOT},
+            {TokenType::OPERATOR_XCL, OperatorType::XCL},
+            {TokenType::OPERATOR_NEQ, OperatorType::NEQ}};
 };

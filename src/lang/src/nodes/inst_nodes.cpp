@@ -6,11 +6,7 @@ JmpNode implementation
 
 JmpNode::JmpNode()
 {
-}
-
-JmpNode::JmpNode(InstNode *target)
-{
-    this->target = target;
+    this->id = "JUMP NODE";
 }
 
 // Why not just return next? No need for override
@@ -21,33 +17,18 @@ CjmpNode implementation
 
 CjmpNode::CjmpNode()
 {
+    this->id = "CJMP NODE";
 }
 
 CjmpNode::CjmpNode(Expression expr)
 {
     this->expr = expr;
+    this->id = "CJMP NODE";
 }
 
 void CjmpNode::execute()
 {
     //expr.evaluate();
-}
-
-InstNode *CjmpNode::get_next()
-{
-    if (expr.value.token.type == TokenType::TRUE)
-    {
-        return next;
-    }
-    else if (expr.value.token.type == TokenType::FALSE)
-    {
-        return target;
-    }
-    else
-    {
-        // Error
-        return nullptr;
-    }
 }
 
 /* --------------------------------------------
@@ -56,6 +37,7 @@ StoreNode implementation
 
 StoreNode::StoreNode()
 {
+    this->id = "STORE NODE";
 }
 
 StoreNode::StoreNode(Type type, std::string name, Expression expr, int global_count, bool is_param)
@@ -65,6 +47,8 @@ StoreNode::StoreNode(Type type, std::string name, Expression expr, int global_co
     this->expr = expr;
     this->global_count = global_count;
     this->is_param = is_param;
+
+    this->id = "STORE NODE";
 }
 
 void StoreNode::execute()
@@ -102,6 +86,7 @@ ReturnNode implementation
 
 ReturnNode::ReturnNode()
 {
+    this->id = "RETURN NODE";
 }
 
 void ReturnNode::set_no_expr()
@@ -130,11 +115,13 @@ ScopeNode implementation
 
 ScopeNode::ScopeNode()
 {
+    this->id = "SCOPE NODE";
 }
 
 ScopeNode::ScopeNode(bool is_new_scope)
 {
     this->is_new_scope = is_new_scope;
+    this->id = "SCOPE NODE";
 }
 
 void ScopeNode::execute()

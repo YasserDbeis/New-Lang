@@ -15,10 +15,10 @@ public:
     Value evaluate();
 
     FuncCallNode();
-    FuncCallNode(std::string id, std::vector<Expression> args);
-    FuncCallNode(ExprType type, std::string id, std::vector<Expression> args);
+    FuncCallNode(std::string func_id, std::vector<Expression> args);
+    FuncCallNode(ExprType type, std::string func_id, std::vector<Expression> args);
 
 private:
-    std::string id;
+    std::string func_id;
     std::vector<Expression> args;
 };

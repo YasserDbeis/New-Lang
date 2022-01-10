@@ -8,10 +8,19 @@ LoadNode::LoadNode()
 {
 }
 
-LoadNode::LoadNode(ExprType type, std::string name, int global_count, bool is_constant)
+LoadNode::LoadNode(ExprType type, Type var_type, std::string name, int global_count, bool is_constant)
 {
     this->type = type;
+    this->var_type = var_type;
     this->name = name;
+    this->global_count = global_count;
+    this->is_constant = is_constant;
+}
+
+LoadNode::LoadNode(ExprType type, Value value, int global_count, bool is_constant)
+{
+    this->type = type;
+    this->value = value;
     this->global_count = global_count;
     this->is_constant = is_constant;
 }

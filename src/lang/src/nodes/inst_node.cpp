@@ -1,8 +1,13 @@
 #include "../../include/nodes/inst_node.h"
 
-InstNode *InstNode::get_next()
+void InstNode::set_offset(int new_offset)
 {
-    return next;
+    offset = new_offset;
+}
+
+int InstNode::get_offset()
+{
+    return offset;
 }
 
 void InstNode::execute()

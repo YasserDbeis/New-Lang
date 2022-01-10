@@ -6,10 +6,7 @@
 class JmpNode : public InstNode
 {
 public:
-    int target;
-
     JmpNode();
-    JmpNode(InstNode *target);
 };
 
 class CjmpNode : public InstNode
@@ -19,10 +16,8 @@ public:
     CjmpNode(Expression expr);
 
     void execute() override;
-    InstNode *get_next() override;
 
 private:
-    int target;
     Expression expr;
 };
 

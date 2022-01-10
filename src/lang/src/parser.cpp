@@ -386,34 +386,17 @@ void Parser::parse_while_stmt()
 
     expect(TokenType::RPAREN);
 
-    CjmpNode cjmp_node;
     int cjmp_index = func_instructions.size();
-
+    CjmpNode cjmp_node;
     func_instructions.push_back(cjmp_node);
 
     parse_body();
 
-    JmpNode jmp_node;
-    jmp_node.target = cjmp_index;
-
     int jmp_index = func_instructions.size();
+    JmpNode jmp_node;
+    jmp_node.set_offset(cjmp_index - jmp_index);
 
-    // Trying to cast InstNode to Cjmp
-    CjmpNode *cj = (CjmpNode *)&func_instructions[cjmp_index];
-    cj->target = jmp_index;
-
-    /*
-  Parent parent;
-  Child child;
-
-  // upcast - implicit type cast allowed
-  Parent *pParent = &child; 
-
-  // downcast - explicit type case required 
-  Child *pChild =  (Child *) &parent;
-
-    */
-
+    func_instructions[cjmp_index].set_offset(jmp_index - cjmp_index + 1);
     func_instructions.push_back(jmp_node);
 }
 
@@ -427,20 +410,15 @@ void Parser::parse_return_stmt()
     Token tok = lexer.peek();
 
     ReturnNode return_node;
+    std::vector<ExprNode> ret_expr;
+
     if (first_of_expr.count(tok.type))
     {
-        std::vector<ExprNode> ret_expr;
         parse_expr(ret_expr);
-        Expression expr(ret_expr);
-        return_node.set_expr(expr);
+    }
 
-        Expression expr(ret_expr);
-        return_node.set_expr(expr);
-    }
-    else
-    {
-        return_node.set_no_expr();
-    }
+    Expression expr(ret_expr);
+    return_node.set_expr(expr);
 
 #if TESTING
     return_node.id = "RETURN NODE";
@@ -495,9 +473,22 @@ void Parser::parse_if_blk()
 {
     expect(TokenType::IF);
     expect(TokenType::LPAREN);
-    parse_expr();
+
+    std::vector<ExprNode> expr_list;
+    parse_expr(expr_list);
+
+    int if_cjmp_ix = func_instructions.size();
+
+    Expression expr(expr_list);
+    CjmpNode cjmp_node(expr);
+
+    func_instructions.push_back(cjmp_node);
+
     expect(TokenType::RPAREN);
     parse_body();
+
+    int post_if_ix = func_instructions.size();
+    func_instructions[if_cjmp_ix].set_offset(post_if_ix - if_cjmp_ix);
 }
 
 /*
@@ -531,9 +522,22 @@ void Parser::parse_elsif_blk()
 {
     expect(TokenType::ELSIF);
     expect(TokenType::LPAREN);
-    parse_expr();
+
+    std::vector<ExprNode> expr_list;
+    parse_expr(expr_list);
+
+    int elsif_cjmp_ix = func_instructions.size();
+
+    Expression expr(expr_list);
+    CjmpNode cjmp_node(expr);
+
+    func_instructions.push_back(cjmp_node);
+
     expect(TokenType::RPAREN);
     parse_body();
+
+    int post_elsif_ix = func_instructions.size();
+    func_instructions[elsif_cjmp_ix].set_offset(post_elsif_ix - elsif_cjmp_ix);
 }
 
 /*
@@ -546,22 +550,10 @@ void Parser::parse_else_blk()
 }
 
 /*
-    expr -> OPERATOR term | term
+    expr -> term
 */
 void Parser::parse_expr(std::vector<ExprNode> &expr_list)
 {
-    Token tok = lexer.peek();
-
-    /*
-    if (leading_operators.count(tok.type))
-    {
-        parse_operator(expr_list);
-    }
-    else if (operators.count(tok.type))
-    {
-        ErrorHandler::error(ErrorPhase::PARSING, ErrorType::SYNTAX_ERROR, "At token " + tok.lexeme, tok.line_number, INVALID_OPERATOR);
-    }
-*/
     parse_term(expr_list);
 
     while (operators.count(lexer.peek().type))
@@ -607,7 +599,21 @@ void Parser::parse_factor(std::vector<ExprNode> &expr_list)
         }
         else
         {
-            expect(tok_0.type);
+            Token factor = expect(tok_0.type);
+            // LoadNode(type: ExprType, name: string, global_count: int, is_constant: bool)
+
+            if (factor.type == TokenType::ID)
+            {
+                LoadNode load_node(ExprType::LOAD, token_to_type[factor.type], factor.lexeme, global_count, false);
+                expr_list.push_back(load_node);
+            }
+            else
+            {
+                Value value;
+                value.token = factor;
+                value.type = token_to_type[factor.type];
+                LoadNode load_node(ExprType::LOAD, value, global_count, true);
+            }
         }
     }
     else if (tok_0.type == TokenType::LPAREN)
@@ -624,7 +630,50 @@ void Parser::parse_factor(std::vector<ExprNode> &expr_list)
     }
     else if (leading_operators.count(tok_0.type))
     {
-        parse_leading_op(expr_list);
+        TokenType leading_op_type = parse_leading_op(expr_list).type;
+
+        // Simulate terms in the expression to handle leading operator logic
+        if (leading_op_type == TokenType::OPERATOR_MINUS)
+        {
+            // push (0 - [expr])
+            ParenNode paren_left(ExprType::PAREN, true);
+            expr_list.push_back(paren_left);
+
+            Token zero_token;
+            zero_token.type = TokenType::INT_NUM;
+            zero_token.lexeme = "0";
+            zero_token.line_number = tok_0.line_number;
+
+            Value value;
+            value.type = Type::Int;
+            value.token = zero_token;
+
+            LoadNode zero_load(ExprType::LOAD, value, global_count, true);
+            expr_list.push_back(zero_load);
+
+            OperatorNode minus_node(ExprType::OPERATOR, OperatorType::MINUS);
+            expr_list.push_back(minus_node);
+        }
+        else if (leading_op_type == TokenType::OPERATOR_NOT || leading_op_type == TokenType::OPERATOR_XCL)
+        {
+            // push (false and [expr])
+            ParenNode paren_left(ExprType::PAREN, true);
+            expr_list.push_back(paren_left);
+
+            Token false_token;
+            false_token.type = TokenType::FALSE;
+            false_token.lexeme = "false";
+            false_token.line_number = tok_0.line_number;
+
+            Value value;
+            value.type = Type::Bool;
+            value.token = false_token;
+            LoadNode false_load(ExprType::LOAD, value, global_count, true);
+            expr_list.push_back(false_load);
+
+            OperatorNode and_node(ExprType::OPERATOR, OperatorType::AND);
+            expr_list.push_back(and_node);
+        }
 
         if (first_of_expr.count(tok_1.type) && tok_1.type != TokenType::STRING)
         {
@@ -646,7 +695,26 @@ void Parser::parse_factor(std::vector<ExprNode> &expr_list)
             }
             else
             {
-                expect(tok_1.type);
+                Token factor = expect(tok_1.type);
+
+                if (factor.type == TokenType::ID)
+                {
+                    LoadNode load_node(ExprType::LOAD, token_to_type[factor.type], factor.lexeme, global_count, false);
+                    expr_list.push_back(load_node);
+                }
+                else
+                {
+                    Value value;
+                    value.token = factor;
+                    value.type = token_to_type[factor.type];
+                    LoadNode load_node(ExprType::LOAD, value, global_count, true);
+                }
+            }
+
+            if (leading_op_type == TokenType::OPERATOR_MINUS || leading_op_type == TokenType::OPERATOR_NOT || leading_op_type == TokenType::OPERATOR_XCL)
+            {
+                ParenNode paren_right(ExprType::PAREN, false);
+                expr_list.push_back(paren_right);
             }
         }
         else
@@ -775,7 +843,9 @@ void Parser::parse_operator(std::vector<ExprNode> &expr_list)
 
     if (operators.count(tok.type))
     {
-        expect(tok.type);
+        Token op_token = expect(tok.type);
+        OperatorNode op_node(ExprType::OPERATOR, operator_token_to_type[op_token.type]);
+        expr_list.push_back(op_node);
     }
     else
     {
@@ -786,16 +856,18 @@ void Parser::parse_operator(std::vector<ExprNode> &expr_list)
 /*
     operator -> OPERATOR_PLUS |
                 OPERATOR_MINUS |
-                OPERATOR_NOT |
+                OPERATOR_NOT | 
                 OPERATOR_XCL
 */
-void Parser::parse_leading_op(std::vector<ExprNode> &expr_list)
+Token Parser::parse_leading_op(std::vector<ExprNode> &expr_list)
 {
     Token tok = lexer.peek();
 
     if (leading_operators.count(tok.type))
     {
         expect(tok.type);
+
+        return tok;
     }
     else
     {
@@ -806,13 +878,17 @@ void Parser::parse_leading_op(std::vector<ExprNode> &expr_list)
 #if TESTING
 void Parser::print_func_instructions()
 {
-    if (func_instructions.empty())
+    std::vector<InstNode> instructions = FuncDefTable::get_function("main");
+    if (instructions.empty())
     {
-        std::cout << "Empty!" << std::endl;
+        std::cout << "Empty\n";
     }
-    for (auto node : func_instructions)
+    else
     {
-        std::cout << "NODE ID: " << node.id << std::endl;
+        for (auto inst_node : instructions)
+        {
+            std::cout << inst_node.id << std::endl;
+        }
     }
 }
 #endif

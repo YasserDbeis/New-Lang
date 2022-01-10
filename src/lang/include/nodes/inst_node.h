@@ -10,10 +10,12 @@
 class InstNode
 {
 public:
-    InstNode *next = nullptr;
-
     std::string id;
 
     virtual void execute();
-    virtual InstNode *get_next();
+    int get_offset();
+    void set_offset(int new_offset);
+
+private:
+    int offset = 1;
 };

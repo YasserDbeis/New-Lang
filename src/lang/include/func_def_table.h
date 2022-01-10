@@ -11,7 +11,7 @@
 class FuncDefTable
 {
 public:
-    static std::list<InstNode> get_function(std::string id);
+    static std::vector<InstNode> get_function(std::string id);
     static int get_global_count(std::string id);
     static std::vector<std::pair<Type, std::string>> get_params(std::string id);
     static Type get_return_type(std::string id);

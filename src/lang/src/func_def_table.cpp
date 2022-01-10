@@ -1,6 +1,6 @@
 #include "../include/func_def_table.h"
 
-void FuncDefTable::add_entry(std::string id, int global_count, std::vector<std::pair<Type, std::string>> params, Type return_type, std::list<InstNode> inst_list)
+void FuncDefTable::add_entry(std::string id, int global_count, std::vector<std::pair<Type, std::string>> params, Type return_type, std::vector<InstNode> inst_list)
 {
     assert_func_not_exists(id);
 
@@ -13,7 +13,7 @@ void FuncDefTable::add_entry(std::string id, int global_count, std::vector<std::
     table[id] = func_def;
 }
 
-std::list<InstNode> FuncDefTable::get_function(std::string id)
+std::vector<InstNode> FuncDefTable::get_function(std::string id)
 {
     assert_func_exists(id);
     return table[id].instruction_list;

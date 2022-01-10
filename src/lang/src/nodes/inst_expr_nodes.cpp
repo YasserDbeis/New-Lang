@@ -6,18 +6,22 @@ FuncCallNode Implementation
 
 FuncCallNode::FuncCallNode()
 {
+    this->id = "FUNC CALL NODE";
 }
 
-FuncCallNode::FuncCallNode(std::string id, std::vector<Expression> args)
+FuncCallNode::FuncCallNode(std::string func_id, std::vector<Expression> args)
 {
-    this->id = id;
+    this->func_id = func_id;
     this->args = args;
+
+    this->id = "FUNC CALL NODE";
 }
 
-FuncCallNode::FuncCallNode(ExprType type, std::string id, std::vector<Expression>)
+FuncCallNode::FuncCallNode(ExprType type, std::string func_id, std::vector<Expression>)
 {
     this->type = type;
-    FuncCallNode(id, args);
+    FuncCallNode(func_id, args);
+    this->id = "FUNC CALL NODE";
 }
 
 /* Override */
