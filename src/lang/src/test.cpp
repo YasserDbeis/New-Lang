@@ -65,7 +65,14 @@ int main(int argc, char *argv[])
     {
         Parser parser(input);
         parser.parse_program();
-        parser.print_func_instructions();
+        std::cout << "----------------------" << std::endl;
+        std::cout << "GLOBAL INSTRUCTIONS" << std::endl;
+        std::cout << "----------------------" << std::endl;
+        parser.print_instructions(parser.getGlobalInstructions());
+        std::cout << "----------------------" << std::endl;
+        std::cout << "FUNCTION INSTRUCTIONS" << std::endl;
+        std::cout << "----------------------" << std::endl;
+        parser.print_instructions(FuncDefTable::get_function("main"));
         break;
     }
     default:
