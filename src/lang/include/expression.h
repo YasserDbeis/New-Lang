@@ -8,10 +8,12 @@ class Expression
 {
 public:
     Value value;
-    std::vector<ExprNode> term_list;
+    std::vector<ExprNode*> term_list;
 
     Expression();
-    Expression(std::vector<ExprNode> terms);
+    Expression(std::vector<ExprNode*> terms);
     Expression(Value value);
     void evaluate();
+
+    void print_expr();
 };

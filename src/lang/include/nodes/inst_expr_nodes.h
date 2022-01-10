@@ -20,15 +20,27 @@ public:
 
     void inst_print() override
     {
-        std::cout << "Func Call // OFFSET: " << this->get_offset() << " FUNC ID: " << func_id << " ";
+        std::cout << "Func Call // OFFSET: " << this->get_offset() << " FUNC ID: " << func_id << std::endl;
         if (args.empty())
         {
             std::cout << "ARGUMENTS: none" << std::endl;
         }
         else
         {
-            // print arguments
+            int i = 0;
+            for (auto arg : args)
+            {
+                std::cout << "arg " << i << ": ";
+                arg.print_expr();
+                i++;
+            }
         }
+    }
+
+
+    void expr_print() override
+    {
+        inst_print();
     }
 
 private:

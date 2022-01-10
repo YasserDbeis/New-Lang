@@ -62,8 +62,10 @@ OperatorNode::OperatorNode()
 {
 }
 
-OperatorNode::OperatorNode(ExprType type, OperatorType)
+OperatorNode::OperatorNode(ExprType type, OperatorType op_type)
 {
+    this->type = type;
+    this->operator_type = op_type; 
 }
 
 // Nothing to do

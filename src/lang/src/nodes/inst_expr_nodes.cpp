@@ -16,10 +16,10 @@ FuncCallNode::FuncCallNode(std::string func_id, std::vector<Expression> args)
 
 FuncCallNode::FuncCallNode(ExprType type, std::string func_id, std::vector<Expression> args)
 {
+    this->func_id = func_id;
     this->type = type;
     this->func_id = func_id;
-
-    FuncCallNode(func_id, args);
+    this->args = args;
 }
 
 /* Override */

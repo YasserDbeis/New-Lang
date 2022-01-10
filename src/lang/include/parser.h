@@ -49,15 +49,15 @@ private:
     void parse_elsif_blks();
     void parse_elsif_blk();
     void parse_else_blk();
-    void parse_expr(std::vector<ExprNode> &expr_list);
-    void parse_term(std::vector<ExprNode> &expr_list);
-    void parse_factor(std::vector<ExprNode> &expr_list);
+    void parse_expr(std::vector<ExprNode*> &expr_list);
+    void parse_term(std::vector<ExprNode*> &expr_list);
+    void parse_factor(std::vector<ExprNode*> &expr_list);
     void parse_func_stmt_call();
-    void parse_func_expr_call(std::vector<ExprNode> &expr_list);
+    void parse_func_expr_call(std::vector<ExprNode*> &expr_list);
     void parse_arg_list(std::vector<Expression> &expression_list);
     Type parse_type();
-    void parse_operator(std::vector<ExprNode> &expr_list);
-    Token parse_leading_op(std::vector<ExprNode> &expr_list);
+    void parse_operator(std::vector<ExprNode*> &expr_list);
+    Token parse_leading_op(std::vector<ExprNode*> &expr_list);
 
     std::vector<InstNode *> func_instructions;
     std::vector<InstNode *> global_instructions;

@@ -26,7 +26,10 @@ public:
     void inst_print() override
     {
         std::cout << "CJMP // "
-                  << "OFFSET : " << this->get_offset() << std::endl;
+                  << "OFFSET : " << this->get_offset() 
+                  << ", Expression: " << std::endl;
+        expr.print_expr();
+        std::cout << std::endl;
     }
 
 private:
@@ -69,7 +72,9 @@ public:
                   << ", NAME: " << this->name
                   << ", GCOUNT: " << this->global_count
                   << ", IS PARAM: " << this->is_param
-                  << ", TYPE: " << type_to_str[this->type];
+                  << ", TYPE: " << type_to_str[this->type]
+                  << ", Expression: " << std::endl;
+        expr.print_expr();
 
         std::cout << std::endl;
     }
@@ -94,11 +99,9 @@ public:
     void inst_print() override
     {
         std::cout << "RETURN // "
-                  << "OFFSET: " << this->get_offset();
-        if (expr.term_list.empty() == false)
-        {
-            // print expression
-        }
+                  << "OFFSET: " << this->get_offset()
+                  << ", Expression:" << std::endl;
+        expr.print_expr();
         std::cout << std::endl;
     }
 

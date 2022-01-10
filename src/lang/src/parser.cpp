@@ -113,7 +113,7 @@ void Parser::parse_var_decl(bool is_global)
     expect(TokenType::SEMICOLON);
 
     // EMPTY "terms" vector of Expression indicates empty expression
-    std::vector<ExprNode> empty_term_list;
+    std::vector<ExprNode*> empty_term_list;
     Expression empty_expr(empty_term_list);
 
     StoreNode *store_node = new StoreNode(type, id, empty_expr, global_count, false);
@@ -202,7 +202,7 @@ void Parser::parse_param_list(std::vector<std::pair<Type, std::string>> &param_l
     param_list.push_back(param);
 
     // EMPTY "terms" vector of Expression indicates empty expression
-    std::vector<ExprNode> empty_term_list;
+    std::vector<ExprNode*> empty_term_list;
     Expression empty_expr(empty_term_list);
 
     Type type = param.first;
@@ -355,7 +355,7 @@ void Parser::parse_assign_stmt(Type type, bool is_global)
 
     expect(TokenType::EQUAL);
 
-    std::vector<ExprNode> expr_list;
+    std::vector<ExprNode*> expr_list;
     parse_expr(expr_list);
 
     expect(TokenType::SEMICOLON);
@@ -380,7 +380,7 @@ void Parser::parse_while_stmt()
     expect(TokenType::WHILE);
     expect(TokenType::LPAREN);
 
-    std::vector<ExprNode> expr_list;
+    std::vector<ExprNode*> expr_list;
     parse_expr(expr_list);
     Expression expr(expr_list);
 
@@ -410,7 +410,7 @@ void Parser::parse_return_stmt()
     Token tok = lexer.peek();
 
     ReturnNode *return_node = new ReturnNode();
-    std::vector<ExprNode> ret_expr;
+    std::vector<ExprNode*> ret_expr;
 
     if (first_of_expr.count(tok.type))
     {
@@ -470,7 +470,7 @@ void Parser::parse_if_blk()
     expect(TokenType::IF);
     expect(TokenType::LPAREN);
 
-    std::vector<ExprNode> expr_list;
+    std::vector<ExprNode*> expr_list;
     parse_expr(expr_list);
 
     int if_cjmp_ix = func_instructions.size();
@@ -519,7 +519,7 @@ void Parser::parse_elsif_blk()
     expect(TokenType::ELSIF);
     expect(TokenType::LPAREN);
 
-    std::vector<ExprNode> expr_list;
+    std::vector<ExprNode*> expr_list;
     parse_expr(expr_list);
 
     int elsif_cjmp_ix = func_instructions.size();
@@ -548,7 +548,7 @@ void Parser::parse_else_blk()
 /*
     expr -> term
 */
-void Parser::parse_expr(std::vector<ExprNode> &expr_list)
+void Parser::parse_expr(std::vector<ExprNode*> &expr_list)
 {
     parse_term(expr_list);
 
@@ -562,7 +562,7 @@ void Parser::parse_expr(std::vector<ExprNode> &expr_list)
 /*
     term -> factor | factor OPERATOR factor
 */
-void Parser::parse_term(std::vector<ExprNode> &expr_list)
+void Parser::parse_term(std::vector<ExprNode*> &expr_list)
 {
     parse_factor(expr_list);
 
@@ -578,7 +578,7 @@ void Parser::parse_term(std::vector<ExprNode> &expr_list)
     factor -> leading_op ID | leading_op func_call | leading_op TRUE | leading_op FALSE | leading_op LPAREN expr RPAREN
     factor -> leading_op INT_NUM | leading_op DEC_NUM
 */
-void Parser::parse_factor(std::vector<ExprNode> &expr_list)
+void Parser::parse_factor(std::vector<ExprNode*> &expr_list)
 {
     Token tok_0 = lexer.peek();
     Token tok_1 = lexer.peek(1);
@@ -600,7 +600,7 @@ void Parser::parse_factor(std::vector<ExprNode> &expr_list)
 
             if (factor.type == TokenType::ID)
             {
-                LoadNode load_node(ExprType::LOAD, token_to_type[factor.type], factor.lexeme, global_count, false);
+                LoadNode *load_node = new LoadNode(ExprType::LOAD, token_to_type[factor.type], factor.lexeme, global_count, false);
                 expr_list.push_back(load_node);
             }
             else
@@ -608,20 +608,21 @@ void Parser::parse_factor(std::vector<ExprNode> &expr_list)
                 Value value;
                 value.token = factor;
                 value.type = token_to_type[factor.type];
-                LoadNode load_node(ExprType::LOAD, value, global_count, true);
+                LoadNode *load_node = new LoadNode(ExprType::LOAD, value, global_count, true);
+                expr_list.push_back(load_node);
             }
         }
     }
     else if (tok_0.type == TokenType::LPAREN)
     {
         expect(TokenType::LPAREN);
-        ParenNode lParenNode(ExprType::PAREN, true);
+        ParenNode *lParenNode = new ParenNode(ExprType::PAREN, true);
         expr_list.push_back(lParenNode);
 
         parse_expr(expr_list);
 
         expect(TokenType::RPAREN);
-        ParenNode rParenNode(ExprType::PAREN, false);
+        ParenNode *rParenNode = new ParenNode(ExprType::PAREN, false);
         expr_list.push_back(rParenNode);
     }
     else if (leading_operators.count(tok_0.type))
@@ -632,7 +633,7 @@ void Parser::parse_factor(std::vector<ExprNode> &expr_list)
         if (leading_op_type == TokenType::OPERATOR_MINUS)
         {
             // push (0 - [expr])
-            ParenNode paren_left(ExprType::PAREN, true);
+            ParenNode *paren_left = new ParenNode(ExprType::PAREN, true);
             expr_list.push_back(paren_left);
 
             Token zero_token;
@@ -644,16 +645,16 @@ void Parser::parse_factor(std::vector<ExprNode> &expr_list)
             value.type = Type::Int;
             value.token = zero_token;
 
-            LoadNode zero_load(ExprType::LOAD, value, global_count, true);
+            LoadNode *zero_load = new LoadNode(ExprType::LOAD, value, global_count, true);
             expr_list.push_back(zero_load);
 
-            OperatorNode minus_node(ExprType::OPERATOR, OperatorType::MINUS);
+            OperatorNode *minus_node = new OperatorNode(ExprType::OPERATOR, OperatorType::MINUS);
             expr_list.push_back(minus_node);
         }
         else if (leading_op_type == TokenType::OPERATOR_NOT || leading_op_type == TokenType::OPERATOR_XCL)
         {
             // push (true xor [expr])
-            ParenNode paren_left(ExprType::PAREN, true);
+            ParenNode *paren_left = new ParenNode(ExprType::PAREN, true);
             expr_list.push_back(paren_left);
 
             Token true_token;
@@ -664,10 +665,10 @@ void Parser::parse_factor(std::vector<ExprNode> &expr_list)
             Value value;
             value.type = Type::Bool;
             value.token = true_token;
-            LoadNode true_load(ExprType::LOAD, value, global_count, true);
+            LoadNode *true_load = new LoadNode(ExprType::LOAD, value, global_count, true);
             expr_list.push_back(true_load);
 
-            OperatorNode xor_node(ExprType::OPERATOR, OperatorType::XOR);
+            OperatorNode *xor_node = new OperatorNode(ExprType::OPERATOR, OperatorType::XOR);
             expr_list.push_back(xor_node);
         }
 
@@ -680,13 +681,13 @@ void Parser::parse_factor(std::vector<ExprNode> &expr_list)
             else if (tok_1.type == TokenType::LPAREN)
             {
                 expect(TokenType::LPAREN);
-                ParenNode lParenNode(ExprType::PAREN, true);
+                ParenNode *lParenNode = new ParenNode(ExprType::PAREN, true);
                 expr_list.push_back(lParenNode);
 
                 parse_expr(expr_list);
 
                 expect(TokenType::RPAREN);
-                ParenNode rParenNode(ExprType::PAREN, false);
+                ParenNode *rParenNode = new ParenNode(ExprType::PAREN, false);
                 expr_list.push_back(rParenNode);
             }
             else
@@ -695,7 +696,7 @@ void Parser::parse_factor(std::vector<ExprNode> &expr_list)
 
                 if (factor.type == TokenType::ID)
                 {
-                    LoadNode load_node(ExprType::LOAD, token_to_type[factor.type], factor.lexeme, global_count, false);
+                    LoadNode *load_node = new LoadNode(ExprType::LOAD, token_to_type[factor.type], factor.lexeme, global_count, false);
                     expr_list.push_back(load_node);
                 }
                 else
@@ -703,13 +704,14 @@ void Parser::parse_factor(std::vector<ExprNode> &expr_list)
                     Value value;
                     value.token = factor;
                     value.type = token_to_type[factor.type];
-                    LoadNode load_node(ExprType::LOAD, value, global_count, true);
+                    LoadNode *load_node = new LoadNode(ExprType::LOAD, value, global_count, true);
+                    expr_list.push_back(load_node);
                 }
             }
 
             if (leading_op_type == TokenType::OPERATOR_MINUS || leading_op_type == TokenType::OPERATOR_NOT || leading_op_type == TokenType::OPERATOR_XCL)
             {
-                ParenNode paren_right(ExprType::PAREN, false);
+                ParenNode *paren_right = new ParenNode(ExprType::PAREN, false);
                 expr_list.push_back(paren_right);
             }
         }
@@ -752,7 +754,7 @@ void Parser::parse_func_stmt_call()
     func_call -> ID LPAREN arg_list RPAREN
     func_call -> ID LPAREN RPAREN
 */
-void Parser::parse_func_expr_call(std::vector<ExprNode> &expr_list)
+void Parser::parse_func_expr_call(std::vector<ExprNode*> &expr_list)
 {
     std::string id = expect(TokenType::ID).lexeme;
     expect(TokenType::LPAREN);
@@ -767,7 +769,7 @@ void Parser::parse_func_expr_call(std::vector<ExprNode> &expr_list)
 
     expect(TokenType::RPAREN);
 
-    FuncCallNode func_node(ExprType::FUNC_CALL, id, expression_list);
+    FuncCallNode *func_node = new FuncCallNode(ExprType::FUNC_CALL, id, expression_list);
 
     expr_list.push_back(func_node);
 }
@@ -777,7 +779,7 @@ void Parser::parse_func_expr_call(std::vector<ExprNode> &expr_list)
 */
 void Parser::parse_arg_list(std::vector<Expression> &expression_list)
 {
-    std::vector<ExprNode> expr_list;
+    std::vector<ExprNode*> expr_list;
     parse_expr(expr_list);
 
     Expression expr(expr_list);
@@ -834,14 +836,14 @@ Type Parser::parse_type()
                 OPERATOR_XCL |
                 OPERATOR_NEQ |
 */
-void Parser::parse_operator(std::vector<ExprNode> &expr_list)
+void Parser::parse_operator(std::vector<ExprNode*> &expr_list)
 {
     Token tok = lexer.peek();
 
     if (operators.count(tok.type))
     {
         Token op_token = expect(tok.type);
-        OperatorNode op_node(ExprType::OPERATOR, operator_token_to_type[op_token.type]);
+        OperatorNode *op_node = new OperatorNode(ExprType::OPERATOR, operator_token_to_type[op_token.type]);
         expr_list.push_back(op_node);
     }
     else
@@ -856,7 +858,7 @@ void Parser::parse_operator(std::vector<ExprNode> &expr_list)
                 OPERATOR_NOT | 
                 OPERATOR_XCL
 */
-Token Parser::parse_leading_op(std::vector<ExprNode> &expr_list)
+Token Parser::parse_leading_op(std::vector<ExprNode*> &expr_list)
 {
     Token tok = lexer.peek();
 
