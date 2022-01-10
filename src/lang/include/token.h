@@ -39,6 +39,7 @@ enum class TokenType
     OPERATOR_AND,
     OPERATOR_OR,
     OPERATOR_NOT,
+    OPERATOR_XOR,
     OPERATOR_XCL,
     OPERATOR_NEQ,
     LBRACE,

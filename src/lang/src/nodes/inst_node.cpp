@@ -14,3 +14,8 @@ void InstNode::execute()
 {
     /* Does nothing unless overridden by child class */
 }
+
+void InstNode::inst_print()
+{
+    std::cout << "Default called\n";
+}

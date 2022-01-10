@@ -32,7 +32,7 @@ public:
 private:
     std::unordered_set<std::string> terminals /* Set containing language key words */
         {";", "->", ",", "=", "bool", "int", "dec", "str", "void", "true", "false", "+", "-", "*", "/", ">", "<",
-         ">=", "<=", "is", "and", "or", "not", "!", "{", "{", "(", ")", "while", "if", "elsif", "else", "func", "return"};
+         ">=", "<=", "is", "and", "or", "not", "xor", "!", "{", "{", "(", ")", "while", "if", "elsif", "else", "func", "return"};
 
     std::unordered_map<std::string, TokenType> terminal_to_token_type =
         {
@@ -59,6 +59,7 @@ private:
             {"and", TokenType::OPERATOR_AND},
             {"or", TokenType::OPERATOR_OR},
             {"not", TokenType::OPERATOR_NOT},
+            {"xor", TokenType::OPERATOR_XOR},
             {"!=", TokenType::OPERATOR_NEQ},
             {"!", TokenType::OPERATOR_XCL},
             {"{", TokenType::LBRACE},
@@ -113,6 +114,7 @@ private:
                                                                  {TokenType::OPERATOR_AND, "OPERATOR_AND"},
                                                                  {TokenType::OPERATOR_OR, "OPERATOR_OR"},
                                                                  {TokenType::OPERATOR_NOT, "OPERATOR_NOT"},
+                                                                 {TokenType::OPERATOR_XOR, "OPERATOR_XOR"},
                                                                  {TokenType::OPERATOR_XCL, "OPERATOR_XCL"},
                                                                  {TokenType::OPERATOR_NEQ, "OPERATOR_NEQ"},
                                                                  {TokenType::LBRACE, "LBRACE"},

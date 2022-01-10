@@ -6,15 +6,16 @@
 #pragma once
 
 #include <string>
+#include <iostream>
 
 class InstNode
 {
 public:
-    std::string id;
-
     virtual void execute();
     int get_offset();
     void set_offset(int new_offset);
+
+    virtual void inst_print();
 
 private:
     int offset = 1;

@@ -11,17 +11,17 @@
 class FuncDefTable
 {
 public:
-    static std::vector<InstNode> get_function(std::string id);
+    static std::vector<InstNode *> get_function(std::string id);
     static int get_global_count(std::string id);
     static std::vector<std::pair<Type, std::string>> get_params(std::string id);
     static Type get_return_type(std::string id);
 
-    static void add_entry(std::string id, int global_count, std::vector<std::pair<Type, std::string>> params, Type return_type, std::vector<InstNode> inst_list);
+    static void add_entry(std::string id, int global_count, std::vector<std::pair<Type, std::string>> params, Type return_type, std::vector<InstNode *> inst_list);
 
 private:
     typedef struct FuncDef
     {
-        std::vector<InstNode> instruction_list;
+        std::vector<InstNode *> instruction_list;
         int max_global_count;
         std::vector<std::pair<Type, std::string>> params;
         Type return_type;

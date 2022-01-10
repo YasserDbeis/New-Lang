@@ -6,7 +6,6 @@ JmpNode implementation
 
 JmpNode::JmpNode()
 {
-    this->id = "JUMP NODE";
 }
 
 // Why not just return next? No need for override
@@ -17,13 +16,11 @@ CjmpNode implementation
 
 CjmpNode::CjmpNode()
 {
-    this->id = "CJMP NODE";
 }
 
 CjmpNode::CjmpNode(Expression expr)
 {
     this->expr = expr;
-    this->id = "CJMP NODE";
 }
 
 void CjmpNode::execute()
@@ -37,7 +34,6 @@ StoreNode implementation
 
 StoreNode::StoreNode()
 {
-    this->id = "STORE NODE";
 }
 
 StoreNode::StoreNode(Type type, std::string name, Expression expr, int global_count, bool is_param)
@@ -47,8 +43,6 @@ StoreNode::StoreNode(Type type, std::string name, Expression expr, int global_co
     this->expr = expr;
     this->global_count = global_count;
     this->is_param = is_param;
-
-    this->id = "STORE NODE";
 }
 
 void StoreNode::execute()
@@ -86,12 +80,6 @@ ReturnNode implementation
 
 ReturnNode::ReturnNode()
 {
-    this->id = "RETURN NODE";
-}
-
-void ReturnNode::set_no_expr()
-{
-    expr_exists = false;
 }
 
 void ReturnNode::set_expr(Expression given_expr)
@@ -115,13 +103,11 @@ ScopeNode implementation
 
 ScopeNode::ScopeNode()
 {
-    this->id = "SCOPE NODE";
 }
 
 ScopeNode::ScopeNode(bool is_new_scope)
 {
     this->is_new_scope = is_new_scope;
-    this->id = "SCOPE NODE";
 }
 
 void ScopeNode::execute()

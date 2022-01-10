@@ -116,7 +116,7 @@ void Parser::parse_var_decl(bool is_global)
     std::vector<ExprNode> empty_term_list;
     Expression empty_expr(empty_term_list);
 
-    StoreNode store_node(type, id, empty_expr, global_count, false);
+    StoreNode *store_node = new StoreNode(type, id, empty_expr, global_count, false);
 
     if (is_global == true)
     {
@@ -143,7 +143,7 @@ void Parser::parse_var_def(bool is_global)
 */
 void Parser::parse_func_def()
 {
-    ScopeNode scope_node(true); // Create new scope
+    ScopeNode *scope_node = new ScopeNode(true); // Create new scope
     func_instructions.push_back(scope_node);
 
     expect(TokenType::FUNC);
@@ -208,7 +208,7 @@ void Parser::parse_param_list(std::vector<std::pair<Type, std::string>> &param_l
     Type type = param.first;
     std::string name = param.second;
 
-    StoreNode store_node(type, name, empty_expr, global_count, true);
+    StoreNode *store_node = new StoreNode(type, name, empty_expr, global_count, true);
 
     func_instructions.push_back(store_node);
 
@@ -249,7 +249,7 @@ void Parser::parse_body(bool scope_cooked)
 
     if (scope_cooked == false)
     {
-        ScopeNode scope_start_node(true);
+        ScopeNode *scope_start_node = new ScopeNode(true);
         func_instructions.push_back(scope_start_node);
     }
 
@@ -261,7 +261,7 @@ void Parser::parse_body(bool scope_cooked)
     }
 
     expect(TokenType::RBRACE);
-    ScopeNode scope_end_node(false);
+    ScopeNode *scope_end_node = new ScopeNode(false);
     func_instructions.push_back(scope_end_node);
 }
 
@@ -360,7 +360,7 @@ void Parser::parse_assign_stmt(Type type, bool is_global)
 
     expect(TokenType::SEMICOLON);
 
-    StoreNode store_node(type, id, expr_list, global_count, false);
+    StoreNode *store_node = new StoreNode(type, id, expr_list, global_count, false);
 
     if (is_global)
     {
@@ -387,16 +387,16 @@ void Parser::parse_while_stmt()
     expect(TokenType::RPAREN);
 
     int cjmp_index = func_instructions.size();
-    CjmpNode cjmp_node;
+    CjmpNode *cjmp_node = new CjmpNode();
     func_instructions.push_back(cjmp_node);
 
     parse_body();
 
     int jmp_index = func_instructions.size();
-    JmpNode jmp_node;
-    jmp_node.set_offset(cjmp_index - jmp_index);
+    JmpNode *jmp_node = new JmpNode();
+    jmp_node->set_offset(cjmp_index - jmp_index);
 
-    func_instructions[cjmp_index].set_offset(jmp_index - cjmp_index + 1);
+    func_instructions[cjmp_index]->set_offset(jmp_index - cjmp_index + 1);
     func_instructions.push_back(jmp_node);
 }
 
@@ -409,7 +409,7 @@ void Parser::parse_return_stmt()
 
     Token tok = lexer.peek();
 
-    ReturnNode return_node;
+    ReturnNode *return_node = new ReturnNode();
     std::vector<ExprNode> ret_expr;
 
     if (first_of_expr.count(tok.type))
@@ -418,11 +418,7 @@ void Parser::parse_return_stmt()
     }
 
     Expression expr(ret_expr);
-    return_node.set_expr(expr);
-
-#if TESTING
-    return_node.id = "RETURN NODE";
-#endif
+    return_node->set_expr(expr);
 
     func_instructions.push_back(return_node);
 
@@ -480,7 +476,7 @@ void Parser::parse_if_blk()
     int if_cjmp_ix = func_instructions.size();
 
     Expression expr(expr_list);
-    CjmpNode cjmp_node(expr);
+    CjmpNode *cjmp_node = new CjmpNode(expr);
 
     func_instructions.push_back(cjmp_node);
 
@@ -488,7 +484,7 @@ void Parser::parse_if_blk()
     parse_body();
 
     int post_if_ix = func_instructions.size();
-    func_instructions[if_cjmp_ix].set_offset(post_if_ix - if_cjmp_ix);
+    func_instructions[if_cjmp_ix]->set_offset(post_if_ix - if_cjmp_ix);
 }
 
 /*
@@ -529,7 +525,7 @@ void Parser::parse_elsif_blk()
     int elsif_cjmp_ix = func_instructions.size();
 
     Expression expr(expr_list);
-    CjmpNode cjmp_node(expr);
+    CjmpNode *cjmp_node = new CjmpNode(expr);
 
     func_instructions.push_back(cjmp_node);
 
@@ -537,7 +533,7 @@ void Parser::parse_elsif_blk()
     parse_body();
 
     int post_elsif_ix = func_instructions.size();
-    func_instructions[elsif_cjmp_ix].set_offset(post_elsif_ix - elsif_cjmp_ix);
+    func_instructions[elsif_cjmp_ix]->set_offset(post_elsif_ix - elsif_cjmp_ix);
 }
 
 /*
@@ -656,23 +652,23 @@ void Parser::parse_factor(std::vector<ExprNode> &expr_list)
         }
         else if (leading_op_type == TokenType::OPERATOR_NOT || leading_op_type == TokenType::OPERATOR_XCL)
         {
-            // push (false and [expr])
+            // push (true xor [expr])
             ParenNode paren_left(ExprType::PAREN, true);
             expr_list.push_back(paren_left);
 
-            Token false_token;
-            false_token.type = TokenType::FALSE;
-            false_token.lexeme = "false";
-            false_token.line_number = tok_0.line_number;
+            Token true_token;
+            true_token.type = TokenType::TRUE;
+            true_token.lexeme = "true";
+            true_token.line_number = tok_0.line_number;
 
             Value value;
             value.type = Type::Bool;
-            value.token = false_token;
-            LoadNode false_load(ExprType::LOAD, value, global_count, true);
-            expr_list.push_back(false_load);
+            value.token = true_token;
+            LoadNode true_load(ExprType::LOAD, value, global_count, true);
+            expr_list.push_back(true_load);
 
-            OperatorNode and_node(ExprType::OPERATOR, OperatorType::AND);
-            expr_list.push_back(and_node);
+            OperatorNode xor_node(ExprType::OPERATOR, OperatorType::XOR);
+            expr_list.push_back(xor_node);
         }
 
         if (first_of_expr.count(tok_1.type) && tok_1.type != TokenType::STRING)
@@ -747,7 +743,7 @@ void Parser::parse_func_stmt_call()
 
     expect(TokenType::RPAREN);
 
-    FuncCallNode func_node(ExprType::FUNC_CALL, id, expression_list);
+    FuncCallNode *func_node = new FuncCallNode(ExprType::FUNC_CALL, id, expression_list);
 
     func_instructions.push_back(func_node);
 }
@@ -834,6 +830,7 @@ Type Parser::parse_type()
                 OPERATOR_AND |
                 OPERATOR_OR |
                 OPERATOR_NOT |
+                OPERATOR_XOR |
                 OPERATOR_XCL |
                 OPERATOR_NEQ |
 */
@@ -875,10 +872,9 @@ Token Parser::parse_leading_op(std::vector<ExprNode> &expr_list)
     }
 }
 
-#if TESTING
 void Parser::print_func_instructions()
 {
-    std::vector<InstNode> instructions = FuncDefTable::get_function("main");
+    std::vector<InstNode *> instructions = FuncDefTable::get_function("main");
     if (instructions.empty())
     {
         std::cout << "Empty\n";
@@ -887,8 +883,7 @@ void Parser::print_func_instructions()
     {
         for (auto inst_node : instructions)
         {
-            std::cout << inst_node.id << std::endl;
+            inst_node->inst_print();
         }
     }
 }
-#endif

@@ -6,7 +6,6 @@
 */
 
 #pragma once
-#define TESTING 1
 
 #include "../include/lexer.h"
 #include "../include/nodes/nodes.h"
@@ -14,6 +13,7 @@
 #include "../include/value.h"
 #include <unordered_set>
 #include <vector>
+#include <memory>
 
 class Parser
 {
@@ -25,9 +25,7 @@ public:
     Parser(std::string program);
     ~Parser();
 
-#if TESTING
     void print_func_instructions();
-#endif
 
 private:
     Lexer lexer;
@@ -61,8 +59,8 @@ private:
     void parse_operator(std::vector<ExprNode> &expr_list);
     Token parse_leading_op(std::vector<ExprNode> &expr_list);
 
-    std::vector<InstNode> func_instructions;
-    std::vector<InstNode> global_instructions;
+    std::vector<InstNode *> func_instructions;
+    std::vector<InstNode *> global_instructions;
 
     int global_count = 0;
 
@@ -82,6 +80,7 @@ private:
             TokenType::OPERATOR_AND,
             TokenType::OPERATOR_OR,
             TokenType::OPERATOR_NOT,
+            TokenType::OPERATOR_XOR,
             TokenType::OPERATOR_XCL,
             TokenType::OPERATOR_NEQ,
         };
@@ -132,13 +131,6 @@ private:
             {TokenType::INT_NUM, Type::Int},
             {TokenType::VOID, Type::Void}};
 
-    /*
-            enum class OperatorType
-{
-
-};
-*/
-
     std::unordered_map<TokenType, OperatorType> operator_token_to_type =
         {
             {TokenType::OPERATOR_PLUS, OperatorType::PLUS},
@@ -153,6 +145,7 @@ private:
             {TokenType::OPERATOR_AND, OperatorType::AND},
             {TokenType::OPERATOR_OR, OperatorType::OR},
             {TokenType::OPERATOR_NOT, OperatorType::NOT},
+            {TokenType::OPERATOR_XOR, OperatorType::XOR},
             {TokenType::OPERATOR_XCL, OperatorType::XCL},
             {TokenType::OPERATOR_NEQ, OperatorType::NEQ}};
 };

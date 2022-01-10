@@ -43,6 +43,7 @@ enum class OperatorType
     AND,
     OR,
     NOT,
+    XOR,
     XCL,
     NEQ,
 };
