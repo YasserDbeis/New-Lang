@@ -9,7 +9,8 @@ enum class Type
     Dec,
     String,
     Bool,
-    Void
+    Void,
+    Invalid
 };
 
 class Value

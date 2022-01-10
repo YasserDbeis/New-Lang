@@ -84,6 +84,7 @@ void Parser::parse_def()
     {
         if (tok_2.type == TokenType::SEMICOLON)
         {
+            global_count++;
             parse_var_decl(true);
         }
         else if (tok_2.type == TokenType::EQUAL)
@@ -107,9 +108,24 @@ void Parser::parse_def()
 */
 void Parser::parse_var_decl(bool is_global)
 {
-    parse_type();
-    expect(TokenType::ID);
+    Type type = parse_type();
+    std::string id = expect(TokenType::ID).lexeme;
     expect(TokenType::SEMICOLON);
+
+    // EMPTY "terms" vector of Expression indicates empty expression
+    std::vector<ExprNode> empty_term_list;
+    Expression empty_expr(empty_term_list);
+
+    StoreNode store_node(type, id, empty_expr, global_count, false);
+
+    if (is_global == true)
+    {
+        global_instructions.push_back(store_node);
+    }
+    else
+    {
+        func_instructions.push_back(store_node);
+    }
 }
 
 /*
@@ -117,8 +133,8 @@ void Parser::parse_var_decl(bool is_global)
 */
 void Parser::parse_var_def(bool is_global)
 {
-    parse_type();
-    parse_assign_stmt();
+    Type type = parse_type();
+    parse_assign_stmt(type, is_global);
 }
 
 /*
@@ -127,6 +143,9 @@ void Parser::parse_var_def(bool is_global)
 */
 void Parser::parse_func_def()
 {
+    ScopeNode scope_node(true); // Create new scope
+    func_instructions.push_back(scope_node);
+
     expect(TokenType::FUNC);
     std::string id = expect(TokenType::ID).lexeme;
     expect(TokenType::LPAREN);
@@ -143,11 +162,11 @@ void Parser::parse_func_def()
     }
     expect(TokenType::RPAREN);
     Type return_type = parse_ret_type();
-    parse_body();
+    parse_body(true);
 
     // Add to table, clear
     FuncDefTable::add_entry(id, global_count, params, return_type, func_instructions);
-    // func_instructions.clear();
+    func_instructions.clear();
 }
 
 /*
@@ -182,6 +201,17 @@ void Parser::parse_param_list(std::vector<std::pair<Type, std::string>> &param_l
     std::pair<Type, std::string> param = parse_param();
     param_list.push_back(param);
 
+    // EMPTY "terms" vector of Expression indicates empty expression
+    std::vector<ExprNode> empty_term_list;
+    Expression empty_expr(empty_term_list);
+
+    Type type = param.first;
+    std::string name = param.second;
+
+    StoreNode store_node(type, name, empty_expr, global_count, true);
+
+    func_instructions.push_back(store_node);
+
     Token tok = lexer.peek();
     if (tok.type == TokenType::COMMA)
     {
@@ -212,9 +242,17 @@ std::pair<Type, std::string> Parser::parse_param()
 /*
     body -> LBRACE stmt_list RBRACE | LBRACE RBRACE
 */
-void Parser::parse_body()
+void Parser::parse_body(bool scope_cooked)
 {
     expect(TokenType::LBRACE);
+    // Create scope if
+
+    if (scope_cooked == false)
+    {
+        ScopeNode scope_start_node(true);
+        func_instructions.push_back(scope_start_node);
+    }
+
     Token tok = lexer.peek();
 
     if (first_of_stmt.count(tok.type)) // var declaration or definition
@@ -223,6 +261,8 @@ void Parser::parse_body()
     }
 
     expect(TokenType::RBRACE);
+    ScopeNode scope_end_node(false);
+    func_instructions.push_back(scope_end_node);
 }
 
 /*
@@ -273,11 +313,11 @@ void Parser::parse_stmt()
     {
         if (tok_1.type == TokenType::EQUAL)
         {
-            parse_assign_stmt();
+            parse_assign_stmt(Type::Invalid);
         }
         else if (tok_1.type == TokenType::LPAREN)
         {
-            parse_func_call();
+            parse_func_stmt_call();
             expect(TokenType::SEMICOLON);
         }
         else
@@ -309,12 +349,27 @@ void Parser::parse_stmt()
 /*
     assign_stmt -> ID EQUAL expr SEMICOLON
 */
-void Parser::parse_assign_stmt()
+void Parser::parse_assign_stmt(Type type, bool is_global)
 {
-    expect(TokenType::ID);
+    std::string id = expect(TokenType::ID).lexeme;
+
     expect(TokenType::EQUAL);
-    parse_expr();
+
+    std::vector<ExprNode> expr_list;
+    parse_expr(expr_list);
+
     expect(TokenType::SEMICOLON);
+
+    StoreNode store_node(type, id, expr_list, global_count, false);
+
+    if (is_global)
+    {
+        global_instructions.push_back(store_node);
+    }
+    else
+    {
+        func_instructions.push_back(store_node);
+    }
 }
 
 /*
@@ -324,9 +379,42 @@ void Parser::parse_while_stmt()
 {
     expect(TokenType::WHILE);
     expect(TokenType::LPAREN);
-    parse_expr();
+
+    std::vector<ExprNode> expr_list;
+    parse_expr(expr_list);
+    Expression expr(expr_list);
+
     expect(TokenType::RPAREN);
+
+    CjmpNode cjmp_node;
+    int cjmp_index = func_instructions.size();
+
+    func_instructions.push_back(cjmp_node);
+
     parse_body();
+
+    JmpNode jmp_node;
+    jmp_node.target = cjmp_index;
+
+    int jmp_index = func_instructions.size();
+
+    // Trying to cast InstNode to Cjmp
+    CjmpNode *cj = (CjmpNode *)&func_instructions[cjmp_index];
+    cj->target = jmp_index;
+
+    /*
+  Parent parent;
+  Child child;
+
+  // upcast - implicit type cast allowed
+  Parent *pParent = &child; 
+
+  // downcast - explicit type case required 
+  Child *pChild =  (Child *) &parent;
+
+    */
+
+    func_instructions.push_back(jmp_node);
 }
 
 /*
@@ -342,7 +430,9 @@ void Parser::parse_return_stmt()
     if (first_of_expr.count(tok.type))
     {
         std::vector<ExprNode> ret_expr;
-        parse_expr();
+        parse_expr(ret_expr);
+        Expression expr(ret_expr);
+        return_node.set_expr(expr);
 
         Expression expr(ret_expr);
         return_node.set_expr(expr);
@@ -458,39 +548,40 @@ void Parser::parse_else_blk()
 /*
     expr -> OPERATOR term | term
 */
-void Parser::parse_expr()
+void Parser::parse_expr(std::vector<ExprNode> &expr_list)
 {
     Token tok = lexer.peek();
 
+    /*
     if (leading_operators.count(tok.type))
     {
-        parse_operator();
+        parse_operator(expr_list);
     }
     else if (operators.count(tok.type))
     {
         ErrorHandler::error(ErrorPhase::PARSING, ErrorType::SYNTAX_ERROR, "At token " + tok.lexeme, tok.line_number, INVALID_OPERATOR);
     }
-
-    parse_term();
+*/
+    parse_term(expr_list);
 
     while (operators.count(lexer.peek().type))
     {
-        parse_operator();
-        parse_term();
+        parse_operator(expr_list);
+        parse_term(expr_list);
     }
 }
 
 /*
     term -> factor | factor OPERATOR factor
 */
-void Parser::parse_term()
+void Parser::parse_term(std::vector<ExprNode> &expr_list)
 {
-    parse_factor();
+    parse_factor(expr_list);
 
     while (operators.count(lexer.peek().type))
     {
-        parse_operator();
-        parse_factor();
+        parse_operator(expr_list);
+        parse_factor(expr_list);
     }
 }
 
@@ -499,7 +590,7 @@ void Parser::parse_term()
     factor -> leading_op ID | leading_op func_call | leading_op TRUE | leading_op FALSE | leading_op LPAREN expr RPAREN
     factor -> leading_op INT_NUM | leading_op DEC_NUM
 */
-void Parser::parse_factor()
+void Parser::parse_factor(std::vector<ExprNode> &expr_list)
 {
     Token tok_0 = lexer.peek();
     Token tok_1 = lexer.peek(1);
@@ -512,7 +603,7 @@ void Parser::parse_factor()
     {
         if (tok_1.type == TokenType::LPAREN)
         {
-            parse_func_call();
+            parse_func_expr_call(expr_list);
         }
         else
         {
@@ -522,24 +613,36 @@ void Parser::parse_factor()
     else if (tok_0.type == TokenType::LPAREN)
     {
         expect(TokenType::LPAREN);
-        parse_expr();
+        ParenNode lParenNode(ExprType::PAREN, true);
+        expr_list.push_back(lParenNode);
+
+        parse_expr(expr_list);
+
         expect(TokenType::RPAREN);
+        ParenNode rParenNode(ExprType::PAREN, false);
+        expr_list.push_back(rParenNode);
     }
     else if (leading_operators.count(tok_0.type))
     {
-        parse_leading_op();
+        parse_leading_op(expr_list);
 
         if (first_of_expr.count(tok_1.type) && tok_1.type != TokenType::STRING)
         {
             if (tok_1.type == TokenType::ID && tok_2.type == TokenType::LPAREN)
             {
-                parse_func_call();
+                parse_func_expr_call(expr_list);
             }
             else if (tok_1.type == TokenType::LPAREN)
             {
                 expect(TokenType::LPAREN);
-                parse_expr();
+                ParenNode lParenNode(ExprType::PAREN, true);
+                expr_list.push_back(lParenNode);
+
+                parse_expr(expr_list);
+
                 expect(TokenType::RPAREN);
+                ParenNode rParenNode(ExprType::PAREN, false);
+                expr_list.push_back(rParenNode);
             }
             else
             {
@@ -561,31 +664,66 @@ void Parser::parse_factor()
     func_call -> ID LPAREN arg_list RPAREN
     func_call -> ID LPAREN RPAREN
 */
-void Parser::parse_func_call()
+void Parser::parse_func_stmt_call()
 {
-    expect(TokenType::ID);
+    std::string id = expect(TokenType::ID).lexeme;
     expect(TokenType::LPAREN);
+
+    std::vector<Expression> expression_list;
 
     Token tok = lexer.peek();
     if (first_of_expr.count(tok.type))
     {
-        parse_arg_list();
+        parse_arg_list(expression_list);
     }
+
     expect(TokenType::RPAREN);
+
+    FuncCallNode func_node(ExprType::FUNC_CALL, id, expression_list);
+
+    func_instructions.push_back(func_node);
+}
+
+/*
+    func_call -> ID LPAREN arg_list RPAREN
+    func_call -> ID LPAREN RPAREN
+*/
+void Parser::parse_func_expr_call(std::vector<ExprNode> &expr_list)
+{
+    std::string id = expect(TokenType::ID).lexeme;
+    expect(TokenType::LPAREN);
+
+    std::vector<Expression> expression_list;
+
+    Token tok = lexer.peek();
+    if (first_of_expr.count(tok.type))
+    {
+        parse_arg_list(expression_list);
+    }
+
+    expect(TokenType::RPAREN);
+
+    FuncCallNode func_node(ExprType::FUNC_CALL, id, expression_list);
+
+    expr_list.push_back(func_node);
 }
 
 /*
     arg_list -> expr COMMA arg_list | expr
 */
-void Parser::parse_arg_list()
+void Parser::parse_arg_list(std::vector<Expression> &expression_list)
 {
-    parse_expr();
+    std::vector<ExprNode> expr_list;
+    parse_expr(expr_list);
+
+    Expression expr(expr_list);
+    expression_list.push_back(expr);
 
     Token tok = lexer.peek();
     if (tok.type == TokenType::COMMA)
     {
         expect(TokenType::COMMA);
-        parse_arg_list();
+        parse_arg_list(expression_list);
     }
     else if (tok.type == TokenType::RPAREN)
     {
@@ -631,7 +769,7 @@ Type Parser::parse_type()
                 OPERATOR_XCL |
                 OPERATOR_NEQ |
 */
-void Parser::parse_operator()
+void Parser::parse_operator(std::vector<ExprNode> &expr_list)
 {
     Token tok = lexer.peek();
 
@@ -651,7 +789,7 @@ void Parser::parse_operator()
                 OPERATOR_NOT |
                 OPERATOR_XCL
 */
-void Parser::parse_leading_op()
+void Parser::parse_leading_op(std::vector<ExprNode> &expr_list)
 {
     Token tok = lexer.peek();
 

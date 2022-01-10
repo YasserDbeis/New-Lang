@@ -11,8 +11,9 @@
 #include "../include/lexer.h"
 #include "../include/nodes/nodes.h"
 #include "../include/func_def_table.h"
+#include "../include/value.h"
 #include <unordered_set>
-#include <list>
+#include <vector>
 
 class Parser
 {
@@ -39,10 +40,10 @@ private:
     Type parse_ret_type();
     void parse_param_list(std::vector<std::pair<Type, std::string>> &param_list);
     std::pair<Type, std::string> parse_param();
-    void parse_body();
+    void parse_body(bool scope_cooked = false);
     void parse_stmt_list();
     void parse_stmt();
-    void parse_assign_stmt();
+    void parse_assign_stmt(Type type, bool is_global = false);
     void parse_while_stmt();
     void parse_return_stmt();
     void parse_if_stmt();
@@ -50,18 +51,18 @@ private:
     void parse_elsif_blks();
     void parse_elsif_blk();
     void parse_else_blk();
-    void parse_expr();
-    void parse_term();
-    void parse_factor();
-    void parse_func_call();
-    void parse_arg_list();
-    void parse_arg();
+    void parse_expr(std::vector<ExprNode> &expr_list);
+    void parse_term(std::vector<ExprNode> &expr_list);
+    void parse_factor(std::vector<ExprNode> &expr_list);
+    void parse_func_stmt_call();
+    void parse_func_expr_call(std::vector<ExprNode> &expr_list);
+    void parse_arg_list(std::vector<Expression> &expression_list);
     Type parse_type();
-    void parse_operator();
-    void parse_leading_op();
+    void parse_operator(std::vector<ExprNode> &expr_list);
+    void parse_leading_op(std::vector<ExprNode> &expr_list);
 
-    std::list<InstNode> func_instructions;
-    std::list<InstNode> global_instructions;
+    std::vector<InstNode> func_instructions;
+    std::vector<InstNode> global_instructions;
 
     int global_count = 0;
 
