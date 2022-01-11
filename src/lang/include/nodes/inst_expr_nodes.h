@@ -18,8 +18,8 @@ public:
     FuncCallNode(std::string func_id, std::vector<Expression> args);
     FuncCallNode(ExprType type, std::string func_id, std::vector<Expression> args);
 
-    void inst_print() override;
-    void expr_print() override;
+    void inst_print(int num_tabs = 0) override;
+    void expr_print(int num_tabs = 0) override;
 
 
 private:

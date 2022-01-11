@@ -16,7 +16,7 @@ class ExprNode
 public:
     ExprType type;
 
-    virtual void expr_print(){}
+    virtual void expr_print(int num_tabs = 0){}
 
 private:
 };

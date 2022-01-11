@@ -15,7 +15,7 @@ void InstNode::execute()
     /* Does nothing unless overridden by child class */
 }
 
-void InstNode::inst_print()
+void InstNode::inst_print(int num_tabs)
 {
     std::cout << "Default called\n";
 }

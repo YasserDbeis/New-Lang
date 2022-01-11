@@ -1,4 +1,7 @@
 func main()
 {
-    int x = foo(foo(42));
+    while (x is 5)
+    {
+        x = 1;
+    }
 }

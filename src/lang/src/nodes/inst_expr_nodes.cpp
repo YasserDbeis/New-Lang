@@ -41,26 +41,35 @@ void FuncCallNode::execute()
     */
 }
 
-void FuncCallNode::inst_print()
+void FuncCallNode::inst_print(int num_tabs)
 {
-    std::cout << "Func Call // OFFSET: " << this->get_offset() << " FUNC ID: " << func_id << std::endl;
+    for (int i = 0; i < num_tabs; i++)
+    {
+        std::cout << "\t";
+    }
+
+    std::cout << "[Func Call] Offset: " << this->get_offset() << ", Func Name: " << func_id << std::endl;
     if (args.empty())
     {
-        std::cout << "ARGUMENTS: none" << std::endl;
+        for (int i = 0; i < num_tabs; i++)
+        {
+            std::cout << "\t";
+        }
+
+        std::cout << "\tFunc Arguments: none" << std::endl;
     }
     else
     {
         int i = 0;
         for (auto arg : args)
         {
-            std::cout << "arg " << i << ": ";
-            arg.print_expr();
+            arg.print_expr(num_tabs + 1);
             i++;
         }
     }
 }
 
-void FuncCallNode::expr_print()
+void FuncCallNode::expr_print(int num_tabs)
 {
-    inst_print();
+    inst_print(num_tabs);
 }

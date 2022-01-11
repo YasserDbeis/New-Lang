@@ -15,5 +15,5 @@ public:
     Expression(Value value);
     void evaluate();
 
-    void print_expr();
+    void print_expr(int num_tabs = 0);
 };

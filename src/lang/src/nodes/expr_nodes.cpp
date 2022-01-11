@@ -38,8 +38,13 @@ Value LoadNode::evaluate()
     */
 }
 
-void LoadNode::expr_print()
+void LoadNode::expr_print(int num_tabs)
 {
+    for (int i = 0; i < num_tabs; i++)
+    {
+        std::cout << "\t";
+    }
+
     std::unordered_map<Type, std::string> type_to_str = {
         {Type::Bool, "Bool"},
         {Type::Dec, "Dec"},
@@ -61,7 +66,7 @@ void LoadNode::expr_print()
             {TokenType::INT_NUM, Type::Int},
             {TokenType::VOID, Type::Void}};
 
-    std::cout << "LOAD // "
+    std::cout << "[Load] "
         << "is_constant: " << is_constant
         << ", value: " << type_to_str[token_to_type[value.token.type]] << " " << value.token.lexeme
         << ", name: " << name
@@ -83,8 +88,13 @@ ParenNode::ParenNode(ExprType type, bool is_left)
     this->is_left = is_left;
 }
 
-void ParenNode::expr_print()
+void ParenNode::expr_print(int num_tabs)
 {
+    for (int i = 0; i < num_tabs; i++)
+    {
+        std::cout << "\t";
+    }
+
     if (is_left == true)
     {
         std::cout << "(" << std::endl;
@@ -112,26 +122,30 @@ OperatorNode::OperatorNode(ExprType type, OperatorType op_type)
 }
 
 // Nothing to do
-void OperatorNode::expr_print()
+void OperatorNode::expr_print(int num_tabs)
 {
-        std::unordered_map<OperatorType, std::string> operator_type_to_str =
-        {
-            {OperatorType::PLUS, "+"},
-            {OperatorType::MINUS, "-"},
-            {OperatorType::MULT, "*"},
-            {OperatorType::DIV, "/"},
-            {OperatorType::GT, ">"},
-            {OperatorType::LT, "<"},
-            {OperatorType::GEQ, ">="},
-            {OperatorType::LEQ, "<="},
-            {OperatorType::IS, "is"},
-            {OperatorType::AND, "and"},
-            {OperatorType::OR, "or"},
-            {OperatorType::NOT, "not"},
-            {OperatorType::XOR, "xor"},
-            {OperatorType::XCL, "!"},
-            {OperatorType::NEQ, "!="}
-          };
-          
-          std::cout << operator_type_to_str[operator_type] << std::endl;
+    for (int i = 0; i < num_tabs; i++)
+    {
+        std::cout << "\t";
+    }
+    std::unordered_map<OperatorType, std::string> operator_type_to_str =
+    {
+        {OperatorType::PLUS, "+"},
+        {OperatorType::MINUS, "-"},
+        {OperatorType::MULT, "*"},
+        {OperatorType::DIV, "/"},
+        {OperatorType::GT, ">"},
+        {OperatorType::LT, "<"},
+        {OperatorType::GEQ, ">="},
+        {OperatorType::LEQ, "<="},
+        {OperatorType::IS, "is"},
+        {OperatorType::AND, "and"},
+        {OperatorType::OR, "or"},
+        {OperatorType::NOT, "not"},
+        {OperatorType::XOR, "xor"},
+        {OperatorType::XCL, "!"},
+        {OperatorType::NEQ, "!="}
+        };
+        
+        std::cout << operator_type_to_str[operator_type] << std::endl;
     }

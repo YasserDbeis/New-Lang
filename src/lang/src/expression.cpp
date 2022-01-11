@@ -19,11 +19,21 @@ void Expression::evaluate()
     
 }
 
-void Expression::print_expr()
+void Expression::print_expr(int num_tabs)
 {
-    for (auto expr_node : term_list)
+    if (term_list.empty())
     {
-        expr_node->expr_print();
+        for (int i = 0; i < num_tabs; i++)
+        {
+            std::cout << "\t";
+        }
+        std::cout << "No expression!" << std::endl;
     }
-    std::cout << std::endl;
+    else
+    {
+        for (auto expr_node : term_list)
+        {
+            expr_node->expr_print(num_tabs);
+        }
+    }
 }

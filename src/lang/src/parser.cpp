@@ -387,7 +387,7 @@ void Parser::parse_while_stmt()
     expect(TokenType::RPAREN);
 
     int cjmp_index = func_instructions.size();
-    CjmpNode *cjmp_node = new CjmpNode();
+    CjmpNode *cjmp_node = new CjmpNode(expr_list);
     func_instructions.push_back(cjmp_node);
 
     parse_body();

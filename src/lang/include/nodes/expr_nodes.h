@@ -13,7 +13,7 @@ public:
     LoadNode(ExprType type, Type var_type, std::string name, int global_count, bool is_constant);
     LoadNode(ExprType type, Value value, int global_count, bool is_constant);
 
-    void expr_print() override;
+    void expr_print(int num_tabs = 0) override;
 
 private:
     std::string name;
@@ -31,7 +31,7 @@ public:
     ParenNode();
     ParenNode(ExprType type, bool is_left);
 
-    void expr_print() override;
+    void expr_print(int num_tabs = 0) override;
 };
 
 enum class OperatorType
@@ -61,5 +61,5 @@ public:
     OperatorNode();
     OperatorNode(ExprType type, OperatorType operator_type);
 
-    void expr_print() override;
+    void expr_print(int num_tabs = 0) override;
 };

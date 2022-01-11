@@ -8,10 +8,15 @@ JmpNode::JmpNode()
 {
 }
 
-void JmpNode::inst_print()
+void JmpNode::inst_print(int num_tabs)
 {
-    std::cout << "JMP // "
-       << "OFFSET : " << this->get_offset() << std::endl;
+    for (int i = 0; i < num_tabs; i++)
+    {
+        std::cout << "\t";
+    }
+
+    std::cout << "[Jmp] // "
+       << "Offset : " << this->get_offset() << std::endl;
 }
 
 // Why not just return next? No need for override
@@ -34,12 +39,16 @@ void CjmpNode::execute()
     //expr.evaluate();
 }
 
-void CjmpNode::inst_print()
+void CjmpNode::inst_print(int num_tabs)
 {
-    std::cout << "CJMP // "
-                << "OFFSET : " << this->get_offset() 
-                << ", Expression: " << std::endl;
-    expr.print_expr();
+    for (int i = 0; i < num_tabs; i++)
+    {
+        std::cout << "\t";
+    }
+
+    std::cout << "[Cjmp] // "
+                << "Offset : " << this->get_offset() << std::endl;
+    expr.print_expr(num_tabs + 1);
     std::cout << std::endl;
 }
 
@@ -89,8 +98,13 @@ void StoreNode::execute()
     */
 }
 
-void StoreNode::inst_print()
+void StoreNode::inst_print(int num_tabs)
 {
+    for (int i = 0; i < num_tabs; i++)
+    {
+        std::cout << "\t";
+    }
+
     std::unordered_map<Type, std::string> type_to_str = {
         {Type::Bool, "Bool"},
         {Type::Dec, "Dec"},
@@ -112,14 +126,13 @@ void StoreNode::inst_print()
             {TokenType::INT_NUM, Type::Int},
             {TokenType::VOID, Type::Void}};
 
-    std::cout << "STORE // "
-                << "OFFSET: " << this->get_offset()
-                << ", NAME: " << this->name
-                << ", GCOUNT: " << this->global_count
-                << ", IS PARAM: " << this->is_param
-                << ", TYPE: " << type_to_str[this->type]
-                << ", Expression: " << std::endl;
-    expr.print_expr();
+    std::cout << "[Store] // "
+                << "Offset: " << this->get_offset()
+                << ", Name: " << this->name
+                << ", Gcount: " << this->global_count
+                << ", Is Param: " << this->is_param
+                << ", Type: " << type_to_str[this->type] << std::endl;
+    expr.print_expr(num_tabs + 1);
 
     std::cout << std::endl;
 }
@@ -147,12 +160,15 @@ void ReturnNode::execute()
     */
 }
 
-void ReturnNode::inst_print()
+void ReturnNode::inst_print(int num_tabs)
 {
-    std::cout << "RETURN // "
-                << "OFFSET: " << this->get_offset()
-                << ", Expression:" << std::endl;
-    expr.print_expr();
+    for (int i = 0; i < num_tabs; i++)
+    {
+        std::cout << "\t";
+    }
+
+    std::cout << "[Return]  " << "Offset: " << this->get_offset() << std::endl;
+    expr.print_expr(num_tabs + 1);
     std::cout << std::endl;
 }
 
@@ -173,9 +189,11 @@ void ScopeNode::execute()
 {
 }
 
-void ScopeNode::inst_print()
+void ScopeNode::inst_print(int num_tabs)
 {
-        std::cout << "SCOPE // "
-                  << "OFFSET: " << this->get_offset()
-                  << ", IS NEW SCOPE: " << is_new_scope << std::endl;
+    for (int i = 0; i < num_tabs; i++)
+    {
+        std::cout << "\t";
+    }
+    std::cout << "[Scope] " << "Offset: " << this->get_offset() << ", Is New Scope: " << is_new_scope << std::endl;
 }

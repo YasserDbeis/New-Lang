@@ -15,7 +15,7 @@ public:
     int get_offset();
     void set_offset(int new_offset);
 
-    virtual void inst_print();
+    virtual void inst_print(int num_tabs = 0);
 
 private:
     int offset = 1;
