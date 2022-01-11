@@ -40,3 +40,27 @@ void FuncCallNode::execute()
         remove stack frame
     */
 }
+
+void FuncCallNode::inst_print()
+{
+    std::cout << "Func Call // OFFSET: " << this->get_offset() << " FUNC ID: " << func_id << std::endl;
+    if (args.empty())
+    {
+        std::cout << "ARGUMENTS: none" << std::endl;
+    }
+    else
+    {
+        int i = 0;
+        for (auto arg : args)
+        {
+            std::cout << "arg " << i << ": ";
+            arg.print_expr();
+            i++;
+        }
+    }
+}
+
+void FuncCallNode::expr_print()
+{
+    inst_print();
+}

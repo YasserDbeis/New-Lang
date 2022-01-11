@@ -16,10 +16,7 @@ class ExprNode
 public:
     ExprType type;
 
-    virtual void expr_print() 
-    {
-        std::cout << "Default expr print" << std::endl;
-    }
+    virtual void expr_print(){}
 
 private:
 };
