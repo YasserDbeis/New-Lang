@@ -1,4 +1,5 @@
 #include "../include/scope_tree.h"
+#include "../include/state_mgmt.h"
 
 /*
 class ScopeTree
@@ -17,28 +18,95 @@ private:
 };
 */
 
-void ScopeTree::set_var(std::string name, Value val, int value)
+/*
+    Inserts the {name, val} into the hashtable of the last element of the scope_list
+
+    Use cases - int x = 5; OR x = 5 - var def or var dec
+
+    Throws error if the scope_list is empty
+*/
+void ScopeTree::add_var(std::string name, Value val)
 {
+    if (in_curr_scope(name) == false)
+    {
+        scope_list.back()[name] = val;
+    }
+    else
+    {
+        ErrorHandler::error(ErrorPhase::PARSING, ErrorType::RUNTIME_ERROR, "Variable " + name + " has already been declared in this scope", -1, VAR_ALREADY_DEC);
+    }
 }
 
-std::pair<Value, bool> ScopeTree::get_var(std::string name)
+/*
+    Updates the value associated to the name key in the hashtable of the last element of the scope_list
+
+    Use cases - x = 5
+
+    Throws error if the scope_list is empty, or if the variable does not exist anywhere in the scope_list or global vars hashtable  
+*/
+void ScopeTree::update_var(std::string name, Value val)
 {
-    return std::make_pair(Value(), false);
+    int ix_in_scope_list = find_in_scope_list(name);
+
+    if (ix_in_scope_list != -1)
+    {
+        scope_list[ix_in_scope_list][name] = val;
+    }
+    else
+    {
+        StateMgmt::store_global_var(name, val);
+    }
 }
 
-void ScopeTree::push(std::unordered_map<std::string, Value>)
+Value ScopeTree::get_var(std::string name)
 {
+    int ix_in_scope_list = find_in_scope_list(name);
+
+    if (ix_in_scope_list != -1)
+    {
+        return scope_list[ix_in_scope_list][name];
+    }
+    else
+    {
+        return StateMgmt::load_global_var(name);
+    }
 }
+
+void ScopeTree::push()
+{
+    std::unordered_map<std::string, Value> new_hashtable;
+    scope_list.push_back(new_hashtable);
+}
+
 void ScopeTree::pop()
 {
+    scope_list.pop_back();
 }
 
 bool ScopeTree::in_curr_scope(std::string name)
 {
-    return false;
+    if (scope_list.empty() == false)
+    {
+        return scope_list.back().count(name) == 1;
+    }
+    else
+    {
+        return false;
+    }
 }
 
-std::unordered_map<std::string, Value> ScopeTree::peek()
+int ScopeTree::find_in_scope_list(std::string id)
 {
-    return scope_list.at(scope_list.size() - 1);
+    int num_scopes = scope_list.size();
+    for (int i = num_scopes - 1; i >= 0; i--)
+    {
+        auto search = scope_list[i].find(id);
+        if (search != scope_list[i].end())
+        {
+            return i;
+        }
+    }
+
+    // returning -1 (invalid index) indicates var not found
+    return -1;
 }

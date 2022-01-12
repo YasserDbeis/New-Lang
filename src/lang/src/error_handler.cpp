@@ -126,6 +126,26 @@ std::string ErrorHandler::code_to_msg(ErrorCode code)
     {
         return "Function already defined";
     }
+    case VAR_ALREADY_DEC:
+    {
+        return "Variable has already been declared";
+    }
+    case VAR_NOT_DEC:
+    {
+        return "Variable is not declared";
+    }
+    case MISSING_FUNC_RETURN:
+    {
+        return "Return value from function is not available";
+    }
+    case INVALID_EVAL:
+    {
+        return "Expression has invalid evaluation";
+    }
+    case EMPTY_STK_TRACE:
+    {
+        return "Empty stack trace";
+    }
     default:
     {
         return "General Error";

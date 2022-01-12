@@ -11,16 +11,6 @@
 class StateMgmt
 {
 public:
-    static std::queue<Value> arg_queue;
-
-    static void create_new_scope();       /* Stack trace helper function */
-    static void delete_curr_scope();      /* Stack trace helper function */
-    static Value get_func_return_value(); /* Stack trace helper function */
-
-    static Value load_var(std::string id);
-    static void store_var(Value value, int global_count);
-
-private:
     typedef struct StackFrame
     {
         ScopeTree scope_tree;
@@ -28,6 +18,19 @@ private:
         Value return_value;
     } StackFrame;
 
+    static std::queue<Value> arg_queue;
     static std::stack<StackFrame> stack_trace;
+
+    static void create_new_stack_frame();  /* Stack trace helper function */
+    static void delete_curr_stack_frame(); /* Stack trace helper function */
+    static Value get_func_return_value();  /* Stack trace helper function */
+
+    static Value load_global_var(std::string id);
+    static void store_global_var(std::string id, Value value, int global_count);
+    static void store_global_var(std::string id, Value value);
+
+    static void store_var_stack_trace(std::string, Value value);
+
+private:
     static std::unordered_map<std::string, std::pair<Value, int>> global_vars;
 };

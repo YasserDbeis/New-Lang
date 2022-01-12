@@ -42,6 +42,8 @@ private:
     Value value;
     int global_count;
     bool is_param;
+
+    void
 };
 
 class ReturnNode : public InstNode

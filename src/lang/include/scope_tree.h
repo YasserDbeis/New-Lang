@@ -18,12 +18,13 @@ class ScopeTree
 public:
     std::vector<std::unordered_map<std::string, Value>> scope_list;
 
-    void set_var(std::string name, Value val, int value); // throw error if already there
-    std::pair<Value, bool> get_var(std::string name);
+    void add_var(std::string name, Value val);    // throw error if already there or scope list is empty
+    void update_var(std::string name, Value val); // throw error if not declared, or scope list is empty
+    Value get_var(std::string name);
 
 private:
-    void push(std::unordered_map<std::string, Value>);
+    void push();
     void pop();
     bool in_curr_scope(std::string name);
-    std::unordered_map<std::string, Value> peek();
+    int find_in_scope_list(std::string name);
 };
