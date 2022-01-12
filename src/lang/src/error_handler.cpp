@@ -171,7 +171,7 @@ std::string ErrorHandler::type_to_str(ErrorType type)
     }
     default:
     {
-        printf("Internal error");
+        printf("Error type not found");
         exit(EXIT_FAILURE);
     }
     }
@@ -193,9 +193,13 @@ std::string ErrorHandler::phase_to_str(ErrorPhase phase)
     {
         return "Compilation";
     }
+    case ErrorPhase::EXECUTION:
+    {
+        return "Execution";
+    }
     default:
     {
-        printf("Internal error");
+        printf("Error phase not found");
         exit(EXIT_FAILURE);
     }
     }

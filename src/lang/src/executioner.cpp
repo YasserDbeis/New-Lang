@@ -15,7 +15,6 @@ void Executioner::execute_program()
     FuncDefTable::function_exists(MAIN);
 
     execute_instructions(compiler.get_global_instructions());
-    execute_instructions(FuncDefTable::get_function(MAIN));
 }
 
 void Executioner::execute_instructions(std::vector<InstNode *> instructions)

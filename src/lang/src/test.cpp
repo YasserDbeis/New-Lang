@@ -27,18 +27,18 @@ int main(int argc, char *argv[])
     }
 
     std::string input;
-    // std::string curr_line;
-    // while (std::getline(std::cin, curr_line))
-    // {
-    //     input += curr_line + '\n';
-    // }
+    std::string curr_line;
+    while (std::getline(std::cin, curr_line))
+    {
+        input += curr_line + '\n';
+    }
 
     // For reading in through file
-    std::ifstream t("../test_cases/compiler_test_cases/test_small.txt");
-    std::stringstream buffer;
-    buffer << t.rdbuf();
+    // std::ifstream t("../test_cases/compiler_test_cases/test_small.txt");
+    // std::stringstream buffer;
+    // buffer << t.rdbuf();
 
-    input = (buffer.str());
+    // input = (buffer.str());
 
     // Print the input
     // std::cout << "INPUT: " << input << std::endl;

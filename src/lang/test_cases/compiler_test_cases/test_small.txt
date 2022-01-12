@@ -1,4 +1,10 @@
+func foo()
+{
+    return;
+}
+
 func main()
 {
+    foo();
     return;
 }
