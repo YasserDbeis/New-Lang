@@ -874,7 +874,7 @@ Token Parser::parse_leading_op(std::vector<ExprNode *> &expr_list)
     }
 }
 
-std::vector<InstNode *> Parser::getGlobalInstructions()
+std::vector<InstNode *> Parser::get_global_instructions()
 {
     return global_instructions;
 }

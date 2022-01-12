@@ -10,7 +10,7 @@ Compiler::Compiler(std::string input) : parser(input)
     global_count = 0;
 }
 
-std::list<InstNode> Compiler::get_global_nodes()
+std::vector<InstNode *> Compiler::get_global_instructions()
 {
-    return global_nodes;
+    return parser.get_global_instructions();
 }

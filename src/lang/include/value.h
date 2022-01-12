@@ -5,11 +5,11 @@
 
 enum class Type
 {
+    Void,
     Int,
     Dec,
     String,
     Bool,
-    Void,
     Invalid
 };
 

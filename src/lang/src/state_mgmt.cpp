@@ -68,3 +68,39 @@ void StateMgmt::store_var_stack_trace(std::string name, Value value)
         ErrorHandler::error(ErrorPhase::EXECUTION, ErrorType::RUNTIME_ERROR, "Cannot store variable " + name + " in empty stack trace", -1, EMPTY_STK_TRACE);
     }
 }
+
+void StateMgmt::store_return_val_stack_trace(Value value)
+{
+    if (stack_trace.empty() == false)
+    {
+        stack_trace.top().return_value = value;
+    }
+    else
+    {
+        ErrorHandler::error(ErrorPhase::EXECUTION, ErrorType::RUNTIME_ERROR, "Cannot store return variable in empty stack trace", -1, EMPTY_STK_TRACE);
+    }
+}
+
+Value StateMgmt::store_var_stack_trace(std::string name)
+{
+    if (stack_trace.empty() == false)
+    {
+        return stack_trace.top().scope_tree.get_var(name);
+    }
+    else
+    {
+        ErrorHandler::error(ErrorPhase::EXECUTION, ErrorType::RUNTIME_ERROR, "Cannot store return variable in empty stack trace", -1, EMPTY_STK_TRACE);
+    }
+}
+
+Value StateMgmt::load_return_val_stack_trace()
+{
+    if (stack_trace.empty() == false)
+    {
+        return stack_trace.top().return_value;
+    }
+    else
+    {
+        ErrorHandler::error(ErrorPhase::EXECUTION, ErrorType::RUNTIME_ERROR, "Cannot load return variable in empty stack trace", -1, EMPTY_STK_TRACE);
+    }
+}

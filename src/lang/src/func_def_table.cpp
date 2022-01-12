@@ -19,6 +19,11 @@ std::vector<InstNode *> FuncDefTable::get_function(std::string id)
     return table[id].instruction_list;
 }
 
+bool FuncDefTable::function_exists(std::string id)
+{
+    return table.count(id) == 1;
+}
+
 int FuncDefTable::get_global_count(std::string id)
 {
     assert_func_exists(id);

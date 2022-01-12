@@ -1,5 +1,5 @@
 #include "../../include/nodes/inst_nodes.h"
-#include "../include/state_mgmt.h"
+#include "../../include/state_mgmt.h"
 
 /* --------------------------------------------
 JmpNode implementation
@@ -98,8 +98,8 @@ void StoreNode::store_to_curr_context(Value val)
     if (StateMgmt::stack_trace.empty()) // GLOBAL - store in global_vars
     {
         StateMgmt::store_global_var(name, val, global_count);
-    }    
-    else                                // IN FUNCTION - stack trace
+    }
+    else // IN FUNCTION - stack trace
     {
         StateMgmt::stack_trace.top().scope_tree.add_var(name, val);
     }
@@ -109,7 +109,7 @@ void StoreNode::execute()
 {
     if (is_param == true)
     {
-        if (StateMgmt::arg_queue.empty())   // Debugging purposes
+        if (StateMgmt::arg_queue.empty()) // Debugging purposes
         {
             std::cout << "BUG! Arg queue is empty" << std::endl;
         }
@@ -138,7 +138,7 @@ void StoreNode::execute()
             {
                 assert_valid_type(expr.value, type);
             }
-            
+
             store_to_curr_context(expr.value);
         }
     }
@@ -198,12 +198,18 @@ void ReturnNode::set_expr(Expression given_expr)
 
 void ReturnNode::execute()
 {
-    //expr.evaluate();
-    /*
-        stack_trace.peek().scope_tree.return_value = expr.value;
+    Value return_value;
+    if (expr.term_list.empty() == false) // Return node contains an expression to evaluate
+    {
+        expr.evaluate();
+        return_value = expr.value;
+    }
+    else // Return node does not contain an expression. Save a void typed value instead.
+    {
+        return_value.type = Type::Void;
+    }
 
-        // Note, we can put a node value at return_value if we reach nullptr when executing function (not global ll)
-    */
+    StateMgmt::store_return_val_stack_trace(return_value);
 }
 
 void ReturnNode::inst_print(int num_tabs)
@@ -234,6 +240,22 @@ ScopeNode::ScopeNode(bool is_new_scope)
 
 void ScopeNode::execute()
 {
+
+    if (StateMgmt::stack_trace.empty() == false)
+    {
+        if (is_new_scope == true)
+        {
+            StateMgmt::stack_trace.top().scope_tree.push();
+        }
+        else
+        {
+            StateMgmt::stack_trace.top().scope_tree.pop();
+        }
+    }
+    else
+    {
+        ErrorHandler::error(ErrorPhase::EXECUTION, ErrorType::RUNTIME_EXCEPTION, "Cannot push new scope when stack trace is empty", -1, EMPTY_STK_TRACE);
+    }
 }
 
 void ScopeNode::inst_print(int num_tabs)

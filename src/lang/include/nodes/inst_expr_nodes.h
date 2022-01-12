@@ -9,10 +9,10 @@
 class FuncCallNode : public InstNode, public ExprNode
 {
 public:
-    Value return_value;
+    Value value;
 
     void execute() override;
-    Value evaluate();
+    void evaluate();
 
     FuncCallNode();
     FuncCallNode(std::string func_id, std::vector<Expression> args);
@@ -20,7 +20,6 @@ public:
 
     void inst_print(int num_tabs = 0) override;
     void expr_print(int num_tabs = 0) override;
-
 
 private:
     std::string func_id;

@@ -11,7 +11,7 @@ public:
     Compiler();
     Compiler(std::string input);
 
-    std::list<InstNode> get_global_nodes();
+    std::vector<InstNode *> get_global_instructions();
 
 private:
     int global_count;

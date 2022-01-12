@@ -8,6 +8,7 @@
 
 #include "nodes/inst_node.h"
 #include "compiler.h"
+#include "func_def_table.h"
 #include <string>
 #include <queue>
 #include <stack>
@@ -18,9 +19,10 @@ public:
     Executioner();
     Executioner(std::string input);
 
+    static void execute_instructions(std::vector<InstNode *> instructions);
+
 private:
     Compiler compiler;
 
     void execute_program();
-    void execute_inst_list(std::list<InstNode> inst_list);
 };

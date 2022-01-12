@@ -1,4 +1,5 @@
 #include "../../include/nodes/expr_nodes.h"
+#include "../../include/state_mgmt.h"
 
 /* --------------------------------------------
 LoadNode implementation
@@ -25,17 +26,12 @@ LoadNode::LoadNode(ExprType type, Value value, int global_count, bool is_constan
     this->is_constant = is_constant;
 }
 
-Value LoadNode::evaluate()
+void LoadNode::evaluate()
 {
-    if (is_constant)
+    if (is_constant == false)
     {
-        return value;
+        value = StateMgmt::store_var_stack_trace(name);
     }
-
-    /* Search through scope tree for variable
-        If not found, consult global hashtable of vars with global_count
-        If still not found, throw an error
-    */
 }
 
 void LoadNode::expr_print(int num_tabs)
@@ -54,7 +50,7 @@ void LoadNode::expr_print(int num_tabs)
         {Type::Void, "Void"}};
 
     std::unordered_map<TokenType, Type> token_to_type =
-    {
+        {
             {TokenType::BOOL, Type::Bool},
             {TokenType::TRUE, Type::Bool},
             {TokenType::FALSE, Type::Bool},
@@ -67,11 +63,11 @@ void LoadNode::expr_print(int num_tabs)
             {TokenType::VOID, Type::Void}};
 
     std::cout << "[Load] "
-        << "is_constant: " << is_constant
-        << ", value: " << type_to_str[token_to_type[value.token.type]] << " " << value.token.lexeme
-        << ", name: " << name
-        << ", type: " << type_to_str[var_type]
-        << ", global count: " << global_count << std::endl;
+              << "is_constant: " << is_constant
+              << ", value: " << type_to_str[token_to_type[value.token.type]] << " " << value.token.lexeme
+              << ", name: " << name
+              << ", type: " << type_to_str[var_type]
+              << ", global count: " << global_count << std::endl;
 }
 
 /* --------------------------------------------
@@ -118,7 +114,7 @@ OperatorNode::OperatorNode()
 OperatorNode::OperatorNode(ExprType type, OperatorType op_type)
 {
     this->type = type;
-    this->operator_type = op_type; 
+    this->operator_type = op_type;
 }
 
 // Nothing to do
@@ -129,23 +125,22 @@ void OperatorNode::expr_print(int num_tabs)
         std::cout << "\t";
     }
     std::unordered_map<OperatorType, std::string> operator_type_to_str =
-    {
-        {OperatorType::PLUS, "+"},
-        {OperatorType::MINUS, "-"},
-        {OperatorType::MULT, "*"},
-        {OperatorType::DIV, "/"},
-        {OperatorType::GT, ">"},
-        {OperatorType::LT, "<"},
-        {OperatorType::GEQ, ">="},
-        {OperatorType::LEQ, "<="},
-        {OperatorType::IS, "is"},
-        {OperatorType::AND, "and"},
-        {OperatorType::OR, "or"},
-        {OperatorType::NOT, "not"},
-        {OperatorType::XOR, "xor"},
-        {OperatorType::XCL, "!"},
-        {OperatorType::NEQ, "!="}
-        };
-        
-        std::cout << operator_type_to_str[operator_type] << std::endl;
-    }
+        {
+            {OperatorType::PLUS, "+"},
+            {OperatorType::MINUS, "-"},
+            {OperatorType::MULT, "*"},
+            {OperatorType::DIV, "/"},
+            {OperatorType::GT, ">"},
+            {OperatorType::LT, "<"},
+            {OperatorType::GEQ, ">="},
+            {OperatorType::LEQ, "<="},
+            {OperatorType::IS, "is"},
+            {OperatorType::AND, "and"},
+            {OperatorType::OR, "or"},
+            {OperatorType::NOT, "not"},
+            {OperatorType::XOR, "xor"},
+            {OperatorType::XCL, "!"},
+            {OperatorType::NEQ, "!="}};
+
+    std::cout << operator_type_to_str[operator_type] << std::endl;
+}

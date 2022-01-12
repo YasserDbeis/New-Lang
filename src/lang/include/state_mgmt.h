@@ -18,8 +18,8 @@ public:
         Value return_value;
     } StackFrame;
 
-    static std::queue<Value> arg_queue;
-    static std::stack<StackFrame> stack_trace;
+    inline static std::queue<Value> arg_queue;
+    inline static std::stack<StackFrame> stack_trace;
 
     static void create_new_stack_frame();  /* Stack trace helper function */
     static void delete_curr_stack_frame(); /* Stack trace helper function */
@@ -29,8 +29,11 @@ public:
     static void store_global_var(std::string id, Value value, int global_count);
     static void store_global_var(std::string id, Value value);
 
-    static void store_var_stack_trace(std::string, Value value);
+    static void store_var_stack_trace(std::string name, Value value);
+    static void store_return_val_stack_trace(Value value);
+    static Value load_return_val_stack_trace();
+    static Value store_var_stack_trace(std::string name);
 
 private:
-    static std::unordered_map<std::string, std::pair<Value, int>> global_vars;
+    inline static std::unordered_map<std::string, std::pair<Value, int>> global_vars;
 };

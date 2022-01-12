@@ -1,4 +1,7 @@
 #include "../../include/nodes/inst_expr_nodes.h"
+#include "../../include/state_mgmt.h"
+#include "../../include/func_def_table.h"
+#include "../../include/executioner.h"
 
 /* ----------------------------------------------
 FuncCallNode Implementation
@@ -25,20 +28,26 @@ FuncCallNode::FuncCallNode(ExprType type, std::string func_id, std::vector<Expre
 /* Override */
 void FuncCallNode::execute()
 {
-    /*
-        create new stack frame
+    StateMgmt::create_new_stack_frame();
 
-        for (arg in args)
-        {
-            arg_stack.push(arg.evaluate())
-        }
+    for (auto argument_expr : args)
+    {
+        argument_expr.evaluate();
+        StateMgmt::arg_queue.push(argument_expr.value);
+    }
 
-        execute_instructions(func_table[id].head);
+    std::vector<InstNode *> func_instructions = FuncDefTable::get_function(func_id);
 
-        value = stack_trace.peek().scope_tree.return_value
+    Executioner::execute_instructions(func_instructions);
 
-        remove stack frame
-    */
+    value = StateMgmt::load_return_val_stack_trace();
+
+    StateMgmt::delete_curr_stack_frame();
+}
+
+void FuncCallNode::evaluate()
+{
+    execute();
 }
 
 void FuncCallNode::inst_print(int num_tabs)
@@ -49,7 +58,7 @@ void FuncCallNode::inst_print(int num_tabs)
     }
 
     std::cout << "[Func Call] Offset: " << this->get_offset() << ", Func Name: " << func_id << std::endl;
-    if (args.empty())
+    if (args.empty() == true)
     {
         for (int i = 0; i < num_tabs; i++)
         {

@@ -26,7 +26,7 @@ public:
     ~Parser();
 
     void print_instructions(std::vector<InstNode *> instructions);
-    std::vector<InstNode *> getGlobalInstructions();
+    std::vector<InstNode *> get_global_instructions();
 
 private:
     Lexer lexer;

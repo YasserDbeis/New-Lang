@@ -21,10 +21,10 @@ public:
     void add_var(std::string name, Value val);    // throw error if already there or scope list is empty
     void update_var(std::string name, Value val); // throw error if not declared, or scope list is empty
     Value get_var(std::string name);
-
-private:
     void push();
     void pop();
+
+private:
     bool in_curr_scope(std::string name);
     int find_in_scope_list(std::string name);
 };
