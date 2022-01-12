@@ -15,6 +15,7 @@ Parser::Parser() : lexer()
 
 Parser::Parser(std::string program) : lexer(program)
 {
+    parse_program();
 }
 
 Parser::~Parser()
@@ -44,6 +45,11 @@ void Parser::parse_program()
 {
     parse_def_list();
     expect(TokenType::END_OF_FILE);
+
+    // Global instructions are compiled. Append a func call instruction to main for the executioner
+    std::vector<Expression> empty_vector;
+    FuncCallNode *main_call = new FuncCallNode("main", empty_vector);
+    global_instructions.push_back(main_call);
 }
 
 /*
@@ -54,7 +60,7 @@ void Parser::parse_def_list()
     parse_def();
 
     Token tok = lexer.peek();
-    if (types.count(tok.type) || tok.type == TokenType::FUNC)
+    if (types.count(tok.type) == 1 || tok.type == TokenType::FUNC)
     {
         parse_def_list();
     }
@@ -862,7 +868,7 @@ Token Parser::parse_leading_op(std::vector<ExprNode *> &expr_list)
 {
     Token tok = lexer.peek();
 
-    if (leading_operators.count(tok.type))
+    if (leading_operators.count(tok.type) > 0)
     {
         expect(tok.type);
 
@@ -881,7 +887,7 @@ std::vector<InstNode *> Parser::get_global_instructions()
 
 void Parser::print_instructions(std::vector<InstNode *> instructions)
 {
-    if (instructions.empty())
+    if (instructions.empty() == true)
     {
         std::cout << "Empty\n";
     }

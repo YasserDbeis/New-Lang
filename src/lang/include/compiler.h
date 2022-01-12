@@ -2,7 +2,6 @@
 
 #include "nodes/inst_node.h"
 #include "parser.h"
-#include <list>
 #include <string>
 
 class Compiler
@@ -13,8 +12,8 @@ public:
 
     std::vector<InstNode *> get_global_instructions();
 
+    Parser parser;
+
 private:
     int global_count;
-    std::list<InstNode> global_nodes;
-    Parser parser;
 };

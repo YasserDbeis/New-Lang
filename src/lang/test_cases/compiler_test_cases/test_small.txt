@@ -1,11 +1,4 @@
 func main()
 {
-    int x = 20;
-
-    while (x > 10)
-    {
-        foo(x);
-        x = x - 1;
-    }
-    return x;
+    return;
 }

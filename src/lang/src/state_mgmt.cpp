@@ -1,14 +1,18 @@
 #include "../include/state_mgmt.h"
 #include "../include/error_handler.h"
+#include <iostream>
 
 void StateMgmt::create_new_stack_frame()
 {
+    std::cout << "*** Creating New Stack Frame ***" << std::endl;
     StackFrame new_stack_frame;
     stack_trace.push(new_stack_frame);
+    std::cout << "After pushing, stack trace has a size of " << stack_trace.size() << std::endl;
 }
 
 void StateMgmt::delete_curr_stack_frame()
 {
+    std::cout << "*** Deleting Current Stack Frame ***" << std::endl;
     stack_trace.pop();
 }
 

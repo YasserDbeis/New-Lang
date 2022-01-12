@@ -5,7 +5,8 @@
     Description: Defines entry point for local testing of the lexer, parser, and compiler.
 */
 
-#include "../include/parser.h"
+#include "../include/executioner.h"
+#include "../include/func_def_table.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -26,20 +27,18 @@ int main(int argc, char *argv[])
     }
 
     std::string input;
-    std::string curr_line;
-    while (std::getline(std::cin, curr_line))
-    {
-        input += curr_line + '\n';
-    }
+    // std::string curr_line;
+    // while (std::getline(std::cin, curr_line))
+    // {
+    //     input += curr_line + '\n';
+    // }
 
-    /*
     // For reading in through file
-    std::ifstream t("./test_cases/parser_test_cases/valid_test_cases/test_valid_program.txt");
+    std::ifstream t("../test_cases/compiler_test_cases/test_small.txt");
     std::stringstream buffer;
     buffer << t.rdbuf();
 
     input = (buffer.str());
-    */
 
     // Print the input
     // std::cout << "INPUT: " << input << std::endl;
@@ -58,21 +57,23 @@ int main(int argc, char *argv[])
     case PARSER:
     {
         Parser parser(input);
-        parser.parse_program();
         break;
     }
     case COMPILER:
     {
-        Parser parser(input);
-        parser.parse_program();
-        std::cout << "----------------------" << std::endl;
-        std::cout << "GLOBAL INSTRUCTIONS" << std::endl;
-        std::cout << "----------------------" << std::endl;
-        parser.print_instructions(parser.getGlobalInstructions());
-        std::cout << "----------------------" << std::endl;
-        std::cout << "FUNCTION INSTRUCTIONS" << std::endl;
-        std::cout << "----------------------" << std::endl;
-        parser.print_instructions(FuncDefTable::get_function("main"));
+        Executioner executioner(input);
+        // std::cout << "----------------------" << std::endl;
+        // std::cout << "GLOBAL INSTRUCTIONS" << std::endl;
+        // std::cout << "----------------------" << std::endl;
+        // executioner.compiler.parser.print_instructions(executioner.compiler.parser.get_global_instructions());
+        // std::cout << "----------------------" << std::endl;
+        // std::cout << "FUNCTION INSTRUCTIONS" << std::endl;
+        // std::cout << "----------------------" << std::endl;
+
+        //std::cout << "\n\n Runtime printing \n\n";
+
+        executioner.execute_program();
+
         break;
     }
     default:

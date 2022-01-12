@@ -1,5 +1,7 @@
 #include "../include/executioner.h"
 
+inline const std::string MAIN = "main";
+
 Executioner::Executioner() : compiler("")
 {
 }
@@ -10,8 +12,6 @@ Executioner::Executioner(std::string input) : compiler(input)
 
 void Executioner::execute_program()
 {
-    inline const std::string MAIN = "main";
-
     FuncDefTable::function_exists(MAIN);
 
     execute_instructions(compiler.get_global_instructions());
@@ -20,10 +20,9 @@ void Executioner::execute_program()
 
 void Executioner::execute_instructions(std::vector<InstNode *> instructions)
 {
-    if (instructions.empty() == true) // Debugging purposes
+    if (instructions.empty() == true)
     {
-        std::cout << "Empty instruction list" << std::endl;
-        exit(EXIT_FAILURE);
+        return;
     }
 
     int i = 0;
