@@ -43,7 +43,8 @@ private:
     int global_count;
     bool is_param;
 
-    void
+    void assert_valid_type(Value val, Type expected_type);
+    void store_to_curr_context(Value val);
 };
 
 class ReturnNode : public InstNode

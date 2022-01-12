@@ -85,52 +85,61 @@ StoreNode::StoreNode(Type type, std::string name, Expression expr, int global_co
     this->is_param = is_param;
 }
 
+void StoreNode::assert_valid_type(Value val, Type expected_type)
+{
+    if (val.type != expected_type)
+    {
+        ErrorHandler::error(ErrorPhase::EXECUTION, ErrorType::RUNTIME_EXCEPTION, "At expression " + expr.value.token.lexeme, expr.value.token.line_number, INVALID_EVAL);
+    }
+}
+
+void StoreNode::store_to_curr_context(Value val)
+{
+    if (StateMgmt::stack_trace.empty()) // GLOBAL - store in global_vars
+    {
+        StateMgmt::store_global_var(name, val, global_count);
+    }    
+    else                                // IN FUNCTION - stack trace
+    {
+        StateMgmt::stack_trace.top().scope_tree.add_var(name, val);
+    }
+}
+
 void StoreNode::execute()
 {
-    if (is_param)
+    if (is_param == true)
     {
-        if (StateMgmt::arg_queue.empty())
+        if (StateMgmt::arg_queue.empty())   // Debugging purposes
         {
             std::cout << "BUG! Arg queue is empty" << std::endl;
         }
+
+        // Get the paramter value from the arg queue
         Value param_value = StateMgmt::arg_queue.front();
         StateMgmt::arg_queue.pop();
 
-        if (param_value.)
-            StateMgmt::store_var_stack_trace(name, param_value);
+        // Insert it into the current scope tree
+        assert_valid_type(param_value, type);
+        StateMgmt::store_var_stack_trace(name, param_value);
     }
     else
     {
-        expr.evaluate();
-
-        if (StateMgmt::stack_trace.empty()) // GLOBAL - store in global_vars
+        if (expr.term_list.empty()) // Variable declaration - do not evaluate the expression
         {
-            if (expr.value.type == type)
-            {
-                StateMgmt::store_global_var(name, expr.value, global_count);
-            }
-            else
-            {
-                ErrorHandler::error(ErrorPhase::EXECUTION, ErrorType::RUNTIME_EXCEPTION, "At expression " + expr.value.token.lexeme, expr.value.token.line_number, INVALID_EVAL);
-            }
+            Value dummy_value; // Send in a dummy value instead
+            dummy_value.type = Type::Invalid;
+            store_to_curr_context(dummy_value);
         }
-        else // FUNCTION - store in stack trace
+        else // Variable assignment - evaluate the expression
         {
-            if (expr.value.type == Type::Invalid)
+            expr.evaluate();
+
+            if (type != Type::Invalid) // Only validate the type if we know it at runtime!
             {
-                StateMgmt::stack_trace.top().scope_tree.update_var(name, expr.value);
+                assert_valid_type(expr.value, type);
             }
-            else
-            {
-                if (expr.value.type == type)
-                {
-                    StateMgmt::stack_trace.top().scope_tree.add_var(name, expr.value);
-                }
-                else
-                {
-                    ErrorHandler::error(ErrorPhase::EXECUTION, ErrorType::RUNTIME_EXCEPTION, "At expression " + expr.value.token.lexeme, expr.value.token.line_number, INVALID_EVAL);
-                }
-            }
+            
+            store_to_curr_context(expr.value);
         }
     }
 }
