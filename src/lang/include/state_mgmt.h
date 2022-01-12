@@ -21,7 +21,7 @@ public:
     inline static std::queue<Value> arg_queue;
     inline static std::stack<StackFrame> stack_trace;
 
-    static void create_new_stack_frame();  /* Stack trace helper function */
+    static void create_new_stack_frame(std::string func_id);  /* Stack trace helper function */
     static void delete_curr_stack_frame(); /* Stack trace helper function */
     static Value get_func_return_value();  /* Stack trace helper function */
 
@@ -34,6 +34,10 @@ public:
     static Value load_return_val_stack_trace();
     static Value store_var_stack_trace(std::string name);
 
+    static void print_stack_trace();
+
 private:
     inline static std::unordered_map<std::string, std::pair<Value, int>> global_vars;
+
+    static void print_stack_recursively(); // helper function to print stack trace
 };

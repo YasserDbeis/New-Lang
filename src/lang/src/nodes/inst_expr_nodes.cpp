@@ -28,7 +28,7 @@ FuncCallNode::FuncCallNode(ExprType type, std::string func_id, std::vector<Expre
 /* Override */
 void FuncCallNode::execute()
 {
-    StateMgmt::create_new_stack_frame();
+    StateMgmt::create_new_stack_frame(func_id);
 
     for (auto argument_expr : args)
     {

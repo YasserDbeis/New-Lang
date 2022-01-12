@@ -1,10 +1,13 @@
 func foo()
 {
-    return;
+    int x;
+    int y;
+    int z;
 }
 
 func main()
 {
+    int x;
+    int y;
     foo();
-    return;
 }

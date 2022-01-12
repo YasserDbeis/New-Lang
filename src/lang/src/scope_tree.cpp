@@ -1,5 +1,6 @@
 #include "../include/scope_tree.h"
 #include "../include/state_mgmt.h"
+#include <iostream>
 
 /*
 class ScopeTree
@@ -109,4 +110,26 @@ int ScopeTree::find_in_scope_list(std::string id)
 
     // returning -1 (invalid index) indicates var not found
     return -1;
+}
+
+void ScopeTree::print_scope_tree()
+{
+    if (scope_list.empty())
+    {
+        std::cout << "No variables to show" << std::endl;
+    }
+
+    int num_scopes = scope_list.size();
+    for (int i = num_scopes - 1; i >= 0; i--)
+    {
+        std::cout << "-----------------" << std::endl;
+
+        // print key value pairs
+        for (const auto &[id, value] : scope_list[i])
+        {
+            std::cout << "variable: " << id << std::endl;
+        }
+
+        std::cout << "-----------------" << std::endl;
+    }
 }

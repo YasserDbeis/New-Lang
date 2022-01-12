@@ -24,6 +24,8 @@ public:
     void push();
     void pop();
 
+    void print_scope_tree();
+
 private:
     bool in_curr_scope(std::string name);
     int find_in_scope_list(std::string name);

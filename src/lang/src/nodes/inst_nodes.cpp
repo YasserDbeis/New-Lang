@@ -142,6 +142,9 @@ void StoreNode::execute()
             store_to_curr_context(expr.value);
         }
     }
+
+    // Printing for testing purposes
+    //StateMgmt::print_stack_trace();
 }
 
 void StoreNode::inst_print(int num_tabs)

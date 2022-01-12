@@ -2,10 +2,11 @@
 #include "../include/error_handler.h"
 #include <iostream>
 
-void StateMgmt::create_new_stack_frame()
+void StateMgmt::create_new_stack_frame(std::string func_id)
 {
     std::cout << "*** Creating New Stack Frame ***" << std::endl;
     StackFrame new_stack_frame;
+    new_stack_frame.func_id = func_id;
     stack_trace.push(new_stack_frame);
     std::cout << "After pushing, stack trace has a size of " << stack_trace.size() << std::endl;
 }
@@ -107,4 +108,40 @@ Value StateMgmt::load_return_val_stack_trace()
     {
         ErrorHandler::error(ErrorPhase::EXECUTION, ErrorType::RUNTIME_ERROR, "Cannot load return variable in empty stack trace", -1, EMPTY_STK_TRACE);
     }
+}
+
+void StateMgmt::print_stack_trace()
+{
+    std::cout << "************** STACK TRACE START **************" << std::endl;
+    if (stack_trace.empty())
+    {
+        std::cout << "Stack trace: empty" << std::endl;
+        return;
+    }
+
+    print_stack_recursively();
+    std::cout << "************** STACK TRACE END **************\n\n" << std::endl;
+}
+
+void StateMgmt::print_stack_recursively()
+{
+    if (stack_trace.empty() == true)
+    {
+        return;
+    }
+
+    // Extract top stack frame from stack 
+    StackFrame top_stack_frame = stack_trace.top();
+    stack_trace.pop();
+
+    // Print contents
+    std::cout << "---------- Stack Frame ------------" << std::endl;
+    std::cout << "Function: " << top_stack_frame.func_id << std::endl;
+    top_stack_frame.scope_tree.print_scope_tree();
+
+    // Continue down the stack
+    print_stack_recursively();
+
+    // Return contents to stack in original order
+    stack_trace.push(top_stack_frame);
 }
