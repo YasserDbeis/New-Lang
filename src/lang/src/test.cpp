@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
     // input = (buffer.str());
 
     // Print the input
-    // std::cout << "INPUT: " << input << std::endl;
+    std::cout << "INPUT: " << input << std::endl;
 
     int test_suite_choice = std::atoi(argv[1]);
 

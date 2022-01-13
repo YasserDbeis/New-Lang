@@ -28,6 +28,14 @@ void Expression::evaluate()
         std::cout << "Output queue should not be empty (BUG in expression.cpp)" << std::endl;
     }
 
+    // for printing the queue :: WARNING, IT EMPTIES THE QUEUE
+    // while (output_queue.size() > 0)
+    // {
+    //     ExprNode *e = output_queue.front();
+    //     output_queue.pop_front();
+    //     e->expr_print();
+    // }
+
     while (output_queue.size() >= 3)
     {
         // Extract the expression nodes
@@ -305,19 +313,15 @@ std::deque<ExprNode *> Expression::infix_to_rev_polish()
         {
             output_queue.push_back(term);
         }
-        else if (term->type == ExprType::PAREN)
+        else if (term->type == ExprType::PAREN && is_left_paren(term) == true)
         {
-            ParenNode *parenNode = (ParenNode *)term;
-            if (parenNode->is_left == true)
-            {
-                op_stk.push(term);
-            }
+            op_stk.push(term);
         }
         else if (term->type == ExprType::OPERATOR)
         {
             ExprNode *op1 = term;
             while (op_stk.empty() == false &&
-                   op_stk.top()->type == ExprType::PAREN &&
+                   is_left_paren(op_stk.top()) == false &&
                    compare_precedence(op1, op_stk.top()))
             {
                 ExprNode *pop = op_stk.top();
@@ -336,7 +340,7 @@ std::deque<ExprNode *> Expression::infix_to_rev_polish()
                 output_queue.push_back(pop);
             }
 
-            assert(!op_stk.empty() && is_left_paren(term) == true);
+            assert(!op_stk.empty() && is_left_paren(op_stk.top()) == true);
 
             ExprNode *lparen = op_stk.top();
             op_stk.pop();
