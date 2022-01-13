@@ -15,11 +15,12 @@ public:
 
     void expr_print(int num_tabs = 0) override;
 
+    Value value;
+
 private:
     std::string name;
     Type var_type;
     int global_count;
-    Value value;
     bool is_constant;
 };
 
@@ -47,9 +48,7 @@ enum class OperatorType
     IS,
     AND,
     OR,
-    NOT,
     XOR,
-    XCL,
     NEQ,
 };
 

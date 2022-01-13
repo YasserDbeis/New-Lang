@@ -1,13 +1,4 @@
-func foo()
-{
-    int x;
-    int y;
-    int z;
-}
-
 func main()
 {
-    int x;
-    int y;
-    foo();
+    int x = 2 + 2 + 2;
 }

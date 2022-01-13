@@ -21,9 +21,9 @@ public:
     inline static std::queue<Value> arg_queue;
     inline static std::stack<StackFrame> stack_trace;
 
-    static void create_new_stack_frame(std::string func_id);  /* Stack trace helper function */
-    static void delete_curr_stack_frame(); /* Stack trace helper function */
-    static Value get_func_return_value();  /* Stack trace helper function */
+    static void create_new_stack_frame(std::string func_id); /* Stack trace helper function */
+    static void delete_curr_stack_frame();                   /* Stack trace helper function */
+    static Value get_func_return_value();                    /* Stack trace helper function */
 
     static Value load_global_var(std::string id);
     static void store_global_var(std::string id, Value value, int global_count);
@@ -32,7 +32,7 @@ public:
     static void store_var_stack_trace(std::string name, Value value);
     static void store_return_val_stack_trace(Value value);
     static Value load_return_val_stack_trace();
-    static Value store_var_stack_trace(std::string name);
+    static Value load_var_stack_trace(std::string name);
 
     static void print_stack_trace();
 

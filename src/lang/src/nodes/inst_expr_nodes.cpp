@@ -82,3 +82,8 @@ void FuncCallNode::expr_print(int num_tabs)
 {
     inst_print(num_tabs);
 }
+
+std::string FuncCallNode::get_func_id()
+{
+    return func_id;
+}

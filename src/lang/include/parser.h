@@ -145,8 +145,6 @@ private:
             {TokenType::OPERATOR_IS, OperatorType::IS},
             {TokenType::OPERATOR_AND, OperatorType::AND},
             {TokenType::OPERATOR_OR, OperatorType::OR},
-            {TokenType::OPERATOR_NOT, OperatorType::NOT},
             {TokenType::OPERATOR_XOR, OperatorType::XOR},
-            {TokenType::OPERATOR_XCL, OperatorType::XCL},
             {TokenType::OPERATOR_NEQ, OperatorType::NEQ}};
 };

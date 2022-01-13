@@ -54,7 +54,9 @@ enum ErrorCode
     VAR_NOT_DEC,
     MISSING_FUNC_RETURN,
     INVALID_EVAL,
-    EMPTY_STK_TRACE
+    EMPTY_STK_TRACE,
+    INVALID_OPERAND,
+    INVALID_OPERATION
 };
 
 class ErrorHandler

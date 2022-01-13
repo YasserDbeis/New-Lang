@@ -43,7 +43,7 @@ void ScopeTree::add_var(std::string name, Value val)
 
     Use cases - x = 5
 
-    Throws error if the scope_list is empty, or if the variable does not exist anywhere in the scope_list or global vars hashtable  
+    Throws error if the scope_list is empty, or if the variable does not exist anywhere in the scope_list or global vars hashtable
 */
 void ScopeTree::update_var(std::string name, Value val)
 {
@@ -127,7 +127,7 @@ void ScopeTree::print_scope_tree()
         // print key value pairs
         for (const auto &[id, value] : scope_list[i])
         {
-            std::cout << "variable: " << id << std::endl;
+            std::cout << "variable: " << id << ": " << value.token.lexeme << std::endl;
         }
 
         std::cout << "-----------------" << std::endl;

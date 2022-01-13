@@ -136,6 +136,7 @@ void StoreNode::execute()
 
             if (type != Type::Invalid) // Only validate the type if we know it at runtime!
             {
+                std::cout << expr.value.token.lexeme << std::endl;
                 assert_valid_type(expr.value, type);
             }
 
@@ -144,7 +145,7 @@ void StoreNode::execute()
     }
 
     // Printing for testing purposes
-    //StateMgmt::print_stack_trace();
+    StateMgmt::print_stack_trace();
 }
 
 void StoreNode::inst_print(int num_tabs)

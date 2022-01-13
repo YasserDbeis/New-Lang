@@ -86,7 +86,7 @@ void StateMgmt::store_return_val_stack_trace(Value value)
     }
 }
 
-Value StateMgmt::store_var_stack_trace(std::string name)
+Value StateMgmt::load_var_stack_trace(std::string name)
 {
     if (stack_trace.empty() == false)
     {
@@ -120,7 +120,8 @@ void StateMgmt::print_stack_trace()
     }
 
     print_stack_recursively();
-    std::cout << "************** STACK TRACE END **************\n\n" << std::endl;
+    std::cout << "************** STACK TRACE END **************\n\n"
+              << std::endl;
 }
 
 void StateMgmt::print_stack_recursively()
@@ -130,7 +131,7 @@ void StateMgmt::print_stack_recursively()
         return;
     }
 
-    // Extract top stack frame from stack 
+    // Extract top stack frame from stack
     StackFrame top_stack_frame = stack_trace.top();
     stack_trace.pop();
 

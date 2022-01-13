@@ -146,6 +146,14 @@ std::string ErrorHandler::code_to_msg(ErrorCode code)
     {
         return "Empty stack trace";
     }
+    case INVALID_OPERAND:
+    {
+        return "Operand deemed invalid during evaluation";
+    }
+    case INVALID_OPERATION:
+    {
+        return "Operation is not valid";
+    }
     default:
     {
         return "General Error";

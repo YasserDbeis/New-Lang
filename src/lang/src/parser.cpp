@@ -558,7 +558,7 @@ void Parser::parse_expr(std::vector<ExprNode *> &expr_list)
 {
     parse_term(expr_list);
 
-    while (operators.count(lexer.peek().type))
+    while (operators.count(lexer.peek().type) && lexer.peek().type != TokenType::OPERATOR_NOT && lexer.peek().type != TokenType::OPERATOR_XCL)
     {
         parse_operator(expr_list);
         parse_term(expr_list);
@@ -572,7 +572,7 @@ void Parser::parse_term(std::vector<ExprNode *> &expr_list)
 {
     parse_factor(expr_list);
 
-    while (operators.count(lexer.peek().type))
+    while (operators.count(lexer.peek().type) && lexer.peek().type != TokenType::OPERATOR_NOT && lexer.peek().type != TokenType::OPERATOR_XCL)
     {
         parse_operator(expr_list);
         parse_factor(expr_list);
@@ -846,7 +846,7 @@ void Parser::parse_operator(std::vector<ExprNode *> &expr_list)
 {
     Token tok = lexer.peek();
 
-    if (operators.count(tok.type))
+    if (operators.count(tok.type) != 0 && tok.type != TokenType::OPERATOR_NOT && tok.type != TokenType::OPERATOR_XCL)
     {
         Token op_token = expect(tok.type);
         OperatorNode *op_node = new OperatorNode(ExprType::OPERATOR, operator_token_to_type[op_token.type]);
@@ -861,7 +861,7 @@ void Parser::parse_operator(std::vector<ExprNode *> &expr_list)
 /*
     operator -> OPERATOR_PLUS |
                 OPERATOR_MINUS |
-                OPERATOR_NOT | 
+                OPERATOR_NOT |
                 OPERATOR_XCL
 */
 Token Parser::parse_leading_op(std::vector<ExprNode *> &expr_list)

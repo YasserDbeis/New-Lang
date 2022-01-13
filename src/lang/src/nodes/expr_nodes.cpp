@@ -30,7 +30,7 @@ void LoadNode::evaluate()
 {
     if (is_constant == false)
     {
-        value = StateMgmt::store_var_stack_trace(name);
+        value = StateMgmt::load_var_stack_trace(name);
     }
 }
 
@@ -137,9 +137,7 @@ void OperatorNode::expr_print(int num_tabs)
             {OperatorType::IS, "is"},
             {OperatorType::AND, "and"},
             {OperatorType::OR, "or"},
-            {OperatorType::NOT, "not"},
             {OperatorType::XOR, "xor"},
-            {OperatorType::XCL, "!"},
             {OperatorType::NEQ, "!="}};
 
     std::cout << operator_type_to_str[operator_type] << std::endl;
