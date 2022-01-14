@@ -34,6 +34,11 @@ void Executioner::execute_instructions(std::vector<InstNode *> instructions)
 
         curr_inst->execute();
 
+        if (curr_inst->inst_type == InstType::RETURN)
+        {
+            break;
+        }
+
         i += curr_inst->get_offset();
     }
 }

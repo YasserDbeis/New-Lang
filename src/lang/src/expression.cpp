@@ -41,15 +41,15 @@ void Expression::evaluate()
     if (output_queue.size() == 1)
     {
         ExprNode *expr = output_queue.back();
-        if (expr->type == ExprType::FUNC_CALL)
+        if (expr->expr_type == ExprType::FUNC_CALL)
         {
-            FuncCallNode *func_call = (FuncCallNode*) expr;
+            FuncCallNode *func_call = (FuncCallNode *)expr;
             func_call->evaluate();
             value = func_call->value;
         }
         else
         {
-            LoadNode *load_node = (LoadNode *) expr;
+            LoadNode *load_node = (LoadNode *)expr;
             load_node->evaluate();
             value = load_node->value;
         }
@@ -58,7 +58,7 @@ void Expression::evaluate()
 
     for (auto expr_node : output_queue)
     {
-        if (expr_node->type == ExprType::OPERATOR)
+        if (expr_node->expr_type == ExprType::OPERATOR)
         {
             // Extract the expression nodes
             ExprNode *exprNode1 = operand_stack.top();
@@ -88,7 +88,7 @@ void Expression::evaluate()
 
             operand_stack.push(load_const);
         }
-        else if (expr_node->type == ExprType::FUNC_CALL || expr_node->type == ExprType::LOAD)
+        else if (expr_node->expr_type == ExprType::FUNC_CALL || expr_node->expr_type == ExprType::LOAD)
         {
             operand_stack.push(expr_node);
         }
@@ -230,7 +230,45 @@ Value Expression::compute(Value val1, Value val2, OperatorType operator_type)
             result.token.lexeme = std::to_string(sum);
         }
     }
+    else if (operator_type == OperatorType::IS)
+    {
+        result.type = Type::Bool;
+        bool is_equal;
 
+        if (val1.type == Type::String && val2.type == Type::String)
+        {
+            is_equal = val1.token.lexeme.compare(val2.token.lexeme) == 0;
+        }
+        else if (val1.type == Type::Bool && val2.type == Type::Bool)
+        {
+            is_equal = val1.token.type == val2.token.type;
+        }
+        else if (val1.type == Type::Int && val2.type == Type::Int)
+        {
+            int op1 = std::atoi(val1.token.lexeme.c_str());
+            int op2 = std::atoi(val2.token.lexeme.c_str());
+
+            is_equal = op1 == op2;
+        }
+        else if (val1.type == Type::Dec && val2.type == Type::Dec)
+        {
+            double op1 = std::stod(val1.token.lexeme.c_str());
+            double op2 = std::stod(val2.token.lexeme.c_str());
+
+            is_equal = op1 == op2;
+        }
+
+        if (is_equal == true)
+        {
+            result.token.type = TokenType::TRUE;
+            result.token.lexeme = "true";
+        }
+        else
+        {
+            result.token.type = TokenType::FALSE;
+            result.token.lexeme = "false";
+        }
+    }
     else if (operator_type == OperatorType::NEQ)
     {
         result.type = Type::Bool;
@@ -347,19 +385,19 @@ std::deque<ExprNode *> Expression::infix_to_rev_polish()
 
     for (auto term : term_list)
     {
-        if (term->type == ExprType::LOAD || term->type == ExprType::FUNC_CALL)
+        if (term->expr_type == ExprType::LOAD || term->expr_type == ExprType::FUNC_CALL)
         {
             output_queue.push_back(term);
         }
-        else if (term->type == ExprType::PAREN && is_left_paren(term) == true)
+        else if (term->expr_type == ExprType::PAREN && is_left_paren(term) == true)
         {
             op_stk.push(term);
         }
-        else if (term->type == ExprType::OPERATOR)
+        else if (term->expr_type == ExprType::OPERATOR)
         {
             ExprNode *op1 = term;
             while (op_stk.empty() == false &&
-                   (op_stk.top())->type == ExprType::PAREN &&
+                   (op_stk.top())->expr_type == ExprType::PAREN &&
                    is_left_paren(op_stk.top()) == false &&
                    compare_precedence(op1, op_stk.top()))
             {
@@ -370,16 +408,16 @@ std::deque<ExprNode *> Expression::infix_to_rev_polish()
 
             op_stk.push(op1);
         }
-        else if (term->type == ExprType::PAREN && is_left_paren(term) == false)
+        else if (term->expr_type == ExprType::PAREN && is_left_paren(term) == false)
         {
-            while (op_stk.empty() == false && (op_stk.top()->type != ExprType::PAREN || is_left_paren(op_stk.top()) == false))
+            while (op_stk.empty() == false && (op_stk.top()->expr_type != ExprType::PAREN || is_left_paren(op_stk.top()) == false))
             {
                 ExprNode *pop = op_stk.top();
                 op_stk.pop();
                 output_queue.push_back(pop);
             }
 
-            assert(op_stk.empty() == false && (op_stk.top()->type == ExprType::PAREN && is_left_paren(op_stk.top()) == true));
+            assert(op_stk.empty() == false && (op_stk.top()->expr_type == ExprType::PAREN && is_left_paren(op_stk.top()) == true));
 
             ExprNode *lparen = op_stk.top();
             op_stk.pop();
@@ -388,7 +426,7 @@ std::deque<ExprNode *> Expression::infix_to_rev_polish()
 
     while (op_stk.empty() == false)
     {
-        assert(op_stk.top()->type != ExprType::PAREN || is_left_paren(op_stk.top()) == false);
+        assert(op_stk.top()->expr_type != ExprType::PAREN || is_left_paren(op_stk.top()) == false);
         output_queue.push_back(op_stk.top());
         op_stk.pop();
     }
@@ -396,13 +434,13 @@ std::deque<ExprNode *> Expression::infix_to_rev_polish()
     return output_queue;
 }
 
-Value Expression::get_expr_node_value(ExprNode *exprNode)
+Value Expression::get_expr_node_value(ExprNode *expr_node)
 {
     Value val;
 
-    if (exprNode->type == ExprType::FUNC_CALL)
+    if (expr_node->expr_type == ExprType::FUNC_CALL)
     {
-        FuncCallNode *func_call = (FuncCallNode *)exprNode;
+        FuncCallNode *func_call = (FuncCallNode *)expr_node;
         // First, validate that this function call can be evaluated to a value
         if (FuncDefTable::get_return_type(func_call->get_func_id()) != Type::Void)
         {
@@ -414,9 +452,9 @@ Value Expression::get_expr_node_value(ExprNode *exprNode)
             ErrorHandler::error(ErrorPhase::EXECUTION, ErrorType::RUNTIME_ERROR, "Evaluation encountered invalid expression operand", -1, INVALID_OPERAND);
         }
     }
-    else if (exprNode->type == ExprType::LOAD)
+    else if (expr_node->expr_type == ExprType::LOAD)
     {
-        LoadNode *load = (LoadNode *)exprNode;
+        LoadNode *load = (LoadNode *)expr_node;
         load->evaluate();
         val = load->value;
     }
@@ -459,7 +497,7 @@ bool Expression::compare_precedence(ExprNode *currNode1, ExprNode *topNode2)
 
 bool Expression::is_left_paren(ExprNode *exprNode)
 {
-    assert(exprNode->type == ExprType::PAREN);
+    assert(exprNode->expr_type == ExprType::PAREN);
 
     ParenNode *paren = (ParenNode *)exprNode;
 

@@ -15,12 +15,13 @@ FuncCallNode::FuncCallNode(std::string func_id, std::vector<Expression> args)
 {
     this->func_id = func_id;
     this->args = args;
+    this->inst_type = InstType::FUNC_CALL;
 }
 
-FuncCallNode::FuncCallNode(ExprType type, std::string func_id, std::vector<Expression> args)
+FuncCallNode::FuncCallNode(ExprType expr_type, std::string func_id, std::vector<Expression> args)
 {
     this->func_id = func_id;
-    this->type = type;
+    this->expr_type = expr_type;
     this->func_id = func_id;
     this->args = args;
 }

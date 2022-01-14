@@ -11,7 +11,7 @@ LoadNode::LoadNode()
 
 LoadNode::LoadNode(ExprType type, Type var_type, std::string name, int global_count, bool is_constant)
 {
-    this->type = type;
+    this->expr_type = type;
     this->var_type = var_type;
     this->name = name;
     this->global_count = global_count;
@@ -20,7 +20,7 @@ LoadNode::LoadNode(ExprType type, Type var_type, std::string name, int global_co
 
 LoadNode::LoadNode(ExprType type, Value value, int global_count, bool is_constant)
 {
-    this->type = type;
+    this->expr_type = type;
     this->value = value;
     this->global_count = global_count;
     this->is_constant = is_constant;
@@ -93,7 +93,7 @@ ParenNode::ParenNode()
 
 ParenNode::ParenNode(ExprType type, bool is_left)
 {
-    this->type = type;
+    this->expr_type = type;
     this->is_left = is_left;
 }
 
@@ -126,7 +126,7 @@ OperatorNode::OperatorNode()
 
 OperatorNode::OperatorNode(ExprType type, OperatorType op_type)
 {
-    this->type = type;
+    this->expr_type = type;
     this->operator_type = op_type;
 }
 

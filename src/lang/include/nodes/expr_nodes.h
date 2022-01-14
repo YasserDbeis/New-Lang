@@ -30,7 +30,7 @@ public:
     bool is_left;
 
     ParenNode();
-    ParenNode(ExprType type, bool is_left);
+    ParenNode(ExprType expr_type, bool is_left);
 
     void expr_print(int num_tabs = 0) override;
 };
@@ -58,7 +58,7 @@ public:
     OperatorType operator_type;
 
     OperatorNode();
-    OperatorNode(ExprType type, OperatorType operator_type);
+    OperatorNode(ExprType expr_type, OperatorType operator_type);
 
     void expr_print(int num_tabs = 0) override;
 };

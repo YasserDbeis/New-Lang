@@ -18,6 +18,7 @@ public:
     CjmpNode(Expression expr);
 
     void execute() override;
+    int get_offset() override;
 
     void inst_print(int num_tabs = 0) override;
 

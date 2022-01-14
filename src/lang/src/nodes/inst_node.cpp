@@ -19,3 +19,8 @@ void InstNode::inst_print(int num_tabs)
 {
     std::cout << "Default called\n";
 }
+
+int InstNode::get_target()
+{
+    return offset;
+}

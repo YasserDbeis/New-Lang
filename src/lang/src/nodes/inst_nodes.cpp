@@ -7,6 +7,7 @@ JmpNode implementation
 
 JmpNode::JmpNode()
 {
+    inst_type = InstType::JMP;
 }
 
 void JmpNode::inst_print(int num_tabs)
@@ -31,6 +32,7 @@ CjmpNode::CjmpNode()
 CjmpNode::CjmpNode(Expression expr)
 {
     this->expr = expr;
+    inst_type = InstType::CJMP;
 }
 
 /*
@@ -42,16 +44,25 @@ void CjmpNode::execute()
 {
     expr.evaluate();
 
+    if (expr.value.type != Type::Bool)
+    {
+        ErrorHandler::error(ErrorPhase::EXECUTION, ErrorType::RUNTIME_EXCEPTION, "At expression " + expr.value.token.lexeme, expr.value.token.line_number, INVALID_EVAL);
+    }
+}
+
+int CjmpNode::get_offset()
+{
     if (expr.value.type == Type::Bool)
     {
         if (expr.value.token.type == TokenType::TRUE)
         {
-            set_offset(1);
+            return 1;
         }
-    }
-    else
-    {
-        ErrorHandler::error(ErrorPhase::EXECUTION, ErrorType::RUNTIME_EXCEPTION, "At expression " + expr.value.token.lexeme, expr.value.token.line_number, INVALID_EVAL);
+        else
+        {
+            int target = get_target();
+            return target;
+        }
     }
 }
 
@@ -63,7 +74,7 @@ void CjmpNode::inst_print(int num_tabs)
     }
 
     std::cout << "[Cjmp] // "
-              << "Offset : " << this->get_offset() << std::endl;
+              << "Offset : " << this->get_target() << std::endl;
     expr.print_expr(num_tabs + 1);
     std::cout << std::endl;
 }
@@ -83,12 +94,14 @@ StoreNode::StoreNode(Type type, std::string name, Expression expr, int global_co
     this->expr = expr;
     this->global_count = global_count;
     this->is_param = is_param;
+    this->inst_type = InstType::STORE;
 }
 
 void StoreNode::assert_valid_type(Value val, Type expected_type)
 {
     if (val.type != expected_type)
     {
+        std::cout << "I'm in store node!" << std::endl;
         ErrorHandler::error(ErrorPhase::EXECUTION, ErrorType::RUNTIME_EXCEPTION, "At expression " + expr.value.token.lexeme, expr.value.token.line_number, INVALID_EVAL);
     }
 }
@@ -206,6 +219,7 @@ ReturnNode::ReturnNode()
 void ReturnNode::set_expr(Expression given_expr)
 {
     expr = given_expr;
+    inst_type = InstType::RETURN;
 }
 
 void ReturnNode::execute()
@@ -227,19 +241,18 @@ void ReturnNode::execute()
 
     if (expected_func_return_type != return_value.type)
     {
-        std::unordered_map<Type, std::string> type_to_str = 
-        {
-            {Type::Void, "void"},
-            {Type::Int, "int"},
-            {Type::Dec, "dec"},
-            {Type::String, "str"},
-            {Type::Bool, "bool"},
-            {Type::Invalid, "invalid"}
-        };
+        std::unordered_map<Type, std::string> type_to_str =
+            {
+                {Type::Void, "void"},
+                {Type::Int, "int"},
+                {Type::Dec, "dec"},
+                {Type::String, "str"},
+                {Type::Bool, "bool"},
+                {Type::Invalid, "invalid"}};
 
-        ErrorHandler::error(ErrorPhase::EXECUTION, ErrorType::RUNTIME_ERROR, 
-            "Returned " + type_to_str[return_value.type] + ", but expected " + type_to_str[expected_func_return_type], 
-            -1, INVALID_RETURN_VALUE);
+        ErrorHandler::error(ErrorPhase::EXECUTION, ErrorType::RUNTIME_ERROR,
+                            "Returned " + type_to_str[return_value.type] + ", but expected " + type_to_str[expected_func_return_type],
+                            -1, INVALID_RETURN_VALUE);
     }
 
     StateMgmt::store_return_val_stack_trace(return_value);
@@ -269,6 +282,7 @@ ScopeNode::ScopeNode()
 ScopeNode::ScopeNode(bool is_new_scope)
 {
     this->is_new_scope = is_new_scope;
+    this->inst_type = InstType::SCOPE;
 }
 
 void ScopeNode::execute()
