@@ -28,10 +28,23 @@ LoadNode::LoadNode(ExprType type, Value value, int global_count, bool is_constan
 
 void LoadNode::evaluate()
 {
+    std::unordered_map<Type, std::string> type_to_str =
+        {
+            {Type::Void, "void"},
+            {Type::Int, "int"},
+            {Type::Dec, "dec"},
+            {Type::String, "str"},
+            {Type::Bool, "bool"},
+            {Type::Invalid, "Invalid"}};
+
     if (is_constant == false)
     {
         value = StateMgmt::load_var_stack_trace(name);
     }
+    std::cout << "* * * * * * * * * * * *" << std::endl;
+    std::cout << "Loading evaluate() info" << std::endl;
+    std::cout << "Loading variable " << value.token.lexeme << " of type " << type_to_str[value.type] << std::endl;
+    std::cout << "* * * * * * * * * * * *" << std::endl;
 }
 
 void LoadNode::expr_print(int num_tabs)

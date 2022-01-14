@@ -22,6 +22,7 @@ void Expression::evaluate()
     }
 
     std::deque<ExprNode *> output_queue = infix_to_rev_polish();
+    std::stack<ExprNode *> operand_stack;
 
     if (output_queue.empty()) // debugging purposes
     {
@@ -36,34 +37,52 @@ void Expression::evaluate()
     //     e->expr_print();
     // }
 
-    while (output_queue.size() >= 3)
+    for (auto expr_node : output_queue)
     {
-        // Extract the expression nodes
-        ExprNode *exprNode1 = output_queue.front();
-        output_queue.pop_front();
+        if (expr_node->type == ExprType::OPERATOR)
+        {
+            // Extract the expression nodes
+            ExprNode *exprNode1 = operand_stack.top();
+            operand_stack.pop();
 
-        ExprNode *exprNode2 = output_queue.front();
-        output_queue.pop_front();
+            ExprNode *exprNode2 = operand_stack.top();
+            operand_stack.pop();
 
-        // Extract the operator node
-        ExprNode *opNode = output_queue.front();
-        output_queue.pop_front();
+            OperatorNode *operator_node = (OperatorNode *)expr_node;
 
-        Value val1 = get_expr_node_value(exprNode1);
-        Value val2 = get_expr_node_value(exprNode2);
-        OperatorType operator_type = ((OperatorNode *)opNode)->operator_type;
+            Value val1 = get_expr_node_value(exprNode1);
+            Value val2 = get_expr_node_value(exprNode2);
+            OperatorType operator_type = ((OperatorNode *)operator_node)->operator_type;
 
-        Value curr_result = compute(val1, val2, operator_type);
+            Assoc assoc = op_to_assoc[operator_type];
 
-        // Wrap value into a constant loadnode
-        LoadNode *load_const = new LoadNode(ExprType::LOAD, curr_result, -1, true);
+            // by default, compute uses right associativity
+            if (assoc == Assoc::LEFT)
+            {
+                std::swap(val1, val2);
+            }
 
-        output_queue.push_front(load_const);
+            Value curr_result = compute(val1, val2, operator_type);
+
+            // Wrap value into a constant loadnode
+            LoadNode *load_const = new LoadNode(ExprType::LOAD, curr_result, -1, true);
+
+            operand_stack.push(load_const);
+        }
+        else if (expr_node->type == ExprType::FUNC_CALL || expr_node->type == ExprType::LOAD)
+        {
+            operand_stack.push(expr_node);
+        }
+        else
+        {
+            std::cout << "Internal error. Parenthesis in the output_queue in expression.cpp" << std::endl;
+            exit(EXIT_FAILURE);
+        }
     }
 
-    assert(output_queue.size() == 1);
+    assert(operand_stack.size() == 1);
 
-    LoadNode *final_result = (LoadNode *)output_queue.back();
+    LoadNode *final_result = (LoadNode *)operand_stack.top();
 
     value = final_result->value;
 }
@@ -321,6 +340,7 @@ std::deque<ExprNode *> Expression::infix_to_rev_polish()
         {
             ExprNode *op1 = term;
             while (op_stk.empty() == false &&
+                   (op_stk.top())->type == ExprType::PAREN &&
                    is_left_paren(op_stk.top()) == false &&
                    compare_precedence(op1, op_stk.top()))
             {
@@ -333,30 +353,23 @@ std::deque<ExprNode *> Expression::infix_to_rev_polish()
         }
         else if (term->type == ExprType::PAREN && is_left_paren(term) == false)
         {
-            while (!op_stk.empty() && is_left_paren(op_stk.top()) == false)
+            while (op_stk.empty() == false && (op_stk.top()->type != ExprType::PAREN || is_left_paren(op_stk.top()) == false))
             {
                 ExprNode *pop = op_stk.top();
                 op_stk.pop();
                 output_queue.push_back(pop);
             }
 
-            assert(!op_stk.empty() && is_left_paren(op_stk.top()) == true);
+            assert(op_stk.empty() == false && (op_stk.top()->type == ExprType::PAREN && is_left_paren(op_stk.top()) == true));
 
             ExprNode *lparen = op_stk.top();
             op_stk.pop();
-
-            // if (!op_stk.empty() && op_stk.top().type == FUNC)
-            // {
-            //     Token pop = op_stk.top();
-            //     op_stk.pop();
-            //     output_queue.push(pop);
-            // }
         }
     }
 
     while (op_stk.empty() == false)
     {
-        assert(is_left_paren(op_stk.top()) == false);
+        assert(op_stk.top()->type != ExprType::PAREN || is_left_paren(op_stk.top()) == false);
         output_queue.push_back(op_stk.top());
         op_stk.pop();
     }
@@ -427,6 +440,8 @@ bool Expression::compare_precedence(ExprNode *currNode1, ExprNode *topNode2)
 
 bool Expression::is_left_paren(ExprNode *exprNode)
 {
+    assert(exprNode->type == ExprType::PAREN);
+
     ParenNode *paren = (ParenNode *)exprNode;
 
     return paren->is_left == true;

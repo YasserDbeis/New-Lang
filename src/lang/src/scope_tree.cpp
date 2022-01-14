@@ -114,6 +114,15 @@ int ScopeTree::find_in_scope_list(std::string id)
 
 void ScopeTree::print_scope_tree()
 {
+    std::unordered_map<Type, std::string> type_to_str =
+        {
+            {Type::Void, "void"},
+            {Type::Int, "int"},
+            {Type::Dec, "dec"},
+            {Type::String, "str"},
+            {Type::Bool, "bool"},
+            {Type::Invalid, "Invalid"}};
+
     if (scope_list.empty())
     {
         std::cout << "No variables to show" << std::endl;
@@ -127,7 +136,7 @@ void ScopeTree::print_scope_tree()
         // print key value pairs
         for (const auto &[id, value] : scope_list[i])
         {
-            std::cout << "variable: " << id << ": " << value.token.lexeme << std::endl;
+            std::cout << "variable: " << id << ": " << value.token.lexeme << ": " << type_to_str[value.type] << std::endl;
         }
 
         std::cout << "-----------------" << std::endl;

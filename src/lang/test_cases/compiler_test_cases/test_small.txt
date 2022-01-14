@@ -1,4 +1,8 @@
 func main()
 {
-    int x = (2 + 2) + (2 + 5 + (8 + (6 + 1)));
+    int x = 10 - (6 + 2);
+    int y = (2 + 3) - 3;
+    bool z = x != y;
+
+    bool check = z;
 }
