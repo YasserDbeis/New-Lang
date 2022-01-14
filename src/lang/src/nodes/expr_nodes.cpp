@@ -41,10 +41,10 @@ void LoadNode::evaluate()
     {
         value = StateMgmt::load_var_stack_trace(name);
     }
-    std::cout << "* * * * * * * * * * * *" << std::endl;
-    std::cout << "Loading evaluate() info" << std::endl;
-    std::cout << "Loading variable " << value.token.lexeme << " of type " << type_to_str[value.type] << std::endl;
-    std::cout << "* * * * * * * * * * * *" << std::endl;
+    // std::cout << "* * * * * * * * * * * *" << std::endl;
+    // std::cout << "Loading evaluate() info" << std::endl;
+    // std::cout << "Loading variable " << value.token.lexeme << " of type " << type_to_str[value.type] << std::endl;
+    // std::cout << "* * * * * * * * * * * *" << std::endl;
 }
 
 void LoadNode::expr_print(int num_tabs)

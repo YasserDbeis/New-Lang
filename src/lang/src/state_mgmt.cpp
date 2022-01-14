@@ -4,16 +4,16 @@
 
 void StateMgmt::create_new_stack_frame(std::string func_id)
 {
-    std::cout << "*** Creating New Stack Frame ***" << std::endl;
+    //std::cout << "*** Creating New Stack Frame ***" << std::endl;
     StackFrame new_stack_frame;
     new_stack_frame.func_id = func_id;
     stack_trace.push(new_stack_frame);
-    std::cout << "After pushing, stack trace has a size of " << stack_trace.size() << std::endl;
+    //std::cout << "After pushing, stack trace has a size of " << stack_trace.size() << std::endl;
 }
 
 void StateMgmt::delete_curr_stack_frame()
 {
-    std::cout << "*** Deleting Current Stack Frame ***" << std::endl;
+    //std::cout << "*** Deleting Current Stack Frame ***" << std::endl;
     stack_trace.pop();
 }
 
@@ -135,7 +135,7 @@ void StateMgmt::print_stack_recursively()
     StackFrame top_stack_frame = stack_trace.top();
     stack_trace.pop();
 
-    // Print contents
+    //Print contents
     std::cout << "---------- Stack Frame ------------" << std::endl;
     std::cout << "Function: " << top_stack_frame.func_id << std::endl;
     top_stack_frame.scope_tree.print_scope_tree();
@@ -145,4 +145,17 @@ void StateMgmt::print_stack_recursively()
 
     // Return contents to stack in original order
     stack_trace.push(top_stack_frame);
+}
+
+// Returns name of the function on top of the stack trace. Error if stack trace is empty
+std::string StateMgmt::get_curr_func_name()
+{
+    if (stack_trace.empty() == true)
+    {
+        ErrorHandler::error(ErrorPhase::EXECUTION, ErrorType::RUNTIME_ERROR, "Cannot load function name in empty stack trace", -1, EMPTY_STK_TRACE);
+    }
+    else
+    {
+        return stack_trace.top().func_id;
+    }
 }

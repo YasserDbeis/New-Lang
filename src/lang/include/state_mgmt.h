@@ -24,6 +24,7 @@ public:
     static void create_new_stack_frame(std::string func_id); /* Stack trace helper function */
     static void delete_curr_stack_frame();                   /* Stack trace helper function */
     static Value get_func_return_value();                    /* Stack trace helper function */
+    static std::string get_curr_func_name();
 
     static Value load_global_var(std::string id);
     static void store_global_var(std::string id, Value value, int global_count);

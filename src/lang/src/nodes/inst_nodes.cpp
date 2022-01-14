@@ -213,6 +213,27 @@ void ReturnNode::execute()
         return_value.type = Type::Void;
     }
 
+    // Ensure the return type matches the expected return type of our function
+    std::string curr_func_id = StateMgmt::get_curr_func_name();
+    Type expected_func_return_type = FuncDefTable::get_return_type(curr_func_id);
+
+    if (expected_func_return_type != return_value.type)
+    {
+        std::unordered_map<Type, std::string> type_to_str = 
+        {
+            {Type::Void, "void"},
+            {Type::Int, "int"},
+            {Type::Dec, "dec"},
+            {Type::String, "str"},
+            {Type::Bool, "bool"},
+            {Type::Invalid, "invalid"}
+        };
+
+        ErrorHandler::error(ErrorPhase::EXECUTION, ErrorType::RUNTIME_ERROR, 
+            "Returned " + type_to_str[return_value.type] + ", but expected " + type_to_str[expected_func_return_type], 
+            -1, INVALID_RETURN_VALUE);
+    }
+
     StateMgmt::store_return_val_stack_trace(return_value);
 }
 

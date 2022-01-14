@@ -154,6 +154,10 @@ std::string ErrorHandler::code_to_msg(ErrorCode code)
     {
         return "Operation is not valid";
     }
+    case INVALID_RETURN_VALUE:
+    {
+        return "Return value does not match function return type";
+    }
     default:
     {
         return "General Error";

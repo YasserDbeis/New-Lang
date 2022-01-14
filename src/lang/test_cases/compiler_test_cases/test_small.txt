@@ -1,6 +1,13 @@
 func main()
 {
-    bool z = 2 != 2;
-
-    bool check = z;
+    int i = 0;
+    int x;
+    if (i != 1)
+    {
+        x = 5;
+    }
+    else
+    {
+        x = 10;
+    }
 }
