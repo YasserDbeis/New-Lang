@@ -37,6 +37,25 @@ void Expression::evaluate()
     //     e->expr_print();
     // }
 
+    // Special case? Only 1 term in the expression
+    if (output_queue.size() == 1)
+    {
+        ExprNode *expr = output_queue.back();
+        if (expr->type == ExprType::FUNC_CALL)
+        {
+            FuncCallNode *func_call = (FuncCallNode*) expr;
+            func_call->evaluate();
+            value = func_call->value;
+        }
+        else
+        {
+            LoadNode *load_node = (LoadNode *) expr;
+            load_node->evaluate();
+            value = load_node->value;
+        }
+        return;
+    }
+
     for (auto expr_node : output_queue)
     {
         if (expr_node->type == ExprType::OPERATOR)
