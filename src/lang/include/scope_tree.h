@@ -25,6 +25,7 @@ public:
     void pop();
 
     void print_scope_tree();
+    bool is_var_declared(std::string name);
 
 private:
     bool in_curr_scope(std::string name);

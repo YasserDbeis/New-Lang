@@ -35,6 +35,8 @@ public:
     static Value load_return_val_stack_trace();
     static Value load_var_stack_trace(std::string name);
 
+    static bool is_var_declared(std::string name);
+    
     static void print_stack_trace();
 
 private:

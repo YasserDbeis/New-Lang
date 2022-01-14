@@ -159,3 +159,23 @@ std::string StateMgmt::get_curr_func_name()
         return stack_trace.top().func_id;
     }
 }
+
+bool StateMgmt::is_var_declared(std::string id)
+{
+    bool var_is_declared;
+    if (stack_trace.empty())
+    {
+        var_is_declared = false;
+    }
+    else
+    {
+        var_is_declared = stack_trace.top().scope_tree.is_var_declared(id);
+    }
+
+    if (var_is_declared == false)
+    {
+        var_is_declared = global_vars.count(id) == 1;
+    }
+
+    return var_is_declared;
+}

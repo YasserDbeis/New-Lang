@@ -142,3 +142,9 @@ void ScopeTree::print_scope_tree()
         std::cout << "-----------------" << std::endl;
     }
 }
+
+bool ScopeTree::is_var_declared(std::string id)
+{
+    int ix = find_in_scope_list(id);
+    return ix >= 0;
+}

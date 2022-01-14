@@ -101,7 +101,15 @@ void StoreNode::store_to_curr_context(Value val)
     }
     else // IN FUNCTION - stack trace
     {
-        StateMgmt::stack_trace.top().scope_tree.add_var(name, val);
+        // Add var if the variable hasn't been declared yet. Else update the existing one
+        if (StateMgmt::is_var_declared(name) == true)
+        {
+            StateMgmt::stack_trace.top().scope_tree.update_var(name, val);
+        }
+        else
+        {
+            StateMgmt::stack_trace.top().scope_tree.add_var(name, val);
+        }
     }
 }
 
@@ -127,7 +135,7 @@ void StoreNode::execute()
         if (expr.term_list.empty()) // Variable declaration - do not evaluate the expression
         {
             Value dummy_value; // Send in a dummy value instead
-            dummy_value.type = Type::Invalid;
+            dummy_value.type = type;
             store_to_curr_context(dummy_value);
         }
         else // Variable assignment - evaluate the expression
