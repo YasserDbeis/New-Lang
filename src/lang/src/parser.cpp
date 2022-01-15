@@ -436,7 +436,9 @@ void Parser::parse_return_stmt()
 */
 void Parser::parse_if_stmt()
 {
-    parse_if_blk();
+    std::vector<int> jmp_indices;
+
+    parse_if_blk(jmp_indices);
 
     Token tok_0 = lexer.peek();
 
@@ -446,32 +448,41 @@ void Parser::parse_if_stmt()
     }
     else if (tok_0.type == TokenType::ELSIF)
     {
-        parse_elsif_blks();
+        parse_elsif_blks(jmp_indices);
 
         Token tok_1 = lexer.peek();
         if (tok_1.type == TokenType::ELSE)
         {
             parse_else_blk();
         }
-        else if (first_of_stmt.count(tok_0.type) || tok_0.type == TokenType::RBRACE) // var declaration or definition
-        {
-            return;
-        }
+
+        // else if (first_of_stmt.count(tok_0.type) || tok_0.type == TokenType::RBRACE) // var declaration or definition
+        // {
+        //     return;
+        // }
     }
     else if (first_of_stmt.count(tok_0.type) || tok_0.type == TokenType::RBRACE) // var declaration or definition
     {
-        return;
+        //return;
     }
     else
     {
         ErrorHandler::error(ErrorPhase::PARSING, ErrorType::SYNTAX_ERROR, "At token " + tok_0.lexeme, tok_0.line_number, INVALID_CTRL_FLOW);
+    }
+
+    int ix_of_next_stmt = func_instructions.size();
+    for (int i = 0; i < jmp_indices.size(); i++)
+    {
+        int jmp_ix = jmp_indices[i];
+        func_instructions[jmp_ix]->set_offset(ix_of_next_stmt - jmp_ix);
+        //std::cout << "OFFSET TO JMP NODE SHOULD BE SET TO " << ix_of_next_stmt - jmp_ix << std::endl;
     }
 }
 
 /*
     if_blk -> IF LPAREN expr RPAREN body
 */
-void Parser::parse_if_blk()
+void Parser::parse_if_blk(std::vector<int> &jmp_indicies)
 {
     expect(TokenType::IF);
     expect(TokenType::LPAREN);
@@ -489,6 +500,12 @@ void Parser::parse_if_blk()
     expect(TokenType::RPAREN);
     parse_body();
 
+    int ix_of_jmp = func_instructions.size();
+    jmp_indicies.push_back(ix_of_jmp);
+
+    JmpNode *jmp = new JmpNode();
+    func_instructions.push_back(jmp);
+
     int post_if_ix = func_instructions.size();
     func_instructions[if_cjmp_ix]->set_offset(post_if_ix - if_cjmp_ix);
 }
@@ -496,14 +513,14 @@ void Parser::parse_if_blk()
 /*
     elsif_blks -> elsif_blk elseif_blks | elsif_blk
 */
-void Parser::parse_elsif_blks()
+void Parser::parse_elsif_blks(std::vector<int> &jmp_indicies)
 {
-    parse_elsif_blk();
+    parse_elsif_blk(jmp_indicies);
 
     Token tok = lexer.peek();
     if (tok.type == TokenType::ELSIF)
     {
-        parse_elsif_blks();
+        parse_elsif_blks(jmp_indicies);
     }
     else if (first_of_stmt.count(tok.type) || // any statement + end of body + else
              tok.type == TokenType::RBRACE ||
@@ -520,7 +537,7 @@ void Parser::parse_elsif_blks()
 /*
     elsif_blk -> ELSIF LPAREN expr RPAREN body
 */
-void Parser::parse_elsif_blk()
+void Parser::parse_elsif_blk(std::vector<int> &jmp_indicies)
 {
     expect(TokenType::ELSIF);
     expect(TokenType::LPAREN);
@@ -537,6 +554,12 @@ void Parser::parse_elsif_blk()
 
     expect(TokenType::RPAREN);
     parse_body();
+
+    int ix_of_jmp = func_instructions.size();
+    jmp_indicies.push_back(ix_of_jmp);
+
+    JmpNode *jmp = new JmpNode();
+    func_instructions.push_back(jmp);
 
     int post_elsif_ix = func_instructions.size();
     func_instructions[elsif_cjmp_ix]->set_offset(post_elsif_ix - elsif_cjmp_ix);

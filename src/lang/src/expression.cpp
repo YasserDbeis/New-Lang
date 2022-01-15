@@ -397,8 +397,8 @@ std::deque<ExprNode *> Expression::infix_to_rev_polish()
         {
             ExprNode *op1 = term;
             while (op_stk.empty() == false &&
-                   (op_stk.top())->expr_type == ExprType::PAREN &&
-                   is_left_paren(op_stk.top()) == false &&
+                   ((op_stk.top())->expr_type != ExprType::PAREN ||
+                    is_left_paren(op_stk.top()) == false) &&
                    compare_precedence(op1, op_stk.top()))
             {
                 ExprNode *pop = op_stk.top();

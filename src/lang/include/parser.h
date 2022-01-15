@@ -46,9 +46,9 @@ private:
     void parse_while_stmt();
     void parse_return_stmt();
     void parse_if_stmt();
-    void parse_if_blk();
-    void parse_elsif_blks();
-    void parse_elsif_blk();
+    void parse_if_blk(std::vector<int> &jmp_indices);
+    void parse_elsif_blks(std::vector<int> &jmp_indices);
+    void parse_elsif_blk(std::vector<int> &jmp_indices);
     void parse_else_blk();
     void parse_expr(std::vector<ExprNode *> &expr_list);
     void parse_term(std::vector<ExprNode *> &expr_list);
