@@ -24,5 +24,7 @@ public:
 
     Compiler compiler;
 
+    static void print(std::string info);
+
 private:
 };

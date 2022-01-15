@@ -1,18 +1,18 @@
 func main()
 {
-    int res = fib(12);
-}
+    ~if (true)   offset -> elsif
+    ~{
 
-func fib(int x) -> int
-{
-    if (x is 0)
-    {
-        return 0;
-    }
-    if (x is 1)
-    {
-        return 1;
-    }
+    ~    jmp -> A
+    ~}
+    ~elsif (true)   offset -> else
+    ~{
+    ~    jmp -> A
+    ~}
+    ~else        offset -> 1
+    ~{
 
-    return fib(x - 1) + fib(x - 2);
+    ~}
+
+    ~A
 }

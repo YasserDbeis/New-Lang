@@ -158,6 +158,10 @@ std::string ErrorHandler::code_to_msg(ErrorCode code)
     {
         return "Return value does not match function return type";
     }
+    case INVALID_ARG_TYPE:
+    {
+        return "Invalid argument type";
+    }
     default:
     {
         return "General Error";

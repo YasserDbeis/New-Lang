@@ -42,3 +42,8 @@ void Executioner::execute_instructions(std::vector<InstNode *> instructions)
         i += curr_inst->get_offset();
     }
 }
+
+void Executioner::print(std::string info)
+{
+    std::cout << info << std::endl;
+}

@@ -29,6 +29,31 @@ FuncCallNode::FuncCallNode(ExprType expr_type, std::string func_id, std::vector<
 /* Override */
 void FuncCallNode::execute()
 {
+    /* Special case: print function call 
+
+        The print function prototype looks like
+        func print(str info) -> void  
+
+        The definition is not in our created language, but instead it's an internal c++ function
+        We'll evaluate the argument and pass its value ourselves to this internal function for printing
+    */
+    if (func_id.compare("print") == 0)
+    {
+        // Ensure there's only one argument
+        assert(args.size() == 1);
+
+        // Evaluate the argument
+        args[0].evaluate();
+
+        if (args[0].value.type != Type::Void && args[0].value.type != Type::Invalid)
+        {
+            Executioner::print(args[0].value.token.lexeme);
+        }
+
+        return; // Exit out of the execute function.
+    }
+    /* End Special case */
+
     for (auto argument_expr : args)
     {
         argument_expr.evaluate();
