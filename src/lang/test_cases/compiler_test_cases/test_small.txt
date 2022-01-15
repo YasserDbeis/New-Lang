@@ -1,6 +1,6 @@
 func main()
 {
-    fib(4);
+    int res = fib(12);
 }
 
 func fib(int x) -> int

@@ -29,13 +29,14 @@ FuncCallNode::FuncCallNode(ExprType expr_type, std::string func_id, std::vector<
 /* Override */
 void FuncCallNode::execute()
 {
-    StateMgmt::create_new_stack_frame(func_id);
-
     for (auto argument_expr : args)
     {
         argument_expr.evaluate();
+        Value val = this->value;
         StateMgmt::arg_queue.push(argument_expr.value);
     }
+
+    StateMgmt::create_new_stack_frame(func_id);
 
     std::vector<InstNode *> func_instructions = FuncDefTable::get_function(func_id);
 
