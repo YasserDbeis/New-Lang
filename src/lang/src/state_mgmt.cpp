@@ -30,6 +30,23 @@ Value StateMgmt::load_global_var(std::string id)
 {
     if (global_vars.count(id) == 1)
     {
+        /*
+             If we're in a function - look at it's max global count. We can only access the global variable
+             if it's stored global count is less than or equal to the max global count of the current function
+        */
+        if (stack_trace.empty() == false)
+        {
+            std::string curr_func_id = stack_trace.top().func_id;
+            int curr_func_max_global = FuncDefTable::get_global_count(curr_func_id);
+            
+            int global_var_count = global_vars[id].second;
+            if (global_var_count > curr_func_max_global)
+            {
+                ErrorHandler::error(ErrorPhase::EXECUTION, ErrorType::RUNTIME_ERROR, "Variable " + id + " has not been declared", -1, VAR_NOT_DEC);
+            }
+        }          
+
+        // Otherwise we are clear to return the variable!
         return global_vars[id].first;
     }
     else

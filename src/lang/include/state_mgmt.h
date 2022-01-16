@@ -3,6 +3,7 @@
 #include "value.h"
 #include "error_handler.h"
 #include "scope_tree.h"
+#include "func_def_table.h"
 #include <stack>
 #include <string>
 #include <unordered_map>
