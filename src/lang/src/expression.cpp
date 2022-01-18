@@ -227,10 +227,7 @@ Value Expression::compute(Value val1, Value val2, OperatorType operator_type)
             result.token.type = TokenType::STRING;
             result.token.lexeme = res_str;
         }
-        else if ((val1.type == Type::Int && val2.type == Type::Int) ||
-                 (val1.type == Type::Int && val2.type == Type::Dec) ||
-                 (val1.type == Type::Dec && val2.type == Type::Int) ||
-                 (val1.type == Type::Dec && val2.type == Type::Dec))
+        else 
         {
 
             auto computed = arith_compute(val1, val2, operator_type);
