@@ -230,6 +230,52 @@ Value Expression::compute(Value val1, Value val2, OperatorType operator_type)
             result.token.lexeme = std::to_string(sum);
         }
     }
+    else if (operator_type == OperatorType::AND)
+    {
+        result.type = Type::Bool;
+
+        if (val1.token.type == TokenType::TRUE && val2.token.type == TokenType::TRUE)
+        {
+            result.token.type = TokenType::TRUE;
+            result.token.lexeme = "true";
+        }
+        else
+        {
+            result.token.type = TokenType::FALSE;
+            result.token.lexeme = "false";
+        }
+    }
+    else if (operator_type == OperatorType::OR)
+    {
+        result.type = Type::Bool;
+
+        if (val1.token.type == TokenType::TRUE || val2.token.type == TokenType::TRUE)
+        {
+            result.token.type = TokenType::TRUE;
+            result.token.lexeme = "true";
+        }
+        else
+        {
+            result.token.type = TokenType::FALSE;
+            result.token.lexeme = "false";
+        }
+    }
+    else if (operator_type == OperatorType::XOR)
+    {
+        result.type = Type::Bool;
+
+        if ((val1.token.type == TokenType::TRUE && val2.token.type == TokenType::FALSE)
+        || (val1.token.type == TokenType::FALSE && val2.token.type == TokenType::TRUE))
+        {
+            result.token.type = TokenType::TRUE;
+            result.token.lexeme = "true";
+        }
+        else
+        {
+            result.token.type = TokenType::FALSE;
+            result.token.lexeme = "false";
+        }
+    }
     else if (operator_type == OperatorType::IS || operator_type == OperatorType::NEQ)
     {
         result.type = Type::Bool;
