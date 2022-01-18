@@ -162,6 +162,10 @@ std::string ErrorHandler::code_to_msg(ErrorCode code)
     {
         return "Invalid argument type";
     }
+    case DIV_BY_0:
+    {
+        return "Expression cannot involve division by 0";
+    }
     default:
     {
         return "General Error";

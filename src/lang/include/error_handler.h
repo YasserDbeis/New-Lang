@@ -58,7 +58,8 @@ enum ErrorCode
     INVALID_OPERAND,
     INVALID_OPERATION,
     INVALID_RETURN_VALUE,
-    INVALID_ARG_TYPE
+    INVALID_ARG_TYPE,
+    DIV_BY_0
 };
 
 class ErrorHandler

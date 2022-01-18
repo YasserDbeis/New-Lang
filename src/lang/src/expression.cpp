@@ -116,19 +116,19 @@ Value Expression::compute(Value val1, Value val2, OperatorType operator_type)
     PLUS,   check
     MINUS,  check
     MULT,
-    DIV,
-    GT,
-    LT,
-    GEQ,
-    LEQ,
+    DIV,        
+    GT,     check
+    LT,     check
+    GEQ,    check
+    LEQ,    check
     IS,     check
-    AND, 
-    OR,
-    XOR,
+    AND,    check
+    OR,     check
+    XOR,    check
     NEQ,    check
     */
 
-    if (operator_type == OperatorType::PLUS || operator_type == OperatorType::MINUS)
+    if (operator_type == OperatorType::PLUS || operator_type == OperatorType::MINUS || operator_type == OperatorType::MULT || operator_type == OperatorType::DIV)
     {
         if ((val1.type == Type::String || val2.type == Type::String) && operator_type == OperatorType::PLUS)
         {
@@ -148,25 +148,50 @@ Value Expression::compute(Value val1, Value val2, OperatorType operator_type)
             int sum = int_1;
 
             if (operator_type == OperatorType::PLUS)
-            {
                 sum += int_2;
+            else if (operator_type == OperatorType::MINUS)
+                sum -= int_2;
+            else if (operator_type == OperatorType::MULT)
+                sum *= int_2;
+            else if (operator_type == OperatorType::DIV)
+            {
+                if (int_2 == 0)
+                {
+                    ErrorHandler::error(ErrorPhase::EXECUTION, ErrorType::RUNTIME_EXCEPTION, "Divide by 0 exception", -1, DIV_BY_0);
+                }
+                else
+                {
+                    sum /= int_2;
+                }
             }
             else
             {
-                sum -= int_2;
+                // error
             }
 
             result.type = Type::Int;
             result.token.type = TokenType::INT_NUM;
             result.token.lexeme = std::to_string(sum);
         }
-        else if (val1.type == Type::Int && val2.type == Type::Dec)
+        else if ((val1.type == Type::Int && val2.type == Type::Dec) ||
+                 (val1.type == Type::Dec && val2.type == Type::Int))
         {
-            std::string int_1_str = val1.token.lexeme;
-            std::string dec_1_str = val2.token.lexeme;
+            std::string int_str;
+            std::string dec_str;
 
-            int int_1 = std::atoi(int_1_str.c_str());
-            double dec_1 = std::stod(dec_1_str.c_str());
+            if (val1.type == Type::Int)
+            {
+                int_str = val1.token.lexeme;
+                dec_str = val2.token.lexeme;
+            }
+            else
+            {
+                int_str = val2.token.lexeme;
+                dec_str = val1.token.lexeme;
+            }
+
+            int int_1 = std::atoi(int_str.c_str());
+            double dec_1 = std::stod(dec_str.c_str());
 
             double sum = int_1;
 
@@ -177,29 +202,6 @@ Value Expression::compute(Value val1, Value val2, OperatorType operator_type)
             else
             {
                 sum -= dec_1;
-            }
-
-            result.type = Type::Dec;
-            result.token.type = TokenType::DEC;
-            result.token.lexeme = std::to_string(sum);
-        }
-        else if (val1.type == Type::Dec && val2.type == Type::Int)
-        {
-            std::string dec_1_str = val1.token.lexeme;
-            std::string int_1_str = val2.token.lexeme;
-
-            double dec_1 = std::stod(dec_1_str.c_str());
-            int int_1 = std::atoi(int_1_str.c_str());
-
-            double sum = dec_1;
-
-            if (operator_type == OperatorType::PLUS)
-            {
-                sum += int_1;
-            }
-            else
-            {
-                sum -= int_1;
             }
 
             result.type = Type::Dec;
@@ -230,11 +232,14 @@ Value Expression::compute(Value val1, Value val2, OperatorType operator_type)
             result.token.lexeme = std::to_string(sum);
         }
     }
-    else if (operator_type == OperatorType::AND)
+    else if (operator_type == OperatorType::LT || operator_type == OperatorType::GT || operator_type == OperatorType::LEQ || operator_type == OperatorType::GEQ)
     {
         result.type = Type::Bool;
 
-        if (val1.token.type == TokenType::TRUE && val2.token.type == TokenType::TRUE)
+        if ((operator_type == OperatorType::LT && values_less_than(val1, val2)) ||
+            (operator_type == OperatorType::GT && values_greater_than(val1, val2)) ||
+            (operator_type == OperatorType::LEQ && values_greater_than(val1, val2) == false) ||
+            (operator_type == OperatorType::GEQ && values_less_than(val1, val2) == false))
         {
             result.token.type = TokenType::TRUE;
             result.token.lexeme = "true";
@@ -245,27 +250,13 @@ Value Expression::compute(Value val1, Value val2, OperatorType operator_type)
             result.token.lexeme = "false";
         }
     }
-    else if (operator_type == OperatorType::OR)
+    else if (operator_type == OperatorType::OR || operator_type == OperatorType::XOR || operator_type == OperatorType::AND)
     {
         result.type = Type::Bool;
 
-        if (val1.token.type == TokenType::TRUE || val2.token.type == TokenType::TRUE)
-        {
-            result.token.type = TokenType::TRUE;
-            result.token.lexeme = "true";
-        }
-        else
-        {
-            result.token.type = TokenType::FALSE;
-            result.token.lexeme = "false";
-        }
-    }
-    else if (operator_type == OperatorType::XOR)
-    {
-        result.type = Type::Bool;
-
-        if ((val1.token.type == TokenType::TRUE && val2.token.type == TokenType::FALSE)
-        || (val1.token.type == TokenType::FALSE && val2.token.type == TokenType::TRUE))
+        if ((operator_type == OperatorType::OR && values_or(val1, val2)) ||
+            (operator_type == OperatorType::XOR && values_xor(val1, val2)) ||
+            (operator_type == OperatorType::AND && values_and(val1, val2)))
         {
             result.token.type = TokenType::TRUE;
             result.token.lexeme = "true";
@@ -302,7 +293,49 @@ Value Expression::compute(Value val1, Value val2, OperatorType operator_type)
     return result;
 }
 
-// Helper function. Given two values, returns true if they are the equal, false otherwise 
+bool values_xor(Value val1, Value val2)
+{
+    assert(val1.type == Type::Bool && val2.type == Type::Bool);
+
+    return (val1.token.type == TokenType::TRUE && val2.token.type == TokenType::FALSE) ||
+           (val1.token.type == TokenType::FALSE && val2.token.type == TokenType::TRUE);
+}
+
+bool values_or(Value val1, Value val2)
+{
+    assert(val1.type == Type::Bool && val2.type == Type::Bool);
+
+    return val1.token.type == TokenType::TRUE || val2.token.type == TokenType::TRUE;
+}
+
+bool values_and(Value val1, Value val2)
+{
+    assert(val1.type == Type::Bool && val2.type == Type::Bool);
+
+    return val1.token.type == TokenType::TRUE && val2.token.type == TokenType::TRUE;
+}
+
+bool values_less_than(Value val1, Value val2)
+{
+    const char *val1_cstr = val1.token.lexeme.c_str();
+    const char *val2_cstr = val2.token.lexeme.c_str();
+    auto operand1 = val1.type == Type::Int ? std::atoi(val1_cstr) : std::stod(val1_cstr);
+    auto operand2 = val2.type == Type::Int ? std::atoi(val2_cstr) : std::stod(val2_cstr);
+
+    return operand1 < operand2;
+}
+
+bool values_greater_than(Value val1, Value val2)
+{
+    const char *val1_cstr = val1.token.lexeme.c_str();
+    const char *val2_cstr = val2.token.lexeme.c_str();
+    auto operand1 = val1.type == Type::Int ? std::atoi(val1_cstr) : std::stod(val1_cstr);
+    auto operand2 = val2.type == Type::Int ? std::atoi(val2_cstr) : std::stod(val2_cstr);
+
+    return operand1 > operand2;
+}
+
+// Helper function. Given two values, returns true if they are the equal, false otherwise
 bool Expression::values_are_equal(Value val1, Value val2)
 {
     bool is_equal;

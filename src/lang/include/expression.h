@@ -41,6 +41,13 @@ private:
 
     bool values_are_equal(Value val1, Value val2);
 
+    bool values_xor(Value val1, Value val2);
+    bool values_and(Value val1, Value val2);
+    bool values_or(Value val1, Value val2);
+
+    bool values_less_than(Value val1, Value val2);
+    bool values_greater_than(Value val1, Value val2);
+
     std::unordered_map<OperatorType, int> op_to_prec =
         {
             {OperatorType::PLUS, 11},
