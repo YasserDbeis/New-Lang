@@ -113,19 +113,19 @@ Value Expression::compute(Value val1, Value val2, OperatorType operator_type)
     Value result;
 
     /*
-    PLUS,
-    MINUS,
+    PLUS,   check
+    MINUS,  check
     MULT,
     DIV,
     GT,
     LT,
     GEQ,
     LEQ,
-    IS,
-    AND,
+    IS,     check
+    AND, 
     OR,
     XOR,
-    NEQ,
+    NEQ,    check
     */
 
     if (operator_type == OperatorType::PLUS || operator_type == OperatorType::MINUS)
@@ -230,35 +230,12 @@ Value Expression::compute(Value val1, Value val2, OperatorType operator_type)
             result.token.lexeme = std::to_string(sum);
         }
     }
-    else if (operator_type == OperatorType::IS)
+    else if (operator_type == OperatorType::IS || operator_type == OperatorType::NEQ)
     {
         result.type = Type::Bool;
-        bool is_equal;
+        bool is_equal = values_are_equal(val1, val2);
 
-        if (val1.type == Type::String && val2.type == Type::String)
-        {
-            is_equal = val1.token.lexeme.compare(val2.token.lexeme) == 0;
-        }
-        else if (val1.type == Type::Bool && val2.type == Type::Bool)
-        {
-            is_equal = val1.token.type == val2.token.type;
-        }
-        else if (val1.type == Type::Int && val2.type == Type::Int)
-        {
-            int op1 = std::atoi(val1.token.lexeme.c_str());
-            int op2 = std::atoi(val2.token.lexeme.c_str());
-
-            is_equal = op1 == op2;
-        }
-        else if (val1.type == Type::Dec && val2.type == Type::Dec)
-        {
-            double op1 = std::stod(val1.token.lexeme.c_str());
-            double op2 = std::stod(val2.token.lexeme.c_str());
-
-            is_equal = op1 == op2;
-        }
-
-        if (is_equal == true)
+        if ((is_equal == true && operator_type == OperatorType::IS) || (is_equal == false && operator_type == OperatorType::NEQ))
         {
             result.token.type = TokenType::TRUE;
             result.token.lexeme = "true";
@@ -267,54 +244,47 @@ Value Expression::compute(Value val1, Value val2, OperatorType operator_type)
         {
             result.token.type = TokenType::FALSE;
             result.token.lexeme = "false";
-        }
-    }
-    else if (operator_type == OperatorType::NEQ)
-    {
-        result.type = Type::Bool;
-        bool is_equal;
-
-        if (val1.type == Type::String && val2.type == Type::String)
-        {
-            is_equal = val1.token.lexeme.compare(val2.token.lexeme) == 0;
-        }
-        else if (val1.type == Type::Bool && val2.type == Type::Bool)
-        {
-            is_equal = val1.token.type == val2.token.type;
-        }
-        else if (val1.type == Type::Int && val2.type == Type::Int)
-        {
-            int op1 = std::atoi(val1.token.lexeme.c_str());
-            int op2 = std::atoi(val2.token.lexeme.c_str());
-
-            is_equal = op1 == op2;
-        }
-        else if (val1.type == Type::Dec && val2.type == Type::Dec)
-        {
-            double op1 = std::stod(val1.token.lexeme.c_str());
-            double op2 = std::stod(val2.token.lexeme.c_str());
-
-            is_equal = op1 == op2;
-        }
-
-        if (is_equal == true)
-        {
-            result.token.type = TokenType::FALSE;
-            result.token.lexeme = "false";
-        }
-        else
-        {
-            result.token.type = TokenType::TRUE;
-            result.token.lexeme = "true";
         }
     }
     else // debugging
     {
         std::cout << "Invalid operator type in compute in expression.cpp" << std::endl;
+        assert(false);
         exit(EXIT_FAILURE);
     }
 
     return result;
+}
+
+// Helper function. Given two values, returns true if they are the equal, false otherwise 
+bool Expression::values_are_equal(Value val1, Value val2)
+{
+    bool is_equal;
+
+    if (val1.type == Type::String && val2.type == Type::String)
+    {
+        is_equal = val1.token.lexeme.compare(val2.token.lexeme) == 0;
+    }
+    else if (val1.type == Type::Bool && val2.type == Type::Bool)
+    {
+        is_equal = val1.token.type == val2.token.type;
+    }
+    else if (val1.type == Type::Int && val2.type == Type::Int)
+    {
+        int operand1 = std::atoi(val1.token.lexeme.c_str());
+        int operand2 = std::atoi(val2.token.lexeme.c_str());
+
+        is_equal = operand1 == operand2;
+    }
+    else if (val1.type == Type::Dec && val2.type == Type::Dec)
+    {
+        double operand1 = std::stod(val1.token.lexeme.c_str());
+        double operand2 = std::stod(val2.token.lexeme.c_str());
+
+        is_equal = operand1 == operand2;
+    }
+
+    return is_equal;
 }
 
 void Expression::assert_valid_type(Value val1, Value val2, OperatorType operator_type)
@@ -324,6 +294,7 @@ void Expression::assert_valid_type(Value val1, Value val2, OperatorType operator
     if (val1.type == Type::Void || val2.type == Type::Void || val1.type == Type::Invalid || val2.type == Type::Invalid)
     {
         std::cout << "assert_valid_type error. One of the operands has a void or invalid type during evaluation of the expression" << std::endl;
+        assert(false);
         exit(EXIT_FAILURE);
     }
 

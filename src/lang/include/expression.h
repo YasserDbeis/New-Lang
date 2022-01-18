@@ -39,6 +39,8 @@ private:
     Value compute(Value val1, Value val2, OperatorType type);
     void assert_valid_type(Value val1, Value val2, OperatorType type);
 
+    bool values_are_equal(Value val1, Value val2);
+
     std::unordered_map<OperatorType, int> op_to_prec =
         {
             {OperatorType::PLUS, 11},
