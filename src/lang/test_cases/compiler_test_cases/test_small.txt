@@ -1,6 +1,5 @@
 func main()
 {
+    dec x = 5.0 * 5 - 3 / 2 + 12;
     print(x);
 }
-
-int x = 10;

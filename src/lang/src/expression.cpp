@@ -14,286 +14,70 @@ Expression::Expression(std::vector<ExprNode *> tl)
     term_list = tl;
 }
 
-void Expression::evaluate()
+void Expression::print_expr(int num_tabs)
 {
     if (term_list.empty())
     {
-        return;
+        for (int i = 0; i < num_tabs; i++)
+        {
+            std::cout << "\t";
+        }
+        std::cout << "No expression!" << std::endl;
     }
-
-    std::deque<ExprNode *> output_queue = infix_to_rev_polish();
-    std::stack<ExprNode *> operand_stack;
-
-    if (output_queue.empty()) // debugging purposes
+    else
     {
-        std::cout << "Output queue should not be empty (BUG in expression.cpp)" << std::endl;
-    }
-
-    // for printing the queue :: WARNING, IT EMPTIES THE QUEUE
-    // while (output_queue.size() > 0)
-    // {
-    //     ExprNode *e = output_queue.front();
-    //     output_queue.pop_front();
-    //     e->expr_print();
-    // }
-
-    // Special case? Only 1 term in the expression
-    if (output_queue.size() == 1)
-    {
-        ExprNode *expr = output_queue.back();
-        if (expr->expr_type == ExprType::FUNC_CALL)
+        for (auto expr_node : term_list)
         {
-            FuncCallNode *func_call = (FuncCallNode *)expr;
-            func_call->evaluate();
-            value = func_call->value;
-        }
-        else
-        {
-            LoadNode *load_node = (LoadNode *)expr;
-            load_node->evaluate();
-            value = load_node->value;
-        }
-        return;
-    }
-
-    for (auto expr_node : output_queue)
-    {
-        if (expr_node->expr_type == ExprType::OPERATOR)
-        {
-            // Extract the expression nodes
-            ExprNode *exprNode1 = operand_stack.top();
-            operand_stack.pop();
-
-            ExprNode *exprNode2 = operand_stack.top();
-            operand_stack.pop();
-
-            OperatorNode *operator_node = (OperatorNode *)expr_node;
-
-            Value val1 = get_expr_node_value(exprNode1);
-            Value val2 = get_expr_node_value(exprNode2);
-            OperatorType operator_type = ((OperatorNode *)operator_node)->operator_type;
-
-            Assoc assoc = op_to_assoc[operator_type];
-
-            // by default, compute uses right associativity
-            if (assoc == Assoc::LEFT)
-            {
-                std::swap(val1, val2);
-            }
-
-            Value curr_result = compute(val1, val2, operator_type);
-
-            // Wrap value into a constant loadnode
-            LoadNode *load_const = new LoadNode(ExprType::LOAD, curr_result, -1, true);
-
-            operand_stack.push(load_const);
-        }
-        else if (expr_node->expr_type == ExprType::FUNC_CALL || expr_node->expr_type == ExprType::LOAD)
-        {
-            operand_stack.push(expr_node);
-        }
-        else
-        {
-            std::cout << "Internal error. Parenthesis in the output_queue in expression.cpp" << std::endl;
-            exit(EXIT_FAILURE);
+            expr_node->expr_print(num_tabs);
         }
     }
-
-    assert(operand_stack.size() == 1);
-
-    LoadNode *final_result = (LoadNode *)operand_stack.top();
-
-    value = final_result->value;
 }
 
-Value Expression::compute(Value val1, Value val2, OperatorType operator_type)
+/* BEGINNING OF COMPUTE HELPER FUNCTIONS */
+
+auto Expression::arith_compute(Value val1, Value val2, OperatorType operator_type)
 {
-    assert_valid_type(val1, val2, operator_type);
+    std::string val_1_str = val1.token.lexeme;
+    std::string val_2_str = val2.token.lexeme;
 
-    Value result;
+    auto val_1_num = val1.type == Type::Int ? std::atoi(val_1_str.c_str()) : std::stod(val_1_str.c_str());
+    auto val_2_num = val2.type == Type::Int ? std::atoi(val_2_str.c_str()) : std::stod(val_2_str.c_str());
 
-    /*
-    PLUS,   check
-    MINUS,  check
-    MULT,
-    DIV,        
-    GT,     check
-    LT,     check
-    GEQ,    check
-    LEQ,    check
-    IS,     check
-    AND,    check
-    OR,     check
-    XOR,    check
-    NEQ,    check
-    */
+    auto computed = val_1_num;
 
-    if (operator_type == OperatorType::PLUS || operator_type == OperatorType::MINUS || operator_type == OperatorType::MULT || operator_type == OperatorType::DIV)
+    if (operator_type == OperatorType::PLUS)
     {
-        if ((val1.type == Type::String || val2.type == Type::String) && operator_type == OperatorType::PLUS)
-        {
-            std::string res_str = val1.token.lexeme + val2.token.lexeme;
-            result.type = Type::String;
-            result.token.type = TokenType::STRING;
-            result.token.lexeme = res_str;
-        }
-        else if (val1.type == Type::Int && val2.type == Type::Int)
-        {
-            std::string int_1_str = val1.token.lexeme;
-            std::string int_2_str = val2.token.lexeme;
-
-            int int_1 = std::atoi(int_1_str.c_str());
-            int int_2 = std::atoi(int_2_str.c_str());
-
-            int sum = int_1;
-
-            if (operator_type == OperatorType::PLUS)
-                sum += int_2;
-            else if (operator_type == OperatorType::MINUS)
-                sum -= int_2;
-            else if (operator_type == OperatorType::MULT)
-                sum *= int_2;
-            else if (operator_type == OperatorType::DIV)
-            {
-                if (int_2 == 0)
-                {
-                    ErrorHandler::error(ErrorPhase::EXECUTION, ErrorType::RUNTIME_EXCEPTION, "Divide by 0 exception", -1, DIV_BY_0);
-                }
-                else
-                {
-                    sum /= int_2;
-                }
-            }
-            else
-            {
-                // error
-            }
-
-            result.type = Type::Int;
-            result.token.type = TokenType::INT_NUM;
-            result.token.lexeme = std::to_string(sum);
-        }
-        else if ((val1.type == Type::Int && val2.type == Type::Dec) ||
-                 (val1.type == Type::Dec && val2.type == Type::Int))
-        {
-            std::string int_str;
-            std::string dec_str;
-
-            if (val1.type == Type::Int)
-            {
-                int_str = val1.token.lexeme;
-                dec_str = val2.token.lexeme;
-            }
-            else
-            {
-                int_str = val2.token.lexeme;
-                dec_str = val1.token.lexeme;
-            }
-
-            int int_1 = std::atoi(int_str.c_str());
-            double dec_1 = std::stod(dec_str.c_str());
-
-            double sum = int_1;
-
-            if (operator_type == OperatorType::PLUS)
-            {
-                sum += dec_1;
-            }
-            else
-            {
-                sum -= dec_1;
-            }
-
-            result.type = Type::Dec;
-            result.token.type = TokenType::DEC;
-            result.token.lexeme = std::to_string(sum);
-        }
-        else if (val1.type == Type::Dec && val2.type == Type::Dec)
-        {
-            std::string dec_1_str = val1.token.lexeme;
-            std::string dec_2_str = val2.token.lexeme;
-
-            double dec_1 = std::stod(dec_1_str.c_str());
-            double dec_2 = std::stod(dec_2_str.c_str());
-
-            double sum = dec_1;
-
-            if (operator_type == OperatorType::PLUS)
-            {
-                sum += dec_2;
-            }
-            else
-            {
-                sum -= dec_2;
-            }
-
-            result.type = Type::Dec;
-            result.token.type = TokenType::DEC;
-            result.token.lexeme = std::to_string(sum);
-        }
+        computed += val_2_num;
     }
-    else if (operator_type == OperatorType::LT || operator_type == OperatorType::GT || operator_type == OperatorType::LEQ || operator_type == OperatorType::GEQ)
+    else if (operator_type == OperatorType::MINUS)
     {
-        result.type = Type::Bool;
-
-        if ((operator_type == OperatorType::LT && values_less_than(val1, val2)) ||
-            (operator_type == OperatorType::GT && values_greater_than(val1, val2)) ||
-            (operator_type == OperatorType::LEQ && values_greater_than(val1, val2) == false) ||
-            (operator_type == OperatorType::GEQ && values_less_than(val1, val2) == false))
+        computed -= val_2_num;
+    }
+    else if (operator_type == OperatorType::MULT)
+    {
+        computed *= val_2_num;
+    }
+    else if (operator_type == OperatorType::DIV)
+    {
+        if ((val2.type == Type::Int && val_2_num == 0) ||
+            (val2.type == Type::Dec && val_2_num == 0.0))
         {
-            result.token.type = TokenType::TRUE;
-            result.token.lexeme = "true";
+            ErrorHandler::error(ErrorPhase::EXECUTION, ErrorType::RUNTIME_EXCEPTION, "Divide by 0 exception", -1, DIV_BY_0);
         }
         else
         {
-            result.token.type = TokenType::FALSE;
-            result.token.lexeme = "false";
+            computed /= val_2_num;
         }
     }
-    else if (operator_type == OperatorType::OR || operator_type == OperatorType::XOR || operator_type == OperatorType::AND)
+    else
     {
-        result.type = Type::Bool;
-
-        if ((operator_type == OperatorType::OR && values_or(val1, val2)) ||
-            (operator_type == OperatorType::XOR && values_xor(val1, val2)) ||
-            (operator_type == OperatorType::AND && values_and(val1, val2)))
-        {
-            result.token.type = TokenType::TRUE;
-            result.token.lexeme = "true";
-        }
-        else
-        {
-            result.token.type = TokenType::FALSE;
-            result.token.lexeme = "false";
-        }
-    }
-    else if (operator_type == OperatorType::IS || operator_type == OperatorType::NEQ)
-    {
-        result.type = Type::Bool;
-        bool is_equal = values_are_equal(val1, val2);
-
-        if ((is_equal == true && operator_type == OperatorType::IS) || (is_equal == false && operator_type == OperatorType::NEQ))
-        {
-            result.token.type = TokenType::TRUE;
-            result.token.lexeme = "true";
-        }
-        else
-        {
-            result.token.type = TokenType::FALSE;
-            result.token.lexeme = "false";
-        }
-    }
-    else // debugging
-    {
-        std::cout << "Invalid operator type in compute in expression.cpp" << std::endl;
-        assert(false);
-        exit(EXIT_FAILURE);
+        ErrorHandler::error(ErrorPhase::EXECUTION, ErrorType::RUNTIME_ERROR, "Invalid operator used in arithmetic expression", -1, INVALID_OPERATOR);
     }
 
-    return result;
+    return computed;
 }
 
-bool values_xor(Value val1, Value val2)
+bool Expression::values_xor(Value val1, Value val2)
 {
     assert(val1.type == Type::Bool && val2.type == Type::Bool);
 
@@ -301,21 +85,21 @@ bool values_xor(Value val1, Value val2)
            (val1.token.type == TokenType::FALSE && val2.token.type == TokenType::TRUE);
 }
 
-bool values_or(Value val1, Value val2)
+bool Expression::values_or(Value val1, Value val2)
 {
     assert(val1.type == Type::Bool && val2.type == Type::Bool);
 
     return val1.token.type == TokenType::TRUE || val2.token.type == TokenType::TRUE;
 }
 
-bool values_and(Value val1, Value val2)
+bool Expression::values_and(Value val1, Value val2)
 {
     assert(val1.type == Type::Bool && val2.type == Type::Bool);
 
     return val1.token.type == TokenType::TRUE && val2.token.type == TokenType::TRUE;
 }
 
-bool values_less_than(Value val1, Value val2)
+bool Expression::values_less_than(Value val1, Value val2)
 {
     const char *val1_cstr = val1.token.lexeme.c_str();
     const char *val2_cstr = val2.token.lexeme.c_str();
@@ -325,7 +109,7 @@ bool values_less_than(Value val1, Value val2)
     return operand1 < operand2;
 }
 
-bool values_greater_than(Value val1, Value val2)
+bool Expression::values_greater_than(Value val1, Value val2)
 {
     const char *val1_cstr = val1.token.lexeme.c_str();
     const char *val2_cstr = val2.token.lexeme.c_str();
@@ -428,6 +212,118 @@ void Expression::assert_valid_type(Value val1, Value val2, OperatorType operator
     }
 }
 
+Value Expression::compute(Value val1, Value val2, OperatorType operator_type)
+{
+    assert_valid_type(val1, val2, operator_type);
+
+    Value result;
+
+    if (operator_type == OperatorType::PLUS || operator_type == OperatorType::MINUS || operator_type == OperatorType::MULT || operator_type == OperatorType::DIV)
+    {
+        if ((val1.type == Type::String || val2.type == Type::String) && operator_type == OperatorType::PLUS)
+        {
+            std::string res_str = val1.token.lexeme + val2.token.lexeme;
+            result.type = Type::String;
+            result.token.type = TokenType::STRING;
+            result.token.lexeme = res_str;
+        }
+        else if ((val1.type == Type::Int && val2.type == Type::Int) ||
+                 (val1.type == Type::Int && val2.type == Type::Dec) ||
+                 (val1.type == Type::Dec && val2.type == Type::Int) ||
+                 (val1.type == Type::Dec && val2.type == Type::Dec))
+        {
+
+            auto computed = arith_compute(val1, val2, operator_type);
+
+            result.type = typeid(computed) == typeid(int) ? Type::Int : Type::Dec;
+            result.token.type = typeid(computed) == typeid(int) ? TokenType::INT_NUM : TokenType::DEC_NUM;
+            result.token.lexeme = std::to_string(computed);
+        }
+    }
+    else if (operator_type == OperatorType::LT || operator_type == OperatorType::GT || operator_type == OperatorType::LEQ || operator_type == OperatorType::GEQ)
+    {
+        result.type = Type::Bool;
+
+        if ((operator_type == OperatorType::LT && values_less_than(val1, val2)) ||
+            (operator_type == OperatorType::GT && values_greater_than(val1, val2)) ||
+            (operator_type == OperatorType::LEQ && values_greater_than(val1, val2) == false) ||
+            (operator_type == OperatorType::GEQ && values_less_than(val1, val2) == false))
+        {
+            result.token.type = TokenType::TRUE;
+            result.token.lexeme = "true";
+        }
+        else
+        {
+            result.token.type = TokenType::FALSE;
+            result.token.lexeme = "false";
+        }
+    }
+    else if (operator_type == OperatorType::OR || operator_type == OperatorType::XOR || operator_type == OperatorType::AND)
+    {
+        result.type = Type::Bool;
+
+        if ((operator_type == OperatorType::OR && values_or(val1, val2)) ||
+            (operator_type == OperatorType::XOR && values_xor(val1, val2)) ||
+            (operator_type == OperatorType::AND && values_and(val1, val2)))
+        {
+            result.token.type = TokenType::TRUE;
+            result.token.lexeme = "true";
+        }
+        else
+        {
+            result.token.type = TokenType::FALSE;
+            result.token.lexeme = "false";
+        }
+    }
+    else if (operator_type == OperatorType::IS || operator_type == OperatorType::NEQ)
+    {
+        result.type = Type::Bool;
+        bool is_equal = values_are_equal(val1, val2);
+
+        if ((is_equal == true && operator_type == OperatorType::IS) || (is_equal == false && operator_type == OperatorType::NEQ))
+        {
+            result.token.type = TokenType::TRUE;
+            result.token.lexeme = "true";
+        }
+        else
+        {
+            result.token.type = TokenType::FALSE;
+            result.token.lexeme = "false";
+        }
+    }
+    else // debugging
+    {
+        std::cout << "Invalid operator type in compute in expression.cpp" << std::endl;
+        assert(false);
+        exit(EXIT_FAILURE);
+    }
+
+    return result;
+}
+
+/* END OF COMPUTE FUNCTIONS */
+
+/* BEGINNING OF RPN FUNCTIONS */
+
+bool Expression::compare_precedence(ExprNode *currNode1, ExprNode *topNode2)
+{
+    OperatorNode *op1 = (OperatorNode *)currNode1;
+    OperatorNode *op2 = (OperatorNode *)topNode2;
+
+    return ((op_to_prec[op2->operator_type]) > (op_to_prec[op1->operator_type])) ||
+           ((op_to_prec[op2->operator_type] == op_to_prec[op1->operator_type]) &&
+            (op_to_assoc[op2->operator_type] == Assoc::LEFT));
+}
+
+bool Expression::is_left_paren(ExprNode *exprNode)
+{
+    assert(exprNode->expr_type == ExprType::PAREN);
+
+    ParenNode *paren = (ParenNode *)exprNode;
+
+    return paren->is_left == true;
+}
+
 std::deque<ExprNode *> Expression::infix_to_rev_polish()
 {
     std::deque<ExprNode *> output_queue;
@@ -484,6 +380,8 @@ std::deque<ExprNode *> Expression::infix_to_rev_polish()
     return output_queue;
 }
 
+/* END OF RPN FUNCTIONS */
+
 Value Expression::get_expr_node_value(ExprNode *expr_node)
 {
     Value val;
@@ -516,40 +414,86 @@ Value Expression::get_expr_node_value(ExprNode *expr_node)
     return val;
 }
 
-void Expression::print_expr(int num_tabs)
+void Expression::evaluate()
 {
     if (term_list.empty())
     {
-        for (int i = 0; i < num_tabs; i++)
-        {
-            std::cout << "\t";
-        }
-        std::cout << "No expression!" << std::endl;
+        return;
     }
-    else
+
+    std::deque<ExprNode *> output_queue = infix_to_rev_polish();
+    std::stack<ExprNode *> operand_stack;
+
+    if (output_queue.empty()) // debugging purposes
     {
-        for (auto expr_node : term_list)
+        std::cout << "Output queue should not be empty (BUG in expression.cpp)" << std::endl;
+    }
+
+    // Special case? Only 1 term in the expression
+    if (output_queue.size() == 1)
+    {
+        ExprNode *expr = output_queue.back();
+        if (expr->expr_type == ExprType::FUNC_CALL)
         {
-            expr_node->expr_print(num_tabs);
+            FuncCallNode *func_call = (FuncCallNode *)expr;
+            func_call->evaluate();
+            value = func_call->value;
+        }
+        else
+        {
+            LoadNode *load_node = (LoadNode *)expr;
+            load_node->evaluate();
+            value = load_node->value;
+        }
+        return;
+    }
+
+    for (auto expr_node : output_queue)
+    {
+        if (expr_node->expr_type == ExprType::OPERATOR)
+        {
+            // Extract the expression nodes
+            ExprNode *exprNode1 = operand_stack.top();
+            operand_stack.pop();
+
+            ExprNode *exprNode2 = operand_stack.top();
+            operand_stack.pop();
+
+            OperatorNode *operator_node = (OperatorNode *)expr_node;
+
+            Value val1 = get_expr_node_value(exprNode1);
+            Value val2 = get_expr_node_value(exprNode2);
+            OperatorType operator_type = ((OperatorNode *)operator_node)->operator_type;
+
+            Assoc assoc = op_to_assoc[operator_type];
+
+            // by default, compute uses right associativity
+            if (assoc == Assoc::LEFT)
+            {
+                std::swap(val1, val2);
+            }
+
+            Value curr_result = compute(val1, val2, operator_type);
+
+            // Wrap value into a constant loadnode
+            LoadNode *load_const = new LoadNode(ExprType::LOAD, curr_result, -1, true);
+
+            operand_stack.push(load_const);
+        }
+        else if (expr_node->expr_type == ExprType::FUNC_CALL || expr_node->expr_type == ExprType::LOAD)
+        {
+            operand_stack.push(expr_node);
+        }
+        else
+        {
+            std::cout << "Internal error. Parenthesis in the output_queue in expression.cpp" << std::endl;
+            exit(EXIT_FAILURE);
         }
     }
-}
 
-bool Expression::compare_precedence(ExprNode *currNode1, ExprNode *topNode2)
-{
-    OperatorNode *op1 = (OperatorNode *)currNode1;
-    OperatorNode *op2 = (OperatorNode *)topNode2;
+    assert(operand_stack.size() == 1);
 
-    return ((op_to_prec[op2->operator_type]) > (op_to_prec[op1->operator_type])) ||
-           ((op_to_prec[op2->operator_type] == op_to_prec[op1->operator_type]) &&
-            (op_to_assoc[op2->operator_type] == Assoc::LEFT));
-}
+    LoadNode *final_result = (LoadNode *)operand_stack.top();
 
-bool Expression::is_left_paren(ExprNode *exprNode)
-{
-    assert(exprNode->expr_type == ExprType::PAREN);
-
-    ParenNode *paren = (ParenNode *)exprNode;
-
-    return paren->is_left == true;
+    value = final_result->value;
 }

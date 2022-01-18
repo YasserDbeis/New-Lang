@@ -41,6 +41,8 @@ private:
 
     bool values_are_equal(Value val1, Value val2);
 
+    auto arith_compute(Value val1, Value val2, OperatorType operator_type);
+
     bool values_xor(Value val1, Value val2);
     bool values_and(Value val1, Value val2);
     bool values_or(Value val1, Value val2);
