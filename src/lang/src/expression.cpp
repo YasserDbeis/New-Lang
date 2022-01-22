@@ -77,6 +77,42 @@ auto Expression::arith_compute(Value val1, Value val2, OperatorType operator_typ
     return computed;
 }
 
+Value Expression::or_compute(Value val1, ExprNode *expr2)
+{
+    Value val;
+    val.type = Type::Bool;
+
+    // Assume true (short circuit) unless otherwise
+    val.token.lexeme = "true";
+    val.token.type = TokenType::TRUE;
+
+    if (val1.token.type == TokenType::FALSE)
+    {
+        Value val2 = get_expr_node_value(expr2);
+        val.token.lexeme = val2.token.lexeme;
+        val.token.type = val2.token.type;
+    }
+
+    return val;
+}
+
+Value Expression::and_compute(Value val1, ExprNode *expr2)
+{
+    Value val;
+    val.type = Type::Bool;
+    val.token.lexeme = "false";
+    val.token.type = TokenType::FALSE;
+
+    if (val1.token.type == TokenType::TRUE)
+    {
+        Value val2 = get_expr_node_value(expr2);
+        val.token.lexeme = val2.token.lexeme;
+        val.token.type = val2.token.type;
+    }
+
+    return val;
+}
+
 bool Expression::values_xor(Value val1, Value val2)
 {
     assert(val1.type == Type::Bool && val2.type == Type::Bool);
@@ -161,20 +197,13 @@ void Expression::assert_valid_type(Value val1, Value val2, OperatorType operator
         exit(EXIT_FAILURE);
     }
 
-    if (operator_type == OperatorType::PLUS)
-    {
-        if (val1.type == Type::Bool || val2.type == Type::Bool)
-        {
-            is_valid = false;
-        }
-    }
-    else if (operator_type == OperatorType::MINUS ||
-             operator_type == OperatorType::MULT ||
-             operator_type == OperatorType::DIV ||
-             operator_type == OperatorType::GT ||
-             operator_type == OperatorType::LT ||
-             operator_type == OperatorType::LEQ ||
-             operator_type == OperatorType::GEQ)
+    if (operator_type == OperatorType::MINUS ||
+        operator_type == OperatorType::MULT ||
+        operator_type == OperatorType::DIV ||
+        operator_type == OperatorType::GT ||
+        operator_type == OperatorType::LT ||
+        operator_type == OperatorType::LEQ ||
+        operator_type == OperatorType::GEQ)
     {
         if (val1.type == Type::Bool || val2.type == Type::Bool ||
             val1.type == Type::String || val2.type == Type::String)
@@ -227,7 +256,7 @@ Value Expression::compute(Value val1, Value val2, OperatorType operator_type)
             result.token.type = TokenType::STRING;
             result.token.lexeme = res_str;
         }
-        else 
+        else
         {
 
             auto computed = arith_compute(val1, val2, operator_type);
@@ -255,13 +284,11 @@ Value Expression::compute(Value val1, Value val2, OperatorType operator_type)
             result.token.lexeme = "false";
         }
     }
-    else if (operator_type == OperatorType::OR || operator_type == OperatorType::XOR || operator_type == OperatorType::AND)
+    else if (operator_type == OperatorType::XOR)
     {
         result.type = Type::Bool;
 
-        if ((operator_type == OperatorType::OR && values_or(val1, val2)) ||
-            (operator_type == OperatorType::XOR && values_xor(val1, val2)) ||
-            (operator_type == OperatorType::AND && values_and(val1, val2)))
+        if (values_xor(val1, val2))
         {
             result.token.type = TokenType::TRUE;
             result.token.lexeme = "true";
@@ -458,8 +485,6 @@ void Expression::evaluate()
 
             OperatorNode *operator_node = (OperatorNode *)expr_node;
 
-            Value val1 = get_expr_node_value(exprNode1);
-            Value val2 = get_expr_node_value(exprNode2);
             OperatorType operator_type = ((OperatorNode *)operator_node)->operator_type;
 
             Assoc assoc = op_to_assoc[operator_type];
@@ -467,10 +492,27 @@ void Expression::evaluate()
             // by default, compute uses right associativity
             if (assoc == Assoc::LEFT)
             {
-                std::swap(val1, val2);
+                std::swap(exprNode1, exprNode2);
             }
 
-            Value curr_result = compute(val1, val2, operator_type);
+            Value curr_result;
+            Value val1 = get_expr_node_value(exprNode1);
+
+            if (operator_type == OperatorType::OR)
+            {
+                Value or_result = or_compute(val1, exprNode2);
+                curr_result = or_result;
+            }
+            else if (operator_type == OperatorType::AND)
+            {
+                Value and_result = and_compute(val1, exprNode2);
+                curr_result = and_result;
+            }
+            else
+            {
+                Value val2 = get_expr_node_value(exprNode2);
+                curr_result = compute(val1, val2, operator_type);
+            }
 
             // Wrap value into a constant loadnode
             LoadNode *load_const = new LoadNode(ExprType::LOAD, curr_result, -1, true);
