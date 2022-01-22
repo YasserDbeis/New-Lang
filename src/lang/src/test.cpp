@@ -34,14 +34,14 @@ int main(int argc, char *argv[])
     }
 
     //For reading in through file
-    // std::ifstream t("../test_cases/compiler_test_cases/test_small.txt");
+    // std::ifstream t("../test_cases/compiler_test_cases/test_nested_body.txt");
     // std::stringstream buffer;
     // buffer << t.rdbuf();
 
     // input = (buffer.str());
 
     // Print the input
-    //std::cout << "INPUT: " << input << std::endl;
+    // std::cout << "INPUT: " << input << std::endl;
 
     int test_suite_choice = std::atoi(argv[1]);
 

@@ -1,4 +1,4 @@
-func main(int x) -> int
+func main() -> int
 {
     return 5;
     return 5;
@@ -8,6 +8,4 @@ func main(int x) -> int
     return 5;
     return 5;
     return 5;
-
-    func_call();
 }

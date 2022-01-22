@@ -59,7 +59,8 @@ enum ErrorCode
     INVALID_OPERATION,
     INVALID_RETURN_VALUE,
     INVALID_ARG_TYPE,
-    DIV_BY_0
+    DIV_BY_0,
+    EMPTY_ARGS
 };
 
 class ErrorHandler

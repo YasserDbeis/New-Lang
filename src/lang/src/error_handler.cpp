@@ -166,6 +166,10 @@ std::string ErrorHandler::code_to_msg(ErrorCode code)
     {
         return "Expression cannot involve division by 0";
     }
+    case EMPTY_ARGS:
+    {
+        return "There are no arguments supplied to a parameterized function";
+    }
     default:
     {
         return "General Error";

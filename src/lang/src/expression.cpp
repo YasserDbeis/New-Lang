@@ -258,7 +258,6 @@ Value Expression::compute(Value val1, Value val2, OperatorType operator_type)
         }
         else
         {
-
             auto computed = arith_compute(val1, val2, operator_type);
 
             result.type = typeid(computed) == typeid(int) ? Type::Int : Type::Dec;

@@ -108,7 +108,8 @@ private:
         TokenType::ID,
         TokenType::IF,
         TokenType::WHILE,
-        TokenType::RETURN};
+        TokenType::RETURN,
+        TokenType::LBRACE};
 
     std::unordered_set<TokenType> first_of_expr{
         TokenType::ID,

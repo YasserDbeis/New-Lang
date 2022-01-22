@@ -303,7 +303,11 @@ void Parser::parse_stmt()
     Token tok_1 = lexer.peek(1);
     Token tok_2 = lexer.peek(2);
 
-    if (tok_0.type == TokenType::WHILE)
+    if (tok_0.type == TokenType::LBRACE)
+    {
+        parse_body(false);
+    }
+    else if (tok_0.type == TokenType::WHILE)
     {
         parse_while_stmt();
     }

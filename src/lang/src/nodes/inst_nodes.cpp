@@ -114,12 +114,15 @@ void StoreNode::store_to_curr_context(Value val)
     }
     else // IN FUNCTION - stack trace
     {
-        // Add var if the variable hasn't been declared yet. Else update the existing one
-        if (StateMgmt::is_var_declared(name) == true)
+        if (type == Type::Invalid) // Assignment statement
         {
-            StateMgmt::stack_trace.top().scope_tree.update_var(name, val);
+            // Add var if the variable hasn't been declared yet.
+            if (StateMgmt::is_var_declared(name) == true)
+            {
+                StateMgmt::stack_trace.top().scope_tree.update_var(name, val);
+            }
         }
-        else
+        else // Definition statement
         {
             StateMgmt::stack_trace.top().scope_tree.add_var(name, val);
         }
@@ -132,7 +135,7 @@ void StoreNode::execute()
     {
         if (StateMgmt::arg_queue.empty()) // Debugging purposes
         {
-            std::cout << "BUG! Arg queue is empty" << std::endl;
+            ErrorHandler::error(ErrorPhase::EXECUTION, ErrorType::RUNTIME_ERROR, "The function called does not supply parameters", -1, ErrorCode::EMPTY_ARGS);
         }
 
         // Get the paramter value from the arg queue
