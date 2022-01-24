@@ -86,11 +86,17 @@ void Lexer::scan_token()
             break;
         default:
             if (is_alpha(c))
+            {
                 consume_id();
+            }
             else if (is_digit(c))
+            {
                 consume_number();
+            }
             else if (c == '.')
+            {
                 consume_decimal_points();
+            }
             else    
             {
                 int len_curr_token = curr_ix - start_ix;
@@ -114,9 +120,13 @@ void Lexer::add_token(TokenType type)
     
     // Special case: END_OF_FILE. We'll manually set it to END_OF_FILE
     if (type == TokenType::END_OF_FILE)
+    {
         token.lexeme = "END_OF_FILE";
+    }
     else
+    {
         token.lexeme = source.substr(start_ix, len_of_lexeme); 
+    }
 
     tokens.push_back(token);
 }
@@ -134,25 +144,37 @@ char Lexer::advance()
 char Lexer::peek_char()
 {
     if (is_at_end())
+    {
         return '\0';
+    }
     else
+    {
         return source[curr_ix];
+    }
 }
 
 char Lexer::get_prev_char()
 {
     if (curr_ix == 0)
+    {
         return '\0';
+    }
     else   
+    {
         return source[curr_ix - 1];
+    }
 }
 
 bool Lexer::match(char expected_type)
 {
     if (is_at_end())
+    {
         return false;
+    }
     if (peek_char() != expected_type)
+    {
         return false;
+    }
 
     advance();
     return true;
@@ -161,17 +183,23 @@ bool Lexer::match(char expected_type)
 void Lexer::consume_comment()
 {
     while (!is_at_end() && peek_char() != '\n')
+    {
         advance();
+    }
 }
 
 // Consume the string. The left " is already consumed. Consume up to and including the next found "
 void Lexer::consume_string()
 {
     while (!is_at_end() && peek_char() != '"' && peek_char() != '\n')
+    {
         advance();
+    }
     
     if (is_at_end() || peek_char() == '\n')    // EXIT with error code!
+    {
         ErrorHandler::error(ErrorPhase::LEXICAL_ANALYSIS, ErrorType::SYNTAX_ERROR, "Missing ending quote", line_number, INVALID_STRING);
+    }
  
 
 
@@ -192,7 +220,9 @@ void Lexer::consume_string()
 void Lexer::consume_id()
 {
     while (!is_at_end() && is_alphanumeric(peek_char()))
+    {
         advance();
+    }
     
     int len_id = curr_ix - start_ix;
     std::string id_lexeme = source.substr(start_ix, len_id);
@@ -210,7 +240,9 @@ void Lexer::consume_number()
     char first_digit = get_prev_char();  // The previous character is the first digit of the number (since we already advanced from c)
 
     while (!is_at_end() && is_digit(peek_char()))
+    {
         advance();
+    }
     
     if (peek_char() == '.')
     {
@@ -219,7 +251,9 @@ void Lexer::consume_number()
     }
     
     while (!is_at_end() && is_digit(peek_char()))
+    {
         advance();
+    }
     
     // As numbers are space separated, if there's a '.' next, then we consider it part of this current number we're scanning and 
     // not the beginning of the next number. So, we need to check for it here
@@ -239,9 +273,13 @@ void Lexer::consume_number()
         // Special case. Integers may not start with a 0 (except the integer 0 itself)
         int num_digits = curr_ix - start_ix;
         if (first_digit == '0' && num_digits > 1)
+        {
             ErrorHandler::error(ErrorPhase::LEXICAL_ANALYSIS, ErrorType::SYNTAX_ERROR, "Integers may not start with a 0", line_number, INVALID_NUM);
+        }
         else
+        {
             add_token(TokenType::INT_NUM);
+        }
     }
 }
 
@@ -257,7 +295,9 @@ void Lexer::consume_decimal_points()
     }
 
     if (num_decimal_points == 0)
+    {
         ErrorHandler::error(ErrorPhase::LEXICAL_ANALYSIS, ErrorType::SYNTAX_ERROR, "'.' is not a valid number", line_number, INVALID_NUM);
+    }
 
     add_token(TokenType::DEC_NUM);
 }
