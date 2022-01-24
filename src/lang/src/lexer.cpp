@@ -18,13 +18,6 @@ Lexer::Lexer()
 {
 }
 
-/*
-    Constructor
-    Input - input : string -> the code to be tokenized, parsed, and compiled
-
-    Initializes the line_number, token_index, and input_index,
-    then performs lexical analysis using a helper function
-*/
 Lexer::Lexer(std::string input)
 {
     /* Ensure input is valid and reasonable */
@@ -33,309 +26,340 @@ Lexer::Lexer(std::string input)
         ErrorHandler::error(ErrorPhase::LEXICAL_ANALYSIS, ErrorType::SYNTAX_ERROR, "Input is empty", 1, MISSING_MAIN);
     }
 
-    line_number = 1; /* Line number starts at 1 */
-    token_index = 0; /* Parse from the first stored token! */
-    input_index = 0; /* Start the input reading at index 0 */
-
-    skip_whitespace(input); /* skip initial white space before beginning lexical analysis */
-
-    lexical_analysis(input);
+    source = input;
+    scan_tokens();
 }
 
-/*
-    Destructor
-    Performs memory cleanup
-*/
-Lexer::~Lexer()
+void Lexer::scan_tokens()
 {
-}
-
-/*
-    Lexical analyzer
-    Input - input : string -> the code to be lexically analyzed
-
-    Perform lexical analysis
-*/
-void Lexer::lexical_analysis(std::string input)
-{
-    Token token;
-
-    int base_index = input_index;
-
-    while (input_index < input.length())
+    while (!is_at_end())
     {
-        char curr_symbol = input[input_index];
-
-        if (base_index == input_index)
-        {
-            if (curr_symbol == '~')
-            {
-                consume_comment(input);
-            }
-            else if (isdigit(curr_symbol))
-            {
-                consume_number(input);
-            }
-            else if (curr_symbol == '\"')
-            {
-                consume_string(input);
-            }
-            else if (terminating_symbols.find(curr_symbol) != terminating_symbols.end())
-            {
-                bool next_symbol_valid = input_index + 1 < input.length();
-                char next_symbol = next_symbol_valid ? input[input_index + 1] : '\0';
-
-                switch (curr_symbol)
-                {
-                case '-':
-                {
-                    if (next_symbol == '>')
-                    {
-                        input_index += 2;
-
-                        add_token("->", TokenType::RIGHTARROW);
-                        break;
-                    }
-                }
-                case '<':
-                {
-                    if (next_symbol == '=')
-                    {
-                        input_index += 2;
-
-                        add_token("<=", TokenType::OPERATOR_LEQ);
-
-                        break;
-                    }
-                }
-                case '>':
-                {
-                    if (next_symbol == '=')
-                    {
-                        input_index += 2;
-
-                        add_token(">=", TokenType::OPERATOR_GEQ);
-
-                        break;
-                    }
-                }
-                case '!':
-                {
-                    if (next_symbol == '=')
-                    {
-                        input_index += 2;
-
-                        add_token("!=", TokenType::OPERATOR_NEQ);
-
-                        break;
-                    }
-                }
-                default:
-                {
-                    /* Consume the special case keyword symbol */
-
-                    std::string lexeme = std::string(1, curr_symbol);
-                    TokenType type = terminal_to_token_type[std::string(1, *(terminating_symbols.find(curr_symbol)))];
-
-                    add_token(lexeme, type);
-
-                    input_index++;
-                }
-                }
-            }
-
-            if (base_index != input_index)
-            {
-                skip_whitespace(input);
-                base_index = input_index;
-                continue;
-            }
-        }
-
-        // STATE: Exploring some lexeme (possibly empty)
-        // Guaranteed to be either an ID or Keyword
-        // Termination of state: curr_symbol is ANYTHING BUT a alphabetical letter or digit or underscore
-        // Initialization of state
-        if (isdigit(curr_symbol) || isalpha(curr_symbol) || curr_symbol == '_')
-        {
-            int len = input_index - base_index + 1;
-            std::string curr_lexeme = input.substr(base_index, len);
-
-            token.lexeme = curr_lexeme;
-
-            auto matched_token = terminals.find(curr_lexeme);
-
-            if (matched_token != terminals.end())
-            {
-                token.type = terminal_to_token_type[*matched_token];
-            }
-            else
-            {
-                token.type = TokenType::ID;
-            }
-
-            input_index++;
-        }
-        else if (terminating_symbols.find(curr_symbol) != terminating_symbols.end() || is_white_space(curr_symbol))
-        {
-            token.line_number = line_number;
-
-            tokens.push_back(token);
-
-            if (is_white_space(curr_symbol))
-            {
-                skip_whitespace(input);
-            }
-
-            base_index = input_index;
-        }
-        else
-        {
-            ErrorHandler::error(ErrorPhase::LEXICAL_ANALYSIS, ErrorType::SYNTAX_ERROR, "At token: " + token.lexeme, line_number, INVALID_TOKEN);
-        }
+        scan_token();
+        start_ix = curr_ix;
     }
 
-    add_token("END_OF_FILE", TokenType::END_OF_FILE);
+    add_token(TokenType::END_OF_FILE);
 }
 
-/*
-    Helper function - Cooks and pushes tokens to class-scoped storage vector
-    Utilizes lexeme, token type, and line number to constructs a
-    new token and adds it to the token storage vector.
-*/
-void Lexer::add_token(std::string lexeme, TokenType type)
+bool Lexer::is_at_end()
 {
+    return curr_ix >= source.length();
+}
+
+void Lexer::scan_token()
+{
+    char c = advance();
+
+    // Add the appropriate token based on the current character, c (the start to the token)
+    switch (c) 
+    {
+        case '(': add_token(TokenType::LPAREN); break;
+        case ')': add_token(TokenType::RPAREN); break;
+        case '{': add_token(TokenType::LBRACE); break;
+        case '}': add_token(TokenType::RBRACE); break;
+        case ',': add_token(TokenType::COMMA); break;
+        case ';': add_token(TokenType::SEMICOLON); break;
+        case '=': add_token(TokenType::EQUAL); break;
+        case '*': add_token(TokenType::OPERATOR_MULT); break;
+        case '/': add_token(TokenType::OPERATOR_DIV); break;
+        case '+': add_token(TokenType::OPERATOR_PLUS); break;
+        case '-':
+            add_token(match('>') ? TokenType::RIGHTARROW : TokenType::OPERATOR_MINUS);
+            break;
+        case '>':
+            add_token(match('=') ? TokenType::OPERATOR_GEQ : TokenType::OPERATOR_GT);
+            break;
+        case '<':
+            add_token(match('=') ? TokenType::OPERATOR_LEQ : TokenType::OPERATOR_LT);
+            break;
+        case '!':
+            add_token(match('=') ? TokenType::OPERATOR_NEQ : TokenType::OPERATOR_XCL);
+            break;
+        case '~': consume_comment(); break;
+        case '"': consume_string(); break;
+        case ' ':   
+        case '\t':
+        case '\r':
+            break; // skip whitespace
+        case '\n':
+            line_number++;
+            break;
+        default:
+            if (is_alpha(c))
+            {
+                consume_id();
+            }
+            else if (is_digit(c))
+            {
+                consume_number();
+            }
+            else if (c == '.')
+            {
+                consume_decimal_points();
+            }
+            else    
+            {
+                int len_curr_token = curr_ix - start_ix;
+                std::string token_of_error = source.substr(start_ix, len_curr_token);
+                ErrorHandler::error(ErrorPhase::LEXICAL_ANALYSIS, ErrorType::SYNTAX_ERROR, "At token: " + token_of_error, line_number, INVALID_TOKEN);
+            }
+            break;
+    }
+}
+
+void Lexer::add_token(TokenType type)
+{
+    int len_of_lexeme = curr_ix - start_ix;
+
     Token token;
-    token.lexeme = lexeme;
     token.type = type;
-    token.line_number = line_number; /* line_number is kept track as an instance var */
+    token.line_number = line_number;
+
+    /* The lexeme can be found between the start_ix and curr_ix. We can use the substr method to 
+        extract the lexeme */
+    
+    // Special case: END_OF_FILE. We'll manually set it to END_OF_FILE
+    if (type == TokenType::END_OF_FILE)
+    {
+        token.lexeme = "END_OF_FILE";
+    }
+    else
+    {
+        token.lexeme = source.substr(start_ix, len_of_lexeme); 
+    }
 
     tokens.push_back(token);
 }
 
-/*
-    Helper function - Consumes whitespace
-    Iterates the input_index to a non-empty start of a lexeme
+/* Consumes the current character we are scanning in the source string.
+   curr_ix is our index pointer, and we increment it so that we advance in our scanning process
 */
-void Lexer::skip_whitespace(std::string input)
+char Lexer::advance() 
 {
-    while (input_index < input.length() && is_white_space(input[input_index]))
-    {
-        if (input[input_index] == '\n')
-            line_number++;
+    char curr_char = source[curr_ix];
+    curr_ix++;
+    return curr_char;
+}
 
-        input_index++;
+char Lexer::peek_char()
+{
+    if (is_at_end())
+    {
+        return '\0';
+    }
+    else
+    {
+        return source[curr_ix];
     }
 }
 
-/*
-    Helper function: Consumes comments
-
-    Triggered by the sighting of a '~' char,
-    this function consumes the rest of a line so
-    as to treat it like a comment.
-*/
-void Lexer::consume_comment(std::string input)
+char Lexer::get_prev_char()
 {
-    input_index++; /* skip ~ that triggers comment */
-    while (input_index < input.length() && input[input_index] != '\n')
+    if (curr_ix == 0)
     {
-        input_index++;
+        return '\0';
     }
-
-    skip_whitespace(input);
-}
-
-/*
-    Helper function: Consumes and adds INT_NUM or DEC_NUM token
-
-    Initiation by a sighting of a digit, this function
-    consumes the rest of a number-based token
-    then adds the token to the token storage vector.
-    Also validates the number formatting (max one decimal pt.)
-*/
-void Lexer::consume_number(std::string input)
-{
-    bool dec_used = false;
-    bool token_added = false;
-
-    bool zeroStart = input[input_index] == '0';
-
-    std::string num = "";
-
-    while (input_index < input.length())
+    else   
     {
-
-        if (dec_used == false && input[input_index] == '.')
-        {
-            dec_used = true;
-            num += input[input_index];
-        }
-        else if (isdigit(input[input_index]))
-        {
-            num += input[input_index];
-        }
-        else if (dec_used && input[input_index] == '.')
-        {
-            ErrorHandler::error(ErrorPhase::LEXICAL_ANALYSIS, ErrorType::SYNTAX_ERROR, "Multiple decimal points near " + num + input[input_index], line_number, INVALID_NUM);
-        }
-        else
-        {
-            TokenType type = dec_used ? TokenType::DEC_NUM : TokenType::INT_NUM;
-
-            if (type == TokenType::INT_NUM && zeroStart && num.length() > 1)
-            {
-                ErrorHandler::error(ErrorPhase::LEXICAL_ANALYSIS, ErrorType::SYNTAX_ERROR, "Integers may not start with a 0", line_number, INVALID_NUM);
-            }
-
-            add_token(num, type);
-
-            token_added = true;
-
-            break;
-        }
-
-        input_index++;
-    }
-
-    /* if number extends to end of input, add it to token list */
-    if (input_index == input.length() && !token_added)
-    {
-        TokenType type = dec_used ? TokenType::DEC_NUM : TokenType::INT_NUM;
-
-        add_token(num, type);
+        return source[curr_ix - 1];
     }
 }
 
-/*
-    Helper function: Consumes and adds STRING token
-
-    Triggered by a sighting of an opening quote, this function
-    consumes the rest of the STRING token within quotation marks
-    then adds the token to the token storage vector.
-*/
-void Lexer::consume_string(std::string input)
+bool Lexer::match(char expected_type)
 {
-    input_index++; /* skip opening quotation mark */
-
-    std::string str = ""; /* build lexeme of STRING token in var called str */
-
-    /* iterate and build STRING lexeme until closing quotation is hit */
-    while (input_index < input.length() && input[input_index] != '\"' && input[input_index] != '\n')
+    if (is_at_end())
     {
-        str += input[input_index];
-        input_index++;
+        return false;
+    }
+    if (peek_char() != expected_type)
+    {
+        return false;
     }
 
-    if (input[input_index] == '\"') /* if iteration ended with end quotation, add token and move to next input char */
+    advance();
+    return true;
+}
+
+void Lexer::consume_comment()
+{
+    while (!is_at_end() && peek_char() != '\n')
     {
-        add_token(str, TokenType::STRING);
-        input_index++;
+        advance();
     }
-    else /* if end of file is hit before string closes, exit program */
+}
+
+// Consume the string. The left " is already consumed. Consume up to and including the next found "
+void Lexer::consume_string()
+{
+    while (!is_at_end() && peek_char() != '"' && peek_char() != '\n')
+    {
+        advance();
+    }
+    
+    if (is_at_end() || peek_char() == '\n')    // EXIT with error code!
     {
         ErrorHandler::error(ErrorPhase::LEXICAL_ANALYSIS, ErrorType::SYNTAX_ERROR, "Missing ending quote", line_number, INVALID_STRING);
     }
+ 
+
+
+    advance(); // Consume the right "
+
+    // Instead of calling add_token. We're going to do it here manually. Reason: We don't want to include the quotation marks in the lexeme
+    const int num_quotation_marks = 2;
+    int len_of_string = curr_ix - start_ix - num_quotation_marks;
+    int start_of_str_content = start_ix + 1;
+    Token token;
+    token.type = TokenType::STRING;
+    token.lexeme = source.substr(start_of_str_content, len_of_string);
+    token.line_number = line_number;
+
+    tokens.push_back(token);
+}
+
+void Lexer::consume_id()
+{
+    while (!is_at_end() && is_alphanumeric(peek_char()))
+    {
+        advance();
+    }
+    
+    int len_id = curr_ix - start_ix;
+    std::string id_lexeme = source.substr(start_ix, len_id);
+    TokenType id_type = get_id_type(id_lexeme);
+    
+    add_token(id_type);
+}
+
+/* The number to be scanned can either be a decimal or integer. 
+    If there's a '.' in the number, then it's a decimal. Otherwise it's an integer
+*/
+void Lexer::consume_number()
+{
+    bool dot_found = false;
+    char first_digit = get_prev_char();  // The previous character is the first digit of the number (since we already advanced from c)
+
+    while (!is_at_end() && is_digit(peek_char()))
+    {
+        advance();
+    }
+    
+    if (peek_char() == '.')
+    {
+       dot_found = true;
+       advance();
+    }
+    
+    while (!is_at_end() && is_digit(peek_char()))
+    {
+        advance();
+    }
+    
+    // As numbers are space separated, if there's a '.' next, then we consider it part of this current number we're scanning and 
+    // not the beginning of the next number. So, we need to check for it here
+    if (peek_char() == '.')
+    {
+        int len_curr_num = curr_ix - start_ix + 1; // + 1 to include the extra '.'
+        std::string num_lexeme = source.substr(start_ix, len_curr_num);
+        ErrorHandler::error(ErrorPhase::LEXICAL_ANALYSIS, ErrorType::SYNTAX_ERROR, "Multiple decimal points near " + num_lexeme, line_number, INVALID_NUM);
+    }
+
+    if (dot_found)
+    {
+        add_token(TokenType::DEC_NUM);
+    }
+    else
+    {
+        // Special case. Integers may not start with a 0 (except the integer 0 itself)
+        int num_digits = curr_ix - start_ix;
+        if (first_digit == '0' && num_digits > 1)
+        {
+            ErrorHandler::error(ErrorPhase::LEXICAL_ANALYSIS, ErrorType::SYNTAX_ERROR, "Integers may not start with a 0", line_number, INVALID_NUM);
+        }
+        else
+        {
+            add_token(TokenType::INT_NUM);
+        }
+    }
+}
+
+// Scans a dec that started with a '.' (the '.' already being consumed)
+void Lexer::consume_decimal_points()
+{
+    int num_decimal_points = 0;
+
+    while (!is_at_end() && is_digit(peek_char()))
+    {
+        advance();
+        ++num_decimal_points;
+    }
+
+    if (num_decimal_points == 0)
+    {
+        ErrorHandler::error(ErrorPhase::LEXICAL_ANALYSIS, ErrorType::SYNTAX_ERROR, "'.' is not a valid number", line_number, INVALID_NUM);
+    }
+
+    add_token(TokenType::DEC_NUM);
+}
+
+bool Lexer::is_alpha(char c)
+{
+    return (c >= 'a' && c <= 'z') ||
+           (c >= 'A' && c <= 'Z') ||
+            c == '_';
+}
+
+bool Lexer::is_digit(char c)
+{
+    return c >= '0' && c <= '9';
+}
+
+bool Lexer::is_alphanumeric(char c)
+{
+    return is_alpha(c) || is_digit(c);
+}
+
+// Search the keywords map for the id_lexeme string. Return its mapped value if found, otherwise ID
+TokenType Lexer::get_id_type(std::string id_lexeme) 
+{
+    auto search = keywords.find(id_lexeme);
+    if (search != keywords.end()) // If we found it in the keywords map
+    {
+        TokenType mapped_type = search->second; // search->second is the mapped value of the id_lexeme in the map
+        return mapped_type;
+    } 
+    else
+    {
+        return TokenType::ID;
+    }
+}
+
+Token Lexer::get_token()
+{
+    Token token = peek(0);
+    token_index++;          // Consume the current token
+    return token;
+}
+
+Token Lexer::peek(int offset)
+{
+    /* If the requested token is outside the range of the input, return EOF */
+    if (token_index + offset >= tokens.size())
+    {
+        Token token;
+        token.type = TokenType::END_OF_FILE;
+        token.lexeme = "";
+        token.line_number = line_number;
+        return token;
+    }
+
+    /* Otherwise, return the token at the offset index in the tokens vector */
+    return tokens.at(token_index + offset);
+}
+
+std::string Lexer::get_token_name(TokenType type)
+{
+    return token_type_names[type];
 }
 
 /*
@@ -352,47 +376,4 @@ std::string Lexer::print_tokens()
     }
 
     return str;
-}
-
-/*
-    Public function: Consumes and returns the token at token_index
-
-    Stores the current token at token_index in the tokens vector, advances the
-    token_index by 1, then returns the stored token
-*/
-Token Lexer::get_token()
-{
-    Token tok = peek(0);
-    token_index++;
-    return tok;
-}
-
-/*
-    Public function: Returns the token at the token_index + offset value in the
-    tokens vector
-*/
-Token Lexer::peek(int offset)
-{
-    /* If the requested token is outside the range of the input, return EOF */
-    if (token_index + offset >= tokens.size())
-    {
-        Token tok;
-        tok.type = TokenType::END_OF_FILE;
-        tok.lexeme = "";
-        tok.line_number = line_number;
-        return tok;
-    }
-
-    /* Otherwise, return the token at the offset index in the tokens vector */
-    return tokens.at(token_index + offset);
-}
-
-bool Lexer::is_white_space(char curr_symbol)
-{
-    return curr_symbol == ' ' || curr_symbol == '\t' || curr_symbol == '\n';
-}
-
-std::string Lexer::get_token_name(TokenType type)
-{
-    return token_type_names[type];
 }
