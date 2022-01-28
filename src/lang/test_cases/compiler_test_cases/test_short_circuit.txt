@@ -1,8 +1,0 @@
-func main()
-{
-    bool a = (true or false) and true;
-    expect(0, a, true);
-
-    bool b = (false or false) and true;
-    expect(1, b, false);
-}

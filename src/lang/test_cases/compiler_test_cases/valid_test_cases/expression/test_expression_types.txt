@@ -1,0 +1,4 @@
+func main()
+{
+    bool x = (2 + 2) is 4;
+}

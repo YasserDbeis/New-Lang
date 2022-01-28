@@ -1,15 +1,55 @@
-func some_func(int x, dec y, str a, bool b)
+func some_bool() -> bool
 {
-    return 0;
+    return true;
 }
 
 func main()
 {
-    int a = 5;
-    dec y = 10.5
-    str a = "test";
-    bool b = true;
+    bool x = true;
 
-    some_func(x, y, a, b);
-    some_func(5, 10.5, "test", true);
+
+    if (x)
+    {
+        int filler_statement = 5;
+    }
+
+    if (x and true)
+    {
+        int filler_statement = 5;
+    }
+
+    if (false or x)
+    {
+        int filler_statement = 5;
+    }
+
+    if (5 is 5)
+    {
+        int filler_statement = 5;
+    }
+
+    if (5 != 6)
+    {
+        int filler_statement = 5;
+    }
+
+    if (some_bool())
+    {
+        int filler_statement = 5;
+    }
+
+    if ((2+2) is 4)
+    {
+        int filler_statement = 5;
+    }
+
+    if (2 < 4)
+    {
+        int filler_statement = 5;
+    }
+
+    if (4 <= 4) 
+    {
+        int filler_statement = 5;
+    }
 }
