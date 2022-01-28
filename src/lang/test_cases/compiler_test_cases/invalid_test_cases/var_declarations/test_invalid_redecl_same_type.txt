@@ -1,0 +1,4 @@
+func main() {
+    dec x;
+    dec x;
+}

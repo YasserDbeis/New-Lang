@@ -1,0 +1,6 @@
+func main() {}
+
+func foo() -> dec {
+    
+    return 1.0;
+}

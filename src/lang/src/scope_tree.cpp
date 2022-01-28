@@ -17,7 +17,7 @@ void ScopeTree::add_var(std::string name, Value val)
     }
     else
     {
-        ErrorHandler::error(ErrorPhase::PARSING, ErrorType::RUNTIME_ERROR, "Variable " + name + " has already been declared in this scope", -1, VAR_ALREADY_DEC);
+        ErrorHandler::error(ErrorPhase::EXECUTION, ErrorType::RUNTIME_ERROR, "Variable " + name + " has already been declared in this scope", -1, VAR_ALREADY_DEC);
     }
 }
 

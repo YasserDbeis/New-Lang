@@ -1,0 +1,9 @@
+func test(str x) -> int
+{
+    return 0;
+}
+
+func main()
+{
+    test(5);
+}

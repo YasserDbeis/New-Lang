@@ -1,0 +1,7 @@
+func main() {
+
+    {
+        str x = "hello";
+        str x = "world";
+    }
+}

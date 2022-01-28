@@ -1,0 +1,7 @@
+func main()
+{
+    if (5.0) 
+    {
+        int filler_statement = 0;
+    }
+}

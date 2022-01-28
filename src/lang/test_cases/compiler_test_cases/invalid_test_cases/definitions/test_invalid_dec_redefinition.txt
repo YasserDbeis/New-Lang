@@ -1,0 +1,7 @@
+func main() {
+
+    {
+        dec x = 5.0;
+        dec x = 6.0;
+    }
+}

@@ -1,0 +1,7 @@
+func main()
+{
+    if ("test") 
+    {
+        int filler_statement = 0;
+    }
+}

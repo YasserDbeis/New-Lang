@@ -101,7 +101,6 @@ void StoreNode::assert_valid_type(Value val, Type expected_type)
 {
     if (val.type != expected_type)
     {
-        std::cout << "I'm in store node!" << std::endl;
         ErrorHandler::error(ErrorPhase::EXECUTION, ErrorType::RUNTIME_EXCEPTION, "At expression " + expr.value.token.lexeme, expr.value.token.line_number, INVALID_EVAL);
     }
 }

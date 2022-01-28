@@ -1,0 +1,4 @@
+func main() {
+    str x = "hello world";
+    print(x);
+}
