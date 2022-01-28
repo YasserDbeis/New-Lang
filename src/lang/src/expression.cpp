@@ -260,8 +260,16 @@ Value Expression::compute(Value val1, Value val2, OperatorType operator_type)
         {
             auto computed = arith_compute(val1, val2, operator_type);
 
-            result.type = typeid(computed) == typeid(int) ? Type::Int : Type::Dec;
-            result.token.type = typeid(computed) == typeid(int) ? TokenType::INT_NUM : TokenType::DEC_NUM;
+            if (val1.type == Type::Int && val2.type == Type::Int)
+            {
+                result.type = Type::Int;
+                result.token.type = TokenType::INT_NUM;
+            }
+            else 
+            {
+                result.type = Type::Dec;
+                result.token.type = TokenType::DEC_NUM;
+            }
             result.token.lexeme = std::to_string(computed);
         }
     }
