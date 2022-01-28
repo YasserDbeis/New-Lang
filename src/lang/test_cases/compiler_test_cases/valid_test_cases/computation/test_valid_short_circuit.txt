@@ -1,0 +1,18 @@
+func main()
+{
+    bool b1 = a(false) and b(true);
+    print("--");
+    bool b2 = a(true) or b(true);
+}
+
+func a(bool x) -> bool
+{
+    print("A");
+    return x;
+}
+
+func b(bool x) -> bool
+{
+    print("B");
+    return x;
+}

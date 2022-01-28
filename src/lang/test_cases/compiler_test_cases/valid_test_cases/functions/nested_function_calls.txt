@@ -1,0 +1,24 @@
+func main()
+{
+    a();
+}
+
+func a()
+{
+    print("entering a");
+    b();
+    print("leaving a");
+}
+
+func b()
+{
+    print("entering b");
+    c();
+    print("leaving b");
+}
+
+func c()
+{
+    print("entering c");
+    print("leaving c");
+}

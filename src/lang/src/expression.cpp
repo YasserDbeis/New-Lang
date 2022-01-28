@@ -12,6 +12,7 @@ Expression::Expression(Value val)
 Expression::Expression(std::vector<ExprNode *> tl)
 {
     term_list = tl;
+    value.token.line_number = 1;
 }
 
 void Expression::print_expr(int num_tabs)
@@ -230,6 +231,14 @@ void Expression::assert_valid_type(Value val1, Value val2, OperatorType operator
              operator_type == OperatorType::NEQ)
     {
         if (val1.type != val2.type)
+        {
+            is_valid = false;
+        }
+    } 
+    else if (operator_type == OperatorType::PLUS)
+    {
+        if (val1.type == Type::Dec && val2.type == Type::Bool ||
+        val2.type == Type::Dec && val1.type == Type::Bool)
         {
             is_valid = false;
         }

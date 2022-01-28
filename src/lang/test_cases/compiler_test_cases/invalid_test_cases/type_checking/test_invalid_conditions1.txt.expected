@@ -1,5 +1,5 @@
-SYNTAX ERROR
-Error occurred in Lexical Analysis
-Input is empty
-Missing: Main Function
-1
+RUNTIME EXCEPTION
+Error occurred in Execution
+At expression 5
+Expression has invalid evaluation
+3

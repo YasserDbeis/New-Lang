@@ -1,0 +1,17 @@
+func main()
+{
+    int x = running_sum(10);
+    print(x);
+}
+
+func running_sum(int x) -> int
+{
+    if (x is 0)
+    {
+        return 0;
+    }
+    int running_sum = x + running_sum(x - 1);
+
+    print("x = " + x + ", running sum = " + running_sum);
+    return running_sum;
+}

@@ -1,0 +1,17 @@
+func main()
+{
+    dec a = 2.0 * 3.0;
+    dec b = 2.0 + 1;
+    dec c = 1 / 2.0;
+    str s1 = "test" + 123;
+    str s2 = "test" + 123.0;
+    str s3 = "test" + true;
+    str s4 = "test" + false;
+    str s5 = "test" + "test";
+    bool b1 = 2 is 2;
+    bool b2 = 2 != 2;
+    bool b3 = 2 < 3;
+    bool b4 = b1 and b2;
+    bool b5 = b2 or b3;
+    bool b6 = b4 != b5;
+}
