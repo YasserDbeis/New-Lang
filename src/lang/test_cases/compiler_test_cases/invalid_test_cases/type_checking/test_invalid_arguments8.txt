@@ -1,9 +1,9 @@
-func test(str x) -> int
+func test(dec x) -> int
 {
     return 0;
 }
 
 func main()
 {
-    test(5);
+    test("test");
 }
