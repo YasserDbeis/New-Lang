@@ -3,23 +3,6 @@
 #include <iostream>
 
 /*
-class ScopeTree
-{
-public:
-    std::vector<std::unordered_map<std::string, Value>> scope_list;
-
-    void set_var(std::string name, Value val, int value); // throw error if already there
-    std::pair<Value, bool> get_var(std::string name);
-
-private:
-    void push(std::unordered_map<std::string, Value>);
-    void pop();
-    bool in_curr_scope(std::string name);
-    std::unordered_map<std::string, Value> peek();
-};
-*/
-
-/*
     Inserts the {name, val} into the hashtable of the last element of the scope_list
 
     Use cases - int x = 5; OR x = 5 - var def or var dec

@@ -1,0 +1,9 @@
+func main() {
+
+    int x = 5;
+    use_x();
+}
+
+func use_x() {
+    print(x);
+}

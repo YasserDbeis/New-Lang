@@ -1,0 +1,42 @@
+func main()
+{
+    int x = 5;
+    int x1 = get_int();
+
+    dec y = 10.50;
+    dec y1 = get_dec();
+
+    str z = "Test";
+    str z1 = get_str();
+
+    bool a = true;
+    bool a1 = get_bool_true();
+
+    bool b = false;
+    bool b1 = get_bool_false();
+}
+
+func get_int() -> int
+{
+    return 5;
+}
+
+func get_dec() -> dec
+{
+    return 10.5;
+}
+
+func get_str() -> str
+{
+    return "Test";
+}
+
+func get_bool_true() -> bool
+{
+    return true;
+}
+
+func get_bool_false() -> bool 
+{
+    return false;
+}

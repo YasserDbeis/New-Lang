@@ -17,6 +17,4 @@ public:
     ExprType expr_type;
 
     virtual void expr_print(int num_tabs = 0) {}
-
-private:
 };

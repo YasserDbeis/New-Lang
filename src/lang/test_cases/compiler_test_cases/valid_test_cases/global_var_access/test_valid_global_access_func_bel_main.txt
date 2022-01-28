@@ -1,0 +1,18 @@
+str name = "Bob";
+int x = 5;
+
+func main()
+{
+    func_below_main();
+}
+
+dec y = 10.5;
+bool cond = true;
+
+func func_below_main()
+{
+    print(name);
+    print(x);
+    print(y);
+    print(cond);
+}

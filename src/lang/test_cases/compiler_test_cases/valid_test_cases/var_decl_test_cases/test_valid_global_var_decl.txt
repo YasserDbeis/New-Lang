@@ -1,0 +1,8 @@
+int x;
+
+func main() {
+    
+    x = 5;
+
+    print(x);
+}

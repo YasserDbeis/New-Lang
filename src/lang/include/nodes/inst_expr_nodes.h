@@ -13,12 +13,12 @@ class FuncCallNode : public InstNode, public ExprNode
 public:
     Value value;
 
-    void execute() override;
-    void evaluate();
-
     FuncCallNode();
     FuncCallNode(std::string func_id, std::vector<Expression> args);
     FuncCallNode(ExprType expr_type, std::string func_id, std::vector<Expression> args);
+
+    void evaluate();
+    void execute() override;
 
     void inst_print(int num_tabs = 0) override;
     void expr_print(int num_tabs = 0) override;

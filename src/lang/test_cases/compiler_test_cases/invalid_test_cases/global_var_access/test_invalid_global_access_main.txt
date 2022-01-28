@@ -1,0 +1,6 @@
+func main()
+{
+    print(x);
+}
+
+int x = 5;

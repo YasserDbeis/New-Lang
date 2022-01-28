@@ -1,0 +1,12 @@
+str name = "Bob";
+int x = 5;
+dec y = 10.5;
+bool cond = true;
+
+func main()
+{
+    print(name);
+    print(x);
+    print(y);
+    print(cond);
+}

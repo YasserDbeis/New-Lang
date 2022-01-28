@@ -1,0 +1,10 @@
+func func_above_main() {
+    print(x);
+}
+
+int x = 5;
+
+func main()
+{
+    func_above_main();
+}

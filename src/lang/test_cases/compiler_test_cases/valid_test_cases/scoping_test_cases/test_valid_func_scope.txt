@@ -1,0 +1,13 @@
+func main() {
+
+    int x = 5;
+
+    update(x);
+
+    print(x);
+}
+
+func update(int x) {
+
+    x = 4;
+}

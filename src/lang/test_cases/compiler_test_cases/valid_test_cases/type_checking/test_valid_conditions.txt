@@ -1,0 +1,15 @@
+func some_func(int x, dec y, str a, bool b)
+{
+    return 0;
+}
+
+func main()
+{
+    int a = 5;
+    dec y = 10.5
+    str a = "test";
+    bool b = true;
+
+    some_func(x, y, a, b);
+    some_func(5, 10.5, "test", true);
+}

@@ -6,8 +6,3 @@ func main()
     bool b = (false or false) and true;
     expect(1, b, false);
 }
-
-func expect(int index, bool actual, bool expected)
-{
-    print("tc: " + index + ", actual: " + actual + ", expected: " + expected);
-}

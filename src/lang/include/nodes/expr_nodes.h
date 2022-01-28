@@ -8,14 +8,15 @@
 class LoadNode : public ExprNode
 {
 public:
+    Value value;
+
     void evaluate();
+
     LoadNode();
-    LoadNode(ExprType type, Type var_type, std::string name, int global_count, bool is_constant);
     LoadNode(ExprType type, Value value, int global_count, bool is_constant);
+    LoadNode(ExprType type, Type var_type, std::string name, int global_count, bool is_constant);
 
     void expr_print(int num_tabs = 0) override;
-
-    Value value;
 
 private:
     std::string name;

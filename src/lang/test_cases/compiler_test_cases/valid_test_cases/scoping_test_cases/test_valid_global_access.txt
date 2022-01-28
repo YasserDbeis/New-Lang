@@ -1,0 +1,16 @@
+
+str name = "Briggs";
+
+func main() {
+
+    str name = "Yasser";
+
+    print(name);
+
+    foo();
+}
+
+func foo() {
+
+    print(name);
+}
