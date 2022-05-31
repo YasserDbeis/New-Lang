@@ -234,11 +234,11 @@ void Expression::assert_valid_type(Value val1, Value val2, OperatorType operator
         {
             is_valid = false;
         }
-    } 
+    }
     else if (operator_type == OperatorType::PLUS)
     {
         if (val1.type == Type::Dec && val2.type == Type::Bool ||
-        val2.type == Type::Dec && val1.type == Type::Bool)
+            val2.type == Type::Dec && val1.type == Type::Bool)
         {
             is_valid = false;
         }
@@ -273,13 +273,15 @@ Value Expression::compute(Value val1, Value val2, OperatorType operator_type)
             {
                 result.type = Type::Int;
                 result.token.type = TokenType::INT_NUM;
+                int computed_int = computed;
+                result.token.lexeme = std::to_string(computed_int);
             }
-            else 
+            else
             {
                 result.type = Type::Dec;
                 result.token.type = TokenType::DEC_NUM;
+                result.token.lexeme = std::to_string(computed);
             }
-            result.token.lexeme = std::to_string(computed);
         }
     }
     else if (operator_type == OperatorType::LT || operator_type == OperatorType::GT || operator_type == OperatorType::LEQ || operator_type == OperatorType::GEQ)

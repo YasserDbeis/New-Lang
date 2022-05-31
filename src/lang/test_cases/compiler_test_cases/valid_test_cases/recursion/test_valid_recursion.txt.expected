@@ -1,11 +1,11 @@
-x = 1.000000, running sum = 1.000000
-x = 2.000000, running sum = 3.000000
-x = 3.000000, running sum = 6.000000
-x = 4.000000, running sum = 10.000000
-x = 5.000000, running sum = 15.000000
-x = 6.000000, running sum = 21.000000
-x = 7.000000, running sum = 28.000000
-x = 8.000000, running sum = 36.000000
-x = 9.000000, running sum = 45.000000
-x = 10, running sum = 55.000000
-55.000000
+x = 1, running sum = 1
+x = 2, running sum = 3
+x = 3, running sum = 6
+x = 4, running sum = 10
+x = 5, running sum = 15
+x = 6, running sum = 21
+x = 7, running sum = 28
+x = 8, running sum = 36
+x = 9, running sum = 45
+x = 10, running sum = 55
+55
