@@ -467,7 +467,7 @@ void Parser::parse_if_stmt()
     }
     else if (first_of_stmt.count(tok_0.type) || tok_0.type == TokenType::RBRACE) // var declaration or definition
     {
-        //return;
+        // return;
     }
     else
     {
@@ -479,7 +479,7 @@ void Parser::parse_if_stmt()
     {
         int jmp_ix = jmp_indices[i];
         func_instructions[jmp_ix]->set_offset(ix_of_next_stmt - jmp_ix);
-        //std::cout << "OFFSET TO JMP NODE SHOULD BE SET TO " << ix_of_next_stmt - jmp_ix << std::endl;
+        // std::cout << "OFFSET TO JMP NODE SHOULD BE SET TO " << ix_of_next_stmt - jmp_ix << std::endl;
     }
 }
 

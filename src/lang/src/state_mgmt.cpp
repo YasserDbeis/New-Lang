@@ -4,16 +4,16 @@
 
 void StateMgmt::create_new_stack_frame(std::string func_id)
 {
-    //std::cout << "*** Creating New Stack Frame ***" << std::endl;
+    // std::cout << "*** Creating New Stack Frame ***" << std::endl;
     StackFrame new_stack_frame;
     new_stack_frame.func_id = func_id;
     stack_trace.push(new_stack_frame);
-    //std::cout << "After pushing, stack trace has a size of " << stack_trace.size() << std::endl;
+    // std::cout << "After pushing, stack trace has a size of " << stack_trace.size() << std::endl;
 }
 
 void StateMgmt::delete_curr_stack_frame()
 {
-    //std::cout << "*** Deleting Current Stack Frame ***" << std::endl;
+    // std::cout << "*** Deleting Current Stack Frame ***" << std::endl;
     stack_trace.pop();
 }
 
@@ -38,13 +38,13 @@ Value StateMgmt::load_global_var(std::string id)
         {
             std::string curr_func_id = stack_trace.top().func_id;
             int curr_func_max_global = FuncDefTable::get_global_count(curr_func_id);
-            
+
             int global_var_count = global_vars[id].second;
             if (global_var_count > curr_func_max_global)
             {
                 ErrorHandler::error(ErrorPhase::EXECUTION, ErrorType::RUNTIME_ERROR, "Variable " + id + " has not been declared", -1, VAR_NOT_DEC);
             }
-        }          
+        }
 
         // Otherwise we are clear to return the variable!
         return global_vars[id].first;
@@ -152,7 +152,7 @@ void StateMgmt::print_stack_recursively()
     StackFrame top_stack_frame = stack_trace.top();
     stack_trace.pop();
 
-    //Print contents
+    // Print contents
     std::cout << "---------- Stack Frame ------------" << std::endl;
     std::cout << "Function: " << top_stack_frame.func_id << std::endl;
     top_stack_frame.scope_tree.print_scope_tree();

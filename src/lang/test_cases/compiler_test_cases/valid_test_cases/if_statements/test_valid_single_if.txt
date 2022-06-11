@@ -1,0 +1,9 @@
+func main()
+{
+    int x = 10;
+
+    if (x is 10)
+    {
+        print("Here");
+    }
+}

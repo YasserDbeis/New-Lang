@@ -120,6 +120,10 @@ void StoreNode::store_to_curr_context(Value val)
             {
                 StateMgmt::stack_trace.top().scope_tree.update_var(name, val);
             }
+            else
+            {
+                ErrorHandler::error(ErrorPhase::EXECUTION, ErrorType::RUNTIME_EXCEPTION, "Variable " + name + " is not declared", expr.value.token.line_number, VAR_NOT_DEC);
+            }
         }
         else // Definition statement
         {
@@ -167,7 +171,7 @@ void StoreNode::execute()
     }
 
     // Printing for testing purposes
-    //StateMgmt::print_stack_trace();
+    // StateMgmt::print_stack_trace();
 }
 
 void StoreNode::inst_print(int num_tabs)

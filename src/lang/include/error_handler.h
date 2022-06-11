@@ -13,7 +13,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include "include/token.h"
+#include "token.h"
 
 enum class ErrorPhase
 {

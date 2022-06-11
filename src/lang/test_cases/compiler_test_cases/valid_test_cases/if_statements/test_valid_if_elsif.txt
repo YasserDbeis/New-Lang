@@ -1,0 +1,17 @@
+func main()
+{
+    int x = 10;
+
+    if (x != 10)
+    {
+        print("Shouldn't be here");
+    }
+    elsif (x is 10)
+    {
+        print("Here");
+    }
+    else
+    {
+        print("Also shouldn't be here");
+    }
+}
