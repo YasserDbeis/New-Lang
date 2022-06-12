@@ -15,7 +15,7 @@
 | Multiplication | \*     | Multiplies two values            | 8 \* 4  |
 | Division       | /      | Divides one value from another   | 8 / 4   |
 
-## Logical operators
+## Comparison Operators
 
 | NAME                     | SYMBOL | DESCRIPTION                                                    | EXAMPLE |
 | ------------------------ | ------ | -------------------------------------------------------------- | ------- |
@@ -23,8 +23,18 @@
 | Less than                | <      | True if left operand is less than right operand                | 20 < 80 |
 | Greater than or equal to | >=     | True if left operand is greater than or equal to right operand | 8 >= 4  |
 | Less than or equal to    | <=     | True if left operand is less than or equal to right operand    | 3 <= 5  |
+| Equal                    | is     | True if left operand is equal to right operand                 | 5 is 5  |
+| Not equal                | !=     | True if left operand is not equal to right operand             | 5 != 5  |
 
-## Other Operators
+## Logical Operators
+
+| NAME                 | SYMBOL | DESCRIPTION                                                                                          | EXAMPLE                  |
+| -------------------- | ------ | ---------------------------------------------------------------------------------------------------- | ------------------------ |
+| Logical and          | <      | True if left operand is less than right operand                                                      | 5 < 10 and "hi" is "bye" |
+| Logical or           | >=     | True if left operand is greater than or equal to right operand                                       | 5 < 10 or "hi" is "bye"  |
+| Logical not          | not    | Reverses right hand operand boolean value or binary boolean operation result ??Have we implemented?? | 5 is not 5               |
+| Logical not (unary)  | !      | Reverses right hand operand boolean value ??Have we implemented??                                    | !foo                     |
+| Logical exclusive or | xor    | Performs exlcusive or of left and right operands                                                     | foo xor bar              |
 
 TokenType::OPERATOR_PLUS,
 TokenType::OPERATOR_MINUS,
