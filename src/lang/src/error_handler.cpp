@@ -6,6 +6,9 @@
 */
 
 #include "../include/error_handler.h"
+#include "../include/output_handler.h"
+#include "../include/executioner.h"
+
 #include <iostream>
 
 void ErrorHandler::error(ErrorPhase err_phase, ErrorType err_type, std::string context, int line_number, ErrorCode err_code)
@@ -31,14 +34,18 @@ std::string ErrorHandler::print(Error err)
 
     err_str = type_str + "\n" + phase_info + "\n" + err.context + "\n" + err.message + "\n" + std::to_string(err.line_number) + "\n";
     // printf("%s", err_str);
-    std::cout << err_str;
+
+    OutputHandler::write_to_output(err_str);
+    std::cout << "ERROR HERE" << OutputHandler::get_code_output() << std::endl;
+    // std::cout << err_str;
 
     return err_str;
 }
 
 void ErrorHandler::exit_handler()
 {
-    exit(EXIT_FAILURE);
+    Executioner::set_prog_exit_state(true);
+    // exit(EXIT_FAILURE);
 }
 
 std::string ErrorHandler::code_to_msg(ErrorCode code)

@@ -2,7 +2,47 @@ cmd_Release/obj.target/main/src/lang/src/error_handler.o := c++ '-DNODE_GYP_MODU
 Release/obj.target/main/src/lang/src/error_handler.o: \
   ../src/lang/src/error_handler.cpp \
   ../src/lang/src/../include/error_handler.h \
-  ../src/lang/src/../include/token.h
+  ../src/lang/src/../include/token.h \
+  ../src/lang/src/../include/output_handler.h \
+  ../src/lang/src/../include/executioner.h \
+  ../src/lang/src/../include/../include/output_handler.h \
+  ../src/lang/src/../include/nodes/inst_node.h \
+  ../src/lang/src/../include/compiler.h \
+  ../src/lang/src/../include/parser.h \
+  ../src/lang/src/../include/../include/lexer.h \
+  ../src/lang/src/../include/../include/nodes/nodes.h \
+  ../src/lang/src/../include/nodes/inst_expr_nodes.h \
+  ../src/lang/src/../include/nodes/expr_node.h \
+  ../src/lang/src/../include/nodes/../value.h \
+  ../src/lang/src/../include/nodes/inst_nodes.h \
+  ../src/lang/src/../include/nodes/../expression.h \
+  ../src/lang/src/../include/value.h \
+  ../src/lang/src/../include/nodes/expr_nodes.h \
+  ../src/lang/src/../include/func_def_table.h \
+  ../src/lang/src/../include/../include/func_def_table.h \
+  ../src/lang/src/../include/../include/value.h \
+  ../src/lang/src/../include/state_mgmt.h \
+  ../src/lang/src/../include/scope_tree.h
 ../src/lang/src/error_handler.cpp:
 ../src/lang/src/../include/error_handler.h:
 ../src/lang/src/../include/token.h:
+../src/lang/src/../include/output_handler.h:
+../src/lang/src/../include/executioner.h:
+../src/lang/src/../include/../include/output_handler.h:
+../src/lang/src/../include/nodes/inst_node.h:
+../src/lang/src/../include/compiler.h:
+../src/lang/src/../include/parser.h:
+../src/lang/src/../include/../include/lexer.h:
+../src/lang/src/../include/../include/nodes/nodes.h:
+../src/lang/src/../include/nodes/inst_expr_nodes.h:
+../src/lang/src/../include/nodes/expr_node.h:
+../src/lang/src/../include/nodes/../value.h:
+../src/lang/src/../include/nodes/inst_nodes.h:
+../src/lang/src/../include/nodes/../expression.h:
+../src/lang/src/../include/value.h:
+../src/lang/src/../include/nodes/expr_nodes.h:
+../src/lang/src/../include/func_def_table.h:
+../src/lang/src/../include/../include/func_def_table.h:
+../src/lang/src/../include/../include/value.h:
+../src/lang/src/../include/state_mgmt.h:
+../src/lang/src/../include/scope_tree.h:

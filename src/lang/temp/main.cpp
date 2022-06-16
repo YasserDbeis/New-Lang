@@ -35,6 +35,8 @@ namespace main
         // args.GetReturnValue().Set(String::NewFromUtf8(
         //     isolate, res.c_str()));
 
+        std::cout << "CALLED!" << std::endl;
+
         Isolate *isolate = args.GetIsolate();
         Local<Context> context = isolate->GetCurrentContext();
 

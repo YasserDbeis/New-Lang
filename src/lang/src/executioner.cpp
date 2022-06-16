@@ -14,10 +14,24 @@ Executioner::Executioner(std::string input) : compiler(input)
 std::string Executioner::execute_program()
 {
 
-    return "EXECUTIONER OUTPUT";
     FuncDefTable::function_exists(MAIN);
 
+    std::cout << "HERE" << std::endl;
+
     execute_instructions(compiler.get_global_instructions());
+
+    std::cout << "MADE IT" << std::endl;
+
+    std::string output = OutputHandler::get_code_output();
+
+    std::cout << "OUTPUT" << output << std::endl;
+
+    OutputHandler::reset_code_output();
+    StateMgmt::reset_state();
+    this->set_prog_exit_state(false);
+    FuncDefTable::reset_func_table();
+
+    return output;
 }
 
 void Executioner::execute_instructions(std::vector<InstNode *> instructions)
@@ -31,7 +45,7 @@ void Executioner::execute_instructions(std::vector<InstNode *> instructions)
 
     int num_instructions = instructions.size();
 
-    while (i < num_instructions)
+    while (i < num_instructions && !prog_exited)
     {
         InstNode *curr_inst = instructions[i];
 
@@ -48,5 +62,11 @@ void Executioner::execute_instructions(std::vector<InstNode *> instructions)
 
 void Executioner::print(std::string info)
 {
-    std::cout << info << std::endl;
+    // std::cout << info << std::endl;
+    OutputHandler::write_to_output(info);
+}
+
+void Executioner::set_prog_exit_state(bool exit_state)
+{
+    prog_exited = exit_state;
 }

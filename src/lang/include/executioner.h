@@ -6,9 +6,11 @@
 
 #pragma once
 
+#include "../include/output_handler.h"
 #include "nodes/inst_node.h"
 #include "compiler.h"
 #include "func_def_table.h"
+#include "state_mgmt.h"
 #include <string>
 #include <queue>
 #include <stack>
@@ -25,6 +27,8 @@ public:
     Compiler compiler;
 
     static void print(std::string info);
+    static void set_prog_exit_state(bool);
 
 private:
+    inline static bool prog_exited = false;
 };

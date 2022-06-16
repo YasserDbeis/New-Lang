@@ -11,6 +11,8 @@
 class FuncDefTable
 {
 public:
+    static void reset_func_table();
+
     static std::vector<InstNode *> get_function(std::string id);
     static bool function_exists(std::string id);
     static int get_global_count(std::string id);

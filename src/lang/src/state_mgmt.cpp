@@ -2,6 +2,18 @@
 #include "../include/error_handler.h"
 #include <iostream>
 
+void StateMgmt::reset_state()
+{
+    std::queue<Value> emptyQueue;
+    std::swap(arg_queue, emptyQueue);
+
+    std::stack<StackFrame> emptyStack;
+    std::swap(stack_trace, emptyStack);
+
+    std::unordered_map<std::string, std::pair<Value, int>> empty_map;
+    std::swap(global_vars, empty_map);
+}
+
 void StateMgmt::create_new_stack_frame(std::string func_id)
 {
     // std::cout << "*** Creating New Stack Frame ***" << std::endl;

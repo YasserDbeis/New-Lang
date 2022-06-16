@@ -1,5 +1,11 @@
 #include "../include/func_def_table.h"
 
+void FuncDefTable::reset_func_table()
+{
+    std::unordered_map<std::string, FuncDef> empty_map;
+    std::swap(table, empty_map);
+}
+
 void FuncDefTable::add_entry(std::string id, int global_count, std::vector<std::pair<Type, std::string>> params, Type return_type, std::vector<InstNode *> inst_list)
 {
     assert_func_not_exists(id);

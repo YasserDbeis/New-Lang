@@ -22,6 +22,8 @@ public:
     inline static std::queue<Value> arg_queue;
     inline static std::stack<StackFrame> stack_trace;
 
+    static void reset_state();
+
     static void create_new_stack_frame(std::string func_id); /* Stack trace helper function */
     static void delete_curr_stack_frame();                   /* Stack trace helper function */
     static Value get_func_return_value();                    /* Stack trace helper function */
@@ -37,7 +39,7 @@ public:
     static Value load_var_stack_trace(std::string name);
 
     static bool is_var_declared(std::string name);
-    
+
     static void print_stack_trace();
 
 private:

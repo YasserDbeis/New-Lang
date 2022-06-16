@@ -117,6 +117,7 @@ OBJS := \
 	$(obj).target/$(TARGET)/src/lang/src/expression.o \
 	$(obj).target/$(TARGET)/src/lang/src/func_def_table.o \
 	$(obj).target/$(TARGET)/src/lang/src/lexer.o \
+	$(obj).target/$(TARGET)/src/lang/src/output_handler.o \
 	$(obj).target/$(TARGET)/src/lang/src/parser.o \
 	$(obj).target/$(TARGET)/src/lang/src/scope_tree.o \
 	$(obj).target/$(TARGET)/src/lang/src/state_mgmt.o \

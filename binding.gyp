@@ -10,6 +10,7 @@
                 "./src/lang/src/expression.cpp",
                 "./src/lang/src/func_def_table.cpp",
                 "./src/lang/src/lexer.cpp",
+                "./src/lang/src/output_handler.cpp",
                 "./src/lang/src/parser.cpp",
                 "./src/lang/src/scope_tree.cpp",
                 "./src/lang/src/state_mgmt.cpp",

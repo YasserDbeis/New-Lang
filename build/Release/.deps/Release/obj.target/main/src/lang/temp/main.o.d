@@ -8,6 +8,7 @@ Release/obj.target/main/src/lang/temp/main.o: ../src/lang/temp/main.cpp \
   /Users/yasser/Library/Caches/node-gyp/12.14.1/include/node/v8-platform.h \
   /Users/yasser/Library/Caches/node-gyp/12.14.1/include/node/node_version.h \
   ../src/lang/temp/../include/executioner.h \
+  ../src/lang/temp/../include/../include/output_handler.h \
   ../src/lang/temp/../include/nodes/inst_node.h \
   ../src/lang/temp/../include/compiler.h \
   ../src/lang/temp/../include/parser.h \
@@ -24,7 +25,9 @@ Release/obj.target/main/src/lang/temp/main.o: ../src/lang/temp/main.cpp \
   ../src/lang/temp/../include/nodes/expr_nodes.h \
   ../src/lang/temp/../include/func_def_table.h \
   ../src/lang/temp/../include/../include/func_def_table.h \
-  ../src/lang/temp/../include/../include/value.h
+  ../src/lang/temp/../include/../include/value.h \
+  ../src/lang/temp/../include/state_mgmt.h \
+  ../src/lang/temp/../include/scope_tree.h
 ../src/lang/temp/main.cpp:
 /Users/yasser/Library/Caches/node-gyp/12.14.1/include/node/node.h:
 /Users/yasser/Library/Caches/node-gyp/12.14.1/include/node/v8.h:
@@ -34,6 +37,7 @@ Release/obj.target/main/src/lang/temp/main.o: ../src/lang/temp/main.cpp \
 /Users/yasser/Library/Caches/node-gyp/12.14.1/include/node/v8-platform.h:
 /Users/yasser/Library/Caches/node-gyp/12.14.1/include/node/node_version.h:
 ../src/lang/temp/../include/executioner.h:
+../src/lang/temp/../include/../include/output_handler.h:
 ../src/lang/temp/../include/nodes/inst_node.h:
 ../src/lang/temp/../include/compiler.h:
 ../src/lang/temp/../include/parser.h:
@@ -51,3 +55,5 @@ Release/obj.target/main/src/lang/temp/main.o: ../src/lang/temp/main.cpp \
 ../src/lang/temp/../include/func_def_table.h:
 ../src/lang/temp/../include/../include/func_def_table.h:
 ../src/lang/temp/../include/../include/value.h:
+../src/lang/temp/../include/state_mgmt.h:
+../src/lang/temp/../include/scope_tree.h:

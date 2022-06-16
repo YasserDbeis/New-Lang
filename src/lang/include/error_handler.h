@@ -68,7 +68,7 @@ class ErrorHandler
 public:
     static void error(ErrorPhase, ErrorType, std::string, int, ErrorCode);
 
-    static std::string error_code_vec[];
+    // static std::string error_code_vec[];
 
 private:
     typedef struct Error

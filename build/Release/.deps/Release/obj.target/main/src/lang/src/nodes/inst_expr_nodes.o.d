@@ -13,6 +13,7 @@ Release/obj.target/main/src/lang/src/nodes/inst_expr_nodes.o: \
   ../src/lang/src/nodes/../../include/nodes/../nodes/inst_node.h \
   ../src/lang/src/nodes/../../include/func_def_table.h \
   ../src/lang/src/nodes/../../include/executioner.h \
+  ../src/lang/src/nodes/../../include/nodes/../../include/output_handler.h \
   ../src/lang/src/nodes/../../include/nodes/../compiler.h \
   ../src/lang/src/nodes/../../include/nodes/../parser.h \
   ../src/lang/src/nodes/../../include/nodes/../../include/lexer.h \
@@ -23,7 +24,8 @@ Release/obj.target/main/src/lang/src/nodes/inst_expr_nodes.o: \
   ../src/lang/src/nodes/../../include/nodes/../nodes/inst_expr_nodes.h \
   ../src/lang/src/nodes/../../include/nodes/expr_nodes.h \
   ../src/lang/src/nodes/../../include/nodes/../../include/func_def_table.h \
-  ../src/lang/src/nodes/../../include/nodes/../../include/value.h
+  ../src/lang/src/nodes/../../include/nodes/../../include/value.h \
+  ../src/lang/src/nodes/../../include/nodes/../state_mgmt.h
 ../src/lang/src/nodes/inst_expr_nodes.cpp:
 ../src/lang/src/nodes/../../include/nodes/inst_expr_nodes.h:
 ../src/lang/src/nodes/../../include/nodes/inst_node.h:
@@ -37,6 +39,7 @@ Release/obj.target/main/src/lang/src/nodes/inst_expr_nodes.o: \
 ../src/lang/src/nodes/../../include/nodes/../nodes/inst_node.h:
 ../src/lang/src/nodes/../../include/func_def_table.h:
 ../src/lang/src/nodes/../../include/executioner.h:
+../src/lang/src/nodes/../../include/nodes/../../include/output_handler.h:
 ../src/lang/src/nodes/../../include/nodes/../compiler.h:
 ../src/lang/src/nodes/../../include/nodes/../parser.h:
 ../src/lang/src/nodes/../../include/nodes/../../include/lexer.h:
@@ -48,3 +51,4 @@ Release/obj.target/main/src/lang/src/nodes/inst_expr_nodes.o: \
 ../src/lang/src/nodes/../../include/nodes/expr_nodes.h:
 ../src/lang/src/nodes/../../include/nodes/../../include/func_def_table.h:
 ../src/lang/src/nodes/../../include/nodes/../../include/value.h:
+../src/lang/src/nodes/../../include/nodes/../state_mgmt.h:

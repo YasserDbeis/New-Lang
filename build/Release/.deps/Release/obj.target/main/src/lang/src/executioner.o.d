@@ -2,6 +2,7 @@ cmd_Release/obj.target/main/src/lang/src/executioner.o := c++ '-DNODE_GYP_MODULE
 Release/obj.target/main/src/lang/src/executioner.o: \
   ../src/lang/src/executioner.cpp \
   ../src/lang/src/../include/executioner.h \
+  ../src/lang/src/../include/../include/output_handler.h \
   ../src/lang/src/../include/nodes/inst_node.h \
   ../src/lang/src/../include/compiler.h \
   ../src/lang/src/../include/parser.h \
@@ -18,9 +19,12 @@ Release/obj.target/main/src/lang/src/executioner.o: \
   ../src/lang/src/../include/nodes/expr_nodes.h \
   ../src/lang/src/../include/func_def_table.h \
   ../src/lang/src/../include/../include/func_def_table.h \
-  ../src/lang/src/../include/../include/value.h
+  ../src/lang/src/../include/../include/value.h \
+  ../src/lang/src/../include/state_mgmt.h \
+  ../src/lang/src/../include/scope_tree.h
 ../src/lang/src/executioner.cpp:
 ../src/lang/src/../include/executioner.h:
+../src/lang/src/../include/../include/output_handler.h:
 ../src/lang/src/../include/nodes/inst_node.h:
 ../src/lang/src/../include/compiler.h:
 ../src/lang/src/../include/parser.h:
@@ -38,3 +42,5 @@ Release/obj.target/main/src/lang/src/executioner.o: \
 ../src/lang/src/../include/func_def_table.h:
 ../src/lang/src/../include/../include/func_def_table.h:
 ../src/lang/src/../include/../include/value.h:
+../src/lang/src/../include/state_mgmt.h:
+../src/lang/src/../include/scope_tree.h:
