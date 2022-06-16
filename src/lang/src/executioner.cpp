@@ -8,10 +8,13 @@ Executioner::Executioner() : compiler("")
 
 Executioner::Executioner(std::string input) : compiler(input)
 {
+    std::cout << "INPUT: " << input << std::endl;
 }
 
-void Executioner::execute_program()
+std::string Executioner::execute_program()
 {
+
+    return "EXECUTIONER OUTPUT";
     FuncDefTable::function_exists(MAIN);
 
     execute_instructions(compiler.get_global_instructions());

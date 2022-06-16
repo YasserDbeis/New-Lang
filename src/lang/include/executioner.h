@@ -20,7 +20,7 @@ public:
     Executioner(std::string input);
 
     static void execute_instructions(std::vector<InstNode *> instructions);
-    void execute_program();
+    std::string execute_program();
 
     Compiler compiler;
 

@@ -1,10 +1,13 @@
-#include "node.h"
+#include <node.h>
+#include <string>
 
 #include <iostream>
-#include "../include/lexer.h"
+#include "../include/executioner.h"
 
-namespace test
+namespace main
 {
+    using v8::Context;
+    using v8::Exception;
     using v8::FunctionCallbackInfo;
     using v8::Isolate;
     using v8::Local;
@@ -22,13 +25,43 @@ namespace test
 
     void Main(const FunctionCallbackInfo<Value> &args)
     {
-        std::string input = get_input();
-        Lexer lex(input);
-        std::string res = lex.print_tokens();
-        Isolate *isolate = args.GetIsolate();
+        // std::string input = get_input();
+        // Lexer lex(input);
+        // Executioner exec(args[0]);
+        // std::string res = exec.execute_program();
+        // // std::string res = lex.print_tokens();
+        // Isolate *isolate = args.GetIsolate();
 
-        args.GetReturnValue().Set(String::NewFromUtf8(
-            isolate, res.c_str()));
+        // args.GetReturnValue().Set(String::NewFromUtf8(
+        //     isolate, res.c_str()));
+
+        Isolate *isolate = args.GetIsolate();
+        Local<Context> context = isolate->GetCurrentContext();
+
+        // Check the number of arguments passed.
+        if (args.Length() != 1)
+        {
+            isolate->ThrowException(Exception::TypeError(
+                String::NewFromUtf8(isolate, "Wrong number of arguments")));
+            return;
+        }
+
+        // Check the argument types
+        if (!args[0]->IsString())
+        {
+            isolate->ThrowException(Exception::TypeError(
+                String::NewFromUtf8(isolate, "Wrong arguments")));
+            return;
+        }
+
+        v8::String::Utf8Value input_code_ptr(isolate, args[0]);
+        std::string input_code(*input_code_ptr);
+
+        Executioner exec(input_code);
+        std::string res = exec.execute_program();
+
+        args.GetReturnValue().Set(
+            String::NewFromUtf8(isolate, res.c_str()));
     }
 
     void Initialize(Local<Object> exports)

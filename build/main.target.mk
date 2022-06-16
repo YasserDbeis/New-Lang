@@ -110,8 +110,21 @@ INCS_Release := \
 	-I/Users/yasser/Library/Caches/node-gyp/12.14.1/deps/v8/include
 
 OBJS := \
-	$(obj).target/$(TARGET)/src/lang/main.o \
-	$(obj).target/$(TARGET)/src/lang/lexer.o
+	$(obj).target/$(TARGET)/src/lang/temp/main.o \
+	$(obj).target/$(TARGET)/src/lang/src/compiler.o \
+	$(obj).target/$(TARGET)/src/lang/src/error_handler.o \
+	$(obj).target/$(TARGET)/src/lang/src/executioner.o \
+	$(obj).target/$(TARGET)/src/lang/src/expression.o \
+	$(obj).target/$(TARGET)/src/lang/src/func_def_table.o \
+	$(obj).target/$(TARGET)/src/lang/src/lexer.o \
+	$(obj).target/$(TARGET)/src/lang/src/parser.o \
+	$(obj).target/$(TARGET)/src/lang/src/scope_tree.o \
+	$(obj).target/$(TARGET)/src/lang/src/state_mgmt.o \
+	$(obj).target/$(TARGET)/src/lang/src/value.o \
+	$(obj).target/$(TARGET)/src/lang/src/nodes/expr_nodes.o \
+	$(obj).target/$(TARGET)/src/lang/src/nodes/inst_expr_nodes.o \
+	$(obj).target/$(TARGET)/src/lang/src/nodes/inst_node.o \
+	$(obj).target/$(TARGET)/src/lang/src/nodes/inst_nodes.o
 
 # Add to the list of files we specially track dependencies for.
 all_deps += $(OBJS)
