@@ -22,13 +22,11 @@ public:
     Executioner(std::string input);
 
     static void execute_instructions(std::vector<InstNode *> instructions);
-    std::string execute_program();
+    void execute_program();
 
     Compiler compiler;
 
     static void print(std::string info);
-    static void set_prog_exit_state(bool);
 
 private:
-    inline static bool prog_exited = false;
 };

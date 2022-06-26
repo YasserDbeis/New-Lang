@@ -15,6 +15,7 @@ export default class App extends Component {
     this.state = {
       username: null,
       code: null,
+      output: 'no output',
     };
   }
 
@@ -32,6 +33,7 @@ export default class App extends Component {
     var data = qs.stringify({
       code: this.state.code,
     });
+    console.log(this.state.code);
     var config = {
       method: 'post',
       url: 'http://localhost:8080/api/runCode',
@@ -44,6 +46,7 @@ export default class App extends Component {
     axios(config)
       .then((res) => {
         console.log(res);
+        this.setState({ output: res.data });
       })
       .catch((err) => {
         console.log(err);
@@ -59,7 +62,6 @@ export default class App extends Component {
         ) : (
           <h1>Loading.. please wait!</h1>
         )}
-        <img src={ReactImage} alt="react" />
         <AceEditor
           placeholder="Placeholder Text"
           mode="c_cpp"
@@ -81,6 +83,9 @@ export default class App extends Component {
           }}
         />
         <button onClick={this.runCode}>Run Code</button>
+        <div style={{ fontSize: '12px', whiteSpace: 'pre' }}>
+          {this.state.output}
+        </div>
       </div>
     );
   }
