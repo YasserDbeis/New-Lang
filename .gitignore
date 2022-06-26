@@ -7,3 +7,4 @@ src/lang/build/
 src/lang/a.out
 src/lang/.vscode
 src/lang/temp/
+build/

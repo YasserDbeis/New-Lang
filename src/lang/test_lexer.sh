@@ -69,6 +69,7 @@ for test_file in $(find ./test_cases/lexer_test_cases -type f -name "*.txt" | so
 		cat ${diff_file}
 	    else
 		count=$((count+1))
+
 		echo "${name}: OK"
 	    fi
     fi
