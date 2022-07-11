@@ -24,13 +24,17 @@
     "body-parser": "^1.20.0",
     "cors": "^2.8.5",
     "express": "^4.16.3",
+    "install": "^0.13.0",
     "node-gyp": "^8.4.1",
+    "npm": "^8.13.2",
     "qs": "^6.10.5",
     "react": "^16.5.2",
     "react-ace": "^10.1.0",
     "react-dom": "^16.5.2",
     "react-icons": "^4.4.0",
-    "react-router-dom": "^6.3.0"
+    "react-markdown": "^8.0.3",
+    "react-router-dom": "^6.3.0",
+    "remark-gfm": "^3.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",

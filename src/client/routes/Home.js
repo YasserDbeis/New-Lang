@@ -1,9 +1,11 @@
 import AceEditor from 'react-ace';
 import axios from 'axios';
 import { IoMdPlay } from 'react-icons/io';
+import { getProgText } from '../content/SamplePrograms';
 import React from 'react';
 import qs from 'qs';
 import { useState } from 'react';
+import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import 'ace-builds/src-noconflict/theme-solarized_light';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-golang';
@@ -11,11 +13,25 @@ import 'ace-builds/src-noconflict/theme-monokai';
 import '../styles/Home.css';
 
 const Home = (props) => {
-  const [code, setCode] = useState(null);
   const [output, setOutput] = useState(null);
+  const samplePrograms = [
+    'Hello, World!',
+    'Fibonacci (Iterative)',
+    'Fibonacci (Recursive)',
+  ];
+
+  const DEFAULT_PROG = samplePrograms[0];
+  const [sampleProgram, setSampleProgram] = useState(DEFAULT_PROG);
+  const [code, setCode] = useState(getProgText(DEFAULT_PROG));
 
   const onCodeChange = (newCode) => {
     setCode(newCode);
+  };
+
+  const onSampleProgSelect = (event) => {
+    setSampleProgram(event.target.value);
+    console.log('TEXT', event.target.value);
+    setCode(getProgText(event.target.value));
   };
 
   const runCode = () => {
@@ -47,11 +63,22 @@ const Home = (props) => {
   return (
     <div id="home-container">
       <div id="code-control-bar">
-        <IoMdPlay
-          style={{ height: '100%', width: 'auto', color: 'green' }}
-          onClick={runCode}
-          title="Run Code"
-        />
+        <FormControl>
+          <InputLabel id="template-select-input-label">
+            Sample Program
+          </InputLabel>
+          <Select
+            labelId="template-select-label"
+            id="template-select"
+            value={sampleProgram}
+            label="Sample Program"
+            onChange={onSampleProgSelect}
+          >
+            {samplePrograms.map((sampleProgram) => {
+              return <MenuItem value={sampleProgram}>{sampleProgram}</MenuItem>;
+            })}
+          </Select>
+        </FormControl>
         <IoMdPlay
           id="code-control-bar-play-button"
           style={{ height: '80%', width: 'auto', color: 'green' }}
