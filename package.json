@@ -29,6 +29,7 @@
     "react": "^16.5.2",
     "react-ace": "^10.1.0",
     "react-dom": "^16.5.2",
+    "react-icons": "^4.4.0",
     "react-router-dom": "^6.3.0"
   },
   "devDependencies": {

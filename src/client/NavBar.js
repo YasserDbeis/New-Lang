@@ -50,7 +50,7 @@ function NavBar(props) {
     window !== undefined ? () => window().document.body : undefined;
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex', height: '64px' }}>
       <AppBar component="nav">
         <Toolbar>
           <IconButton
@@ -59,9 +59,7 @@ function NavBar(props) {
             edge="start"
             onClick={handleDrawerToggle}
             sx={{ mr: 2, display: { sm: 'none' } }}
-          >
-            <MenuIcon />
-          </IconButton>
+          ></IconButton>
           <Typography
             variant="h6"
             component="div"
@@ -71,7 +69,7 @@ function NavBar(props) {
               textAlign: 'start',
             }}
           >
-            MUI
+            SunLang
           </Typography>
 
           <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
