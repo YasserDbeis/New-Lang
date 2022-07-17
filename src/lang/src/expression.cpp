@@ -214,7 +214,7 @@ void Expression::assert_valid_type(Value val1, Value val2, OperatorType operator
     }
     else if (operator_type == OperatorType::XOR)
     {
-        if (val1.type != Type::Int || val2.type != Type::Int)
+        if (val1.type != Type::Bool || val2.type != Type::Bool)
         {
             is_valid = false;
         }
