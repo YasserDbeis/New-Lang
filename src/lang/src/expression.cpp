@@ -237,8 +237,8 @@ void Expression::assert_valid_type(Value val1, Value val2, OperatorType operator
     }
     else if (operator_type == OperatorType::PLUS)
     {
-        if (val1.type == Type::Dec && val2.type == Type::Bool ||
-            val2.type == Type::Dec && val1.type == Type::Bool)
+        if (val1.type == Type::Bool && val2.type != Type::String ||
+            val2.type == Type::Bool && val1.type != Type::String)
         {
             is_valid = false;
         }
