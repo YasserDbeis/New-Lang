@@ -30,6 +30,6 @@
     padding: 20px;
     /* padding-inline: ; */
     box-sizing: border-box;
-
+    white-space: pre-wrap;
     font-family: 'Courier New', Courier, monospace;
 }

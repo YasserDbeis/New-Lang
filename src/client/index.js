@@ -1,5 +1,4 @@
 import App from './App';
-import DevelopmentProcess from './routes/DevelopmentProcess';
 import Docs from './routes/Docs';
 import Home from './routes/Home';
 import React from 'react';
@@ -19,7 +18,6 @@ ReactDOM.render(
         <Route path="/" element={<Navigate to="/Home" />} />
         <Route path="Docs" element={<Docs />} />
         <Route path="Home" element={<Home />} />
-        <Route path="Development-Process" element={<DevelopmentProcess />} />
       </Route>
       <Route />
     </Routes>

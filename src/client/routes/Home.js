@@ -54,7 +54,7 @@ const Home = (props) => {
     axios(config)
       .then((res) => {
         console.log(res);
-        setOutput(res.data);
+        setOutput(res.data.toString());
       })
       .catch((err) => {
         console.log(err);
