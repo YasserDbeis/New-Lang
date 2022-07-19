@@ -8,11 +8,11 @@
     "npm": "8.11.0"
   },
   "scripts": {
+    "build": "webpack --mode production",
     "start": "npm run build && node src/server/index.js",
     "client": "webpack-dev-server --mode development --devtool inline-source-map --hot",
     "server": "nodemon src/server/index.js",
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "heroku-postbuild": "webpack --config webpack.prod.js"
+    "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "author": "Yasser Dbeis and Briggs Richardson",
   "license": "ISC",
@@ -36,7 +36,9 @@
     "react-icons": "^4.4.0",
     "react-markdown": "^8.0.3",
     "react-router-dom": "^6.3.0",
-    "remark-gfm": "^3.0.1"
+    "remark-gfm": "^3.0.1",
+    "webpack": "^4.5.0",
+    "webpack-cli": "^3.0.8"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
@@ -59,8 +61,6 @@
     "nodemon": "^1.17.3",
     "style-loader": "^0.23.0",
     "url-loader": "^1.0.1",
-    "webpack": "^4.5.0",
-    "webpack-cli": "^3.0.8",
     "webpack-dev-server": "^3.1.3"
   }
 }
