@@ -3,7 +3,6 @@ node_modules
 src/server/dist
 *.log
 yarn.lock
-src/lang/build/
 src/lang/a.out
 src/lang/.vscode
 src/lang/temp/

@@ -10,7 +10,7 @@ file(GLOB SOURCE src/*.cpp src/nodes/*.cpp)
 include_directories(${PROJECT_SOURCE_DIR})
 
 # specify architecture
-set(CMAKE_OSX_ARCHITECTURES "x86_64")
+# set(CMAKE_OSX_ARCHITECTURES "x86_64")
 
 # specify the C++ standard
 set(CMAKE_CXX_STANDARD 17)
