@@ -1,0 +1,41 @@
+file(REMOVE_RECURSE
+  "../a.out"
+  "../a.out.pdb"
+  "CMakeFiles/a.out.dir/src/compiler.cpp.o"
+  "CMakeFiles/a.out.dir/src/compiler.cpp.o.d"
+  "CMakeFiles/a.out.dir/src/error_handler.cpp.o"
+  "CMakeFiles/a.out.dir/src/error_handler.cpp.o.d"
+  "CMakeFiles/a.out.dir/src/executioner.cpp.o"
+  "CMakeFiles/a.out.dir/src/executioner.cpp.o.d"
+  "CMakeFiles/a.out.dir/src/expression.cpp.o"
+  "CMakeFiles/a.out.dir/src/expression.cpp.o.d"
+  "CMakeFiles/a.out.dir/src/func_def_table.cpp.o"
+  "CMakeFiles/a.out.dir/src/func_def_table.cpp.o.d"
+  "CMakeFiles/a.out.dir/src/lexer.cpp.o"
+  "CMakeFiles/a.out.dir/src/lexer.cpp.o.d"
+  "CMakeFiles/a.out.dir/src/main.cpp.o"
+  "CMakeFiles/a.out.dir/src/main.cpp.o.d"
+  "CMakeFiles/a.out.dir/src/nodes/expr_nodes.cpp.o"
+  "CMakeFiles/a.out.dir/src/nodes/expr_nodes.cpp.o.d"
+  "CMakeFiles/a.out.dir/src/nodes/inst_expr_nodes.cpp.o"
+  "CMakeFiles/a.out.dir/src/nodes/inst_expr_nodes.cpp.o.d"
+  "CMakeFiles/a.out.dir/src/nodes/inst_node.cpp.o"
+  "CMakeFiles/a.out.dir/src/nodes/inst_node.cpp.o.d"
+  "CMakeFiles/a.out.dir/src/nodes/inst_nodes.cpp.o"
+  "CMakeFiles/a.out.dir/src/nodes/inst_nodes.cpp.o.d"
+  "CMakeFiles/a.out.dir/src/output_handler.cpp.o"
+  "CMakeFiles/a.out.dir/src/output_handler.cpp.o.d"
+  "CMakeFiles/a.out.dir/src/parser.cpp.o"
+  "CMakeFiles/a.out.dir/src/parser.cpp.o.d"
+  "CMakeFiles/a.out.dir/src/scope_tree.cpp.o"
+  "CMakeFiles/a.out.dir/src/scope_tree.cpp.o.d"
+  "CMakeFiles/a.out.dir/src/state_mgmt.cpp.o"
+  "CMakeFiles/a.out.dir/src/state_mgmt.cpp.o.d"
+  "CMakeFiles/a.out.dir/src/value.cpp.o"
+  "CMakeFiles/a.out.dir/src/value.cpp.o.d"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang CXX)
+  include(CMakeFiles/a.out.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()

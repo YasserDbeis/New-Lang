@@ -1,0 +1,3 @@
+/Users/yasser/Documents/Personal-Projects/New-Lang/src/lang/build/CMakeFiles/a.out.dir
+/Users/yasser/Documents/Personal-Projects/New-Lang/src/lang/build/CMakeFiles/edit_cache.dir
+/Users/yasser/Documents/Personal-Projects/New-Lang/src/lang/build/CMakeFiles/rebuild_cache.dir
