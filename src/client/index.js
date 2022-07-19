@@ -1,6 +1,3 @@
-import App from './App';
-import Docs from './routes/Docs';
-import Home from './routes/Home';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {
@@ -10,6 +7,9 @@ import {
   Redirect,
   Navigate,
 } from 'react-router-dom';
+import App from './App';
+import Docs from './routes/Docs';
+import Home from './routes/Home';
 
 ReactDOM.render(
   <BrowserRouter>
