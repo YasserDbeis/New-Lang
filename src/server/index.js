@@ -1,19 +1,20 @@
 const bodyParser = require('body-parser');
 var cors = require('cors');
 const express = require('express');
-const fs = require('fs')
+const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const { v4: getUUID } = require('uuid') 
+const { v4: getUUID } = require('uuid');
 
 const { runCode } = require('./run_code.js');
 
 const app = express();
 
-app.use(express.static('dist'));
+app.use(express.static(path.join(__dirname, 'dist')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
+
 app.get('/api/getUsername', (req, res) =>
   res.send({ username: os.userInfo().username })
 );
@@ -53,6 +54,15 @@ app.post('/api/runCode', async (req, res) => {
 
   // Send the output of the program execution back to the client
   res.status(200).send(output);
+});
+
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html')),
+    (err) => {
+      if (err) {
+        res.status(500).send(err);
+      }
+    };
 });
 
 app.listen(process.env.PORT || 8080, () => {
