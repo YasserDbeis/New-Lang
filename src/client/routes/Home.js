@@ -44,7 +44,7 @@ const Home = (props) => {
     });
     var config = {
       method: 'post',
-      url: `http://localhost:${process.env.PORT || 8080}/api/runCode`,
+      url: `http://sunlang.herokuapp.com/api/runCode`,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
