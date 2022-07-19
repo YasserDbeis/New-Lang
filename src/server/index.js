@@ -45,6 +45,8 @@ app.post('/api/runCode', async (req, res) => {
   // Run the interpreter with the inputFile
   const output = await runCode(uuid);
 
+  console.log('OUTPUT', output);
+
   // Delete the user input file if it exists
   fs.unlinkSync(path.join(__dirname, `code/${uuid}`));
 
