@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "Web application that interfaces to a new language using C++, React, Node.js, Express and Webpack.",
   "main": "src/server/index.js",
+  "engines": {
+    "node": "16.15.1",
+    "npm": "8.11.0"
+  },
   "scripts": {
     "heroku-prebuild": "npm install --legacy-peer-deps --dev",
     "build": "webpack --mode production",
