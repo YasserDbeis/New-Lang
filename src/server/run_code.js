@@ -7,7 +7,7 @@ const exec = promisify(require('child_process').exec);
 // Output: Program output (text) if successful, null otherwise
 const runCode = async (uuid) => {
   try {
-    const sunLangBinaryPath = path.join(__dirname, '../lang/a.out');
+    const sunLangBinaryPath = path.join(__dirname, 'a.out');
     const inputFilePath = path.join(__dirname, 'code', uuid.toString());
     const codeOutput = await exec(`${sunLangBinaryPath} 2 < ${inputFilePath}`);
 
