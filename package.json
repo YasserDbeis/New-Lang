@@ -1,5 +1,5 @@
 {
-  "name": "New-Lang",
+  "name": "SunLang",
   "version": "1.0.0",
   "description": "Web application that interfaces to a new language using C++, React, Node.js, Express and Webpack.",
   "main": "src/server/index.js",
