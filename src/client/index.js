@@ -18,6 +18,7 @@ ReactDOM.render(
         <Route path="/" element={<Navigate to="/Home" />} />
         <Route path="Docs" element={<Docs />} />
         <Route path="Home" element={<Home />} />
+        <Route path="*" element={<Navigate to="/Home" />} />
       </Route>
       <Route />
     </Routes>

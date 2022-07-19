@@ -10,7 +10,7 @@ const { runCode } = require('./run_code.js');
 
 const app = express();
 
-app.use(express.static(path.join(__dirname, 'dist')));
+app.use(express.static(path.join(__dirname, '..', '..', 'dist')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
@@ -57,7 +57,7 @@ app.post('/api/runCode', async (req, res) => {
 });
 
 app.get('/*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html')),
+  res.sendFile(path.join(__dirname, '..', '..', 'dist', 'index.html')),
     (err) => {
       if (err) {
         res.status(500).send(err);
