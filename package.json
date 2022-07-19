@@ -4,7 +4,7 @@
   "description": "Web application that interfaces to a new language using C++, React, Node.js, Express and Webpack.",
   "main": "src/server/index.js",
   "scripts": {
-    "heroku-prebuild": "npm install --dev",
+    "heroku-prebuild": "npm install --dev --legacy-peer-deps",
     "build": "webpack --mode production",
     "start": "npm run build && node src/server/index.js",
     "client": "webpack-dev-server --mode development --devtool inline-source-map --hot",
