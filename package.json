@@ -8,8 +8,7 @@
     "start": "npm run build && node src/server/index.js",
     "client": "webpack-dev-server --mode development --devtool inline-source-map --hot",
     "server": "nodemon src/server/index.js",
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "compile": "node-gyp configure build"
+    "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "author": "Yasser Dbeis and Briggs Richardson",
   "license": "ISC",
@@ -25,7 +24,6 @@
     "cors": "^2.8.5",
     "express": "^4.16.3",
     "install": "^0.13.0",
-    "node-gyp": "^8.4.1",
     "npm": "^8.13.2",
     "qs": "^6.10.5",
     "react": "^16.5.2",
