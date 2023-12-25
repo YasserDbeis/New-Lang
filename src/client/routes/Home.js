@@ -44,7 +44,7 @@ const Home = (props) => {
     });
     var config = {
       method: 'post',
-      url: `https://sunlang.herokuapp.com/api/runCode`,
+      url: `https://sunlang.org/api/runCode`,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
