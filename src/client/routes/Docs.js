@@ -6,7 +6,7 @@ import remarkGfm from 'remark-gfm';
 import '../styles/Docs.css';
 
 const Docs = (props) => {
-  return <ReactMarkdown children={docs} remarkPlugins={remarkGfm} />;
+  return <div className="documentation-container"><ReactMarkdown children={docs} remarkPlugins={remarkGfm} /></div>;
 };
 
 export default Docs;
