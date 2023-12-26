@@ -18,25 +18,29 @@
 }
 
 #code-editor {
-    /* display: block; */
     flex-grow: 1;
 }
 
 #code-output {
-    /* display: block; */
     height: 20%;
     background-color: rgb(49 51 54);
     text-align: left;
     color: white;
     padding: 20px;
-    /* padding-inline: ; */
     box-sizing: border-box;
     white-space: pre-wrap;
     font-family: 'Courier New', Courier, monospace;
 }
 
 .css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.MuiSelect-select {
-    padding: 7.5px
+    padding-top: 7.5px !important;
+    padding-bottom: 7.5px !important;
+}
+
+.css-1c9wab-MuiButtonBase-root-MuiMenuItem-root {
+    min-height: min-content !important;
+    padding-top: 7.5px !important;
+    padding-bottom: 7.5px !important;
 }
 
 /*

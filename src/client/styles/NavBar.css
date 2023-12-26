@@ -6,16 +6,20 @@
   color: #ff6400;
 }
 
-.css-10hburv-MuiTypography-root:hover {
-  color: white;
-}
-
 .css-9mgopn-MuiDivider-root {
-  background-color: #ff6400;
+  background-color: #ff6400 !important;
 }
 
-div.MuiListItemIcon-root.css-cveggr-MuiListItemIcon-root > svg {
+.css-cveggr-MuiListItemIcon-root > .css-i4bv87-MuiSvgIcon-root {
   fill: #ff6400 !important;
+}
+
+.css-bshv44-MuiButtonBase-root-MuiListItem-root:hover > .css-cveggr-MuiListItemIcon-root > .css-i4bv87-MuiSvgIcon-root, .css-bshv44-MuiButtonBase-root-MuiListItem-root:active > .css-cveggr-MuiListItemIcon-root > .css-i4bv87-MuiSvgIcon-root {
+  fill: white !important;
+}
+
+.css-bshv44-MuiButtonBase-root-MuiListItem-root:hover > .css-tlelie-MuiListItemText-root > .MuiListItemText-primary, .css-bshv44-MuiButtonBase-root-MuiListItem-root:active > .css-tlelie-MuiListItemText-root > .MuiListItemText-primary {
+  color: white !important;
 }
 
 .css-bshv44-MuiButtonBase-root-MuiListItem-root:hover {
