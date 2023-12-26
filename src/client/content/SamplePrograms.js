@@ -1,10 +1,9 @@
-const helloWorld = `
+const helloWorld = `~ Hello world sample program.
 func main() {
     print("Hello, World!");
-}
-`;
+}`;
 
-const fibRecursive = `
+const fibRecursive = `~ Recursive fibonacci sequence sample program.
 func main() {
     int n = 5;
 
@@ -19,14 +18,14 @@ func fib(int n) -> int {
     }
 
     return fib(n - 1) + fib(n - 2);
-}
-`;
+}`;
 
-const fibSequential = `
+const fibSequential = `~ Iterative fibonacci sequence sample program.
 func main() {
     int n = 5;
 
     int result = fib(n);
+    ~ Prints the 5th number in the fibonacci sequence to the console.
     print(result);
 }
 
@@ -44,8 +43,7 @@ func fib(int n) -> int {
     }
 
     return first;
-}
-`;
+}`;
 
 export const getProgText = (progName) => {
   return (

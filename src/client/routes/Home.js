@@ -100,7 +100,6 @@ const Home = (props) => {
           mode="golang"
           theme="github"
           name="blah2"
-          // onLoad={this.onLoad}
           onChange={onCodeChange}
           fontSize={14}
           showPrintMargin={false}
