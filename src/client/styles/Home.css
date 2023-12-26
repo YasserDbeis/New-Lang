@@ -32,7 +32,7 @@
     font-family: 'Courier New', Courier, monospace;
 }
 
-.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input {
+div.MuiOutlinedInput-input {
     padding-top: 7.5px !important;
     padding-bottom: 7.5px !important;
 }
