@@ -1,27 +1,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Nabla&display=swap');
 
-.css-10hburv-MuiTypography-root {
+.MuiListItemText-primary {
   font-family: 'Reem Kufi Fun' !important;
   font-size: 18px !important;
   color: #ff6400;
 }
 
-.css-9mgopn-MuiDivider-root {
+.MuiDivider-root {
   background-color: #ff6400 !important;
 }
 
-.css-cveggr-MuiListItemIcon-root > .css-i4bv87-MuiSvgIcon-root {
+.MuiListItem-button > .MuiListItemIcon-root > .MuiSvgIcon-root{
   fill: #ff6400 !important;
 }
 
-.css-bshv44-MuiButtonBase-root-MuiListItem-root:hover > .css-cveggr-MuiListItemIcon-root > .css-i4bv87-MuiSvgIcon-root, .css-bshv44-MuiButtonBase-root-MuiListItem-root:active > .css-cveggr-MuiListItemIcon-root > .css-i4bv87-MuiSvgIcon-root {
+.MuiListItem-button:hover > .MuiListItemIcon-root > .MuiSvgIcon-root, .MuiListItem-button:active > .MuiListItemIcon-root > .MuiSvgIcon-root {
   fill: white !important;
 }
 
-.css-bshv44-MuiButtonBase-root-MuiListItem-root:hover > .css-tlelie-MuiListItemText-root > .MuiListItemText-primary, .css-bshv44-MuiButtonBase-root-MuiListItem-root:active > .css-tlelie-MuiListItemText-root > .MuiListItemText-primary {
+.MuiListItem-button:hover > .MuiListItemText-root > .MuiListItemText-primary, .MuiListItem-button:active > .MuiListItemText-root > .MuiListItemText-primary {
   color: white !important;
 }
 
-.css-bshv44-MuiButtonBase-root-MuiListItem-root:hover {
+.MuiListItem-button:hover, .MuiListItem-button:active {
   background-color: rgb(255, 100, 0, 0.9) !important;
 }
