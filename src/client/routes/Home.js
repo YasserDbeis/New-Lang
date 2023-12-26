@@ -5,12 +5,19 @@ import { getProgText } from '../content/SamplePrograms';
 import React from 'react';
 import qs from 'qs';
 import { useState } from 'react';
-import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import {
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Button,
+} from '@mui/material';
 import 'ace-builds/src-noconflict/theme-solarized_light';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-golang';
 import 'ace-builds/src-noconflict/theme-monokai';
 import '../styles/Home.css';
+import '../../client/app.css';
 
 const Home = (props) => {
   const [output, setOutput] = useState(null);
@@ -63,34 +70,35 @@ const Home = (props) => {
   return (
     <div id="home-container">
       <div id="code-control-bar">
-        <FormControl>
-          <InputLabel id="template-select-input-label">
-            Sample Program
-          </InputLabel>
-          <Select
-            labelId="template-select-label"
-            id="template-select"
-            value={sampleProgram}
-            label="Sample Program"
-            onChange={onSampleProgSelect}
-          >
-            {samplePrograms.map((sampleProgram) => {
-              return <MenuItem value={sampleProgram}>{sampleProgram}</MenuItem>;
-            })}
-          </Select>
-        </FormControl>
-        <IoMdPlay
-          id="code-control-bar-play-button"
-          style={{ height: '80%', width: 'auto', color: 'green' }}
+        <ProgramDropdown
+          onSampleProgSelect={onSampleProgSelect}
+          sampleProgram={sampleProgram}
+          samplePrograms={samplePrograms}
+        />
+        <Button
+          variant="contained"
+          sx={{
+            borderRadius: 28,
+            m: 1,
+            fontFamily: 'Reem Kufi Fun',
+            background: '#ff6400',
+            '&:hover': {
+              background: '#ff7f00',
+            },
+            boxShadow: 'none !important',
+          }}
           onClick={runCode}
           title="Run Code"
-        />
+          startIcon={<IoMdPlay />}
+        >
+          Run
+        </Button>
       </div>
       <div id="code-editor">
         <AceEditor
           placeholder="Placeholder Text"
           mode="golang"
-          theme="monokai"
+          theme="github"
           name="blah2"
           // onLoad={this.onLoad}
           onChange={onCodeChange}
@@ -100,8 +108,8 @@ const Home = (props) => {
           highlightActiveLine={true}
           value={code}
           setOptions={{
-            enableBasicAutocompletion: true,
-            enableLiveAutocompletion: true,
+            enableBasicAutocompletion: false,
+            enableLiveAutocompletion: false,
             enableSnippets: false,
             showLineNumbers: true,
             tabSize: 4,
@@ -114,6 +122,51 @@ const Home = (props) => {
       </div>
       <div id="code-output">{output}</div>
     </div>
+  );
+};
+
+const ProgramDropdown = (props) => {
+  return (
+    <FormControl sx={{ m: 1 }}>
+      <Select
+        value={props.sampleProgram}
+        onChange={props.onSampleProgSelect}
+        inputProps={{ 'aria-label': 'Without label' }}
+        sx={{
+          fontFamily: 'Reem Kufi Fun',
+          color: 'white',
+          backgroundColor: '#ff6400',
+          fontSize: '14px',
+          '.MuiOutlinedInput-notchedOutline': {
+            border: 'none',
+          },
+          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+            border: 'none',
+            color: 'white',
+          },
+          '&:hover .MuiOutlinedInput-notchedOutline': {
+            border: 'none',
+            color: 'white',
+          },
+          '.MuiSvgIcon-root ': {
+            fill: 'white !important',
+          },
+        }}
+      >
+        {props.samplePrograms.map((program) => (
+          <MenuItem
+            key={program}
+            value={program}
+            sx={{
+              fontFamily: 'Reem Kufi Fun',
+              fontSize: '14px',
+            }}
+          >
+            {program.toUpperCase()}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
   );
 };
 

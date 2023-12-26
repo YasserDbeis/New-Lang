@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Nabla&display=swap');
+
+.css-10hburv-MuiTypography-root {
+  font-family: 'Reem Kufi Fun' !important;
+  font-size: 18px !important;
+  color: #ff6400;
+}
+
+.css-10hburv-MuiTypography-root:hover {
+  color: white;
+}
+
+.css-9mgopn-MuiDivider-root {
+  background-color: #ff6400;
+}
+
+div.MuiListItemIcon-root.css-cveggr-MuiListItemIcon-root > svg {
+  fill: #ff6400 !important;
+}
+
+.css-bshv44-MuiButtonBase-root-MuiListItem-root:hover {
+  background-color: rgb(255, 100, 0, 0.9) !important;
+}
