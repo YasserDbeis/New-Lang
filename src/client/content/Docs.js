@@ -1,60 +1,132 @@
 export const docs = `
-# SunLang
+# SunLang Documentation
 
-## TODO
+Welcome to the official documentation for SunLang. This guide will help you understand the syntax and features of SunLang.
 
-# Include UML Diagram
+## Types
 
-# Include Grammar in Latex
+SunLang supports the following basic data types:
 
-## Arithmetic Operators
+| Type  | Description                         | Example                              |
+| ----- | ----------------------------------- | ------------------------------------ |
+| int   | Integer values                      | \`int x = 42;\`                      |
+| dec   | Decimal (floating point) values     | \`dec pi = 3.14;\`                   |
+| bool  | Boolean values (\`true\`/\`false\`) | \`bool isTrue = true;\`              |
+| str   | String values                       | \`str message = "Hello, SunLang!";\` |
+| void  | No return value in functions        | \`func example() -> void {}\`        |
 
-| NAME           | SYMBOL | DESCRIPTION                                | EXAMPLE |
-| :------------: | :----: | :----------------------------------------: | :-----: |
-| Addition       | +      | Adds two numerical values                  | 2 + 3   |
-| Subtraction    | -      | Subtracts one numerical value from another | 20 - 14 |
-| Multiplication | \*     | Multiplies two numerivalues                | 8 \* 4  |
-| Division       | /      | Divides one numerical value from another   | 8 / 4   |
+*Note: the void return type is optional.*
 
-## Comparison Operators
+## Operators
 
-| NAME                     | SYMBOL | DESCRIPTION                                                              | EXAMPLE |
-| ------------------------ | ------ | ------------------------------------------------------------------------ | ------- |
-| Greater than             | >      | True if left numerical operand is greater than right operand             | 10 > 5  |
-| Less than                | <      | True if left numerical operand is less than right operand                | 20 < 80 |
-| Greater than or equal to | >=     | True if left numerical operand is greater than or equal to right operand | 8 >= 4  |
-| Less than or equal to    | <=     | True if left numerical operand is less than or equal to right operand    | 3 <= 5  |
-| Equal                    | is     | True if left operand is equal to right operand                           | 5 is 5  |
-| Not equal                | !=     | True if left operand is not equal to right operand                       | 5 != 5  |
+### Arithmetic Operators
 
-## Logical Operators
+SunLang includes standard arithmetic operators:
 
-| NAME                 | SYMBOL   | DESCRIPTION                                            | EXAMPLE                  |
-| -------------------- | -------- | ------------------------------------------------------ | ------------------------ |
-| Logical not (unary)  | ! &#124; not | Negates right hand boolean value                       | !true &#124; not false          |
-| Logical and          | and      | Performs logical and operation on two boolean operands | 5 < 10 and "hi" is "bye" |
-| Logical or           | or       | Performs logical or operation on two boolean operands  | 5 < 10 or "hi" is "bye"  |
-| Logical exclusive or | xor      | Performs exclusive-or on two boolean operands          | false xor true              |
+| Operator | Description    | Example                  |
+| -------- | -------------- | ------------------------ |
+| +        | Addition       | \`int sum = 5 + 3;\`     |
+| -        | Subtraction    | \`int diff = 8 - 2;\`    |
+| \*       | Multiplication | \`int product = 4 * 2;\` |
+| /        | Division       | \`dec quotient = 8 / 2;\`|
 
-<!-- TokenType::OPERATOR_PLUS,
-TokenType::OPERATOR_MINUS,
-TokenType::OPERATOR_MULT,
-TokenType::OPERATOR_DIV, -->
-<!-- TokenType::OPERATOR_GT, -->
-<!-- TokenType::OPERATOR_LT, -->
-<!-- TokenType::OPERATOR_GEQ,
-TokenType::OPERATOR_LEQ, -->
-<!-- TokenType::OPERATOR_IS, -->
+### Comparison Operators
 
-TokenType::OPERATOR_AND,
-TokenType::OPERATOR_OR,
-TokenType::OPERATOR_NOT,
-TokenType::OPERATOR_XOR,
-TokenType::OPERATOR_XCL,
+SunLang supports various comparison operators:
 
-<!-- TokenType::OPERATOR_NEQ, -->
+| Operator | Description                | Example                         |
+| -------- | -------------------------- | ------------------------------- |
+| >        | Greater than               | \`bool greater = x > y;\`       |
+| <        | Less than                  | \`bool less = x < y;\`          |
+| >=       | Greater than or equal to   | \`bool greaterEqual = x >= y;\` |
+| <=       | Less than or equal to      | \`bool lessEqual = x <= y;\`    |
+| is       | Equality                   | \`bool isEqual = x is y;\`      |
+| !=       | Inequality                 | \`bool notEqual = x != y;\`     |
 
-->
+### Logical Operators
 
-## END OF OUR DOCS
+SunLang includes logical operators:
+
+| Operator | Description         | Example                          |
+| -------- | ------------------- | -------------------------------- |
+| not      | Logical NOT         | \`bool result = not condition;\` |
+| xor      | Logical XOR         | \`bool result = x xor y;\`       |
+| and      | Logical AND         | \`bool result = x and y;\`       |
+| or       | Logical OR          | \`bool result = x or y;\`        |
+
+## Control Flow
+
+### Conditional Statements
+
+SunLang supports conditional statements:
+
+Example:
+
+\`\`\`
+  if (condition) {
+      // Code block
+  } elseif (another condition) {
+      // Code block
+  } else {
+      // Code block
+  }
+\`\`\`
+
+### Loops
+
+SunLang supports the while-loop:
+
+Example:
+
+\`\`\`
+  while (condition) {
+      // Code block 
+  }
+\`\`\`
+
+## Functions
+
+SunLang allows you to define and use functions:
+
+\`\`\`
+  func add(int x, int y) -> int {
+      return x + y;
+  }
+
+  ~ -- snip --
+
+  int result = add(5, 10);
+  print("The result is " + result); ~ expected output: 15
+
+  ~ -- snip --
+\`\`\`
+
+### Built-in print Function
+
+SunLang includes a built-in print function, which supports data concatenation, for output:
+
+\`\`\`
+  print("Hello, " + "world!");
+\`\`\`
+
+## Entry Point
+
+Every SunLang program must define a special function called \`main()\`. This function serves as the entry point for the program:
+
+\`\`\`
+  func main() {
+      // Your main program logic goes here
+  }
+\`\`\`
+
+## Comments
+
+Comments in SunLang are denoted by the tilde (~) symbol:
+
+\`\`\`
+  ~ This is a comment in SunLang
+\`\`\`
+
+
+Feel free to explore SunLang further by inspecting our built in programs or create your own. Happy coding!
 `;
